@@ -45,21 +45,23 @@ while True:
         Speech2: Go to the $ROOM1, find the person who is $POSE/GESTURE and tell (him | her) $TELL_LIST.
 
         %possible information options
-        %ROOM         : study room, living room, bed room, dining room
-        %PLACE        : counter, left tray, right tray, pen holder, container, left kachaka shelf, right kachaka shelf, low table, tall table, trash bin, left chair, right chair, left kachaka station, right kachaka station, shelf, bed, dining table, couch, entrance, exit
-        $OBJECT       : Noodles, Cookies, Potato Chips, Caramel Corn, Detergent, Cup, Lunch Box, Sponge, Dice, Light Bulb, Glue gun, Phone Stand
-        $PERS_INFO    : name, shirt color, age, height
-        $CATEGORY_OBJ : Food Item, Kitchen Item, Task Item
-
-
+        %ROOM         : bedroom, kitchen, office, living room, bathroom
+        %PLACE        : bed, bedside table, shelf, trashbin, dishwasher, potted plant, kitchen table, chairs, pantry, refrigerator, sink, cabinet, coatrack, desk, armchair, desk lamp, waste basket, tv stand, storage rack, lamp, side tables, sofa, bookshelf, entrance, exit
+        $OBJECT       : orange juice, red wine, milk, iced tea, cola, tropical juice, juice pack, apple, pear, lemon, peach, banana, strawberry, orange, plum, cheezit, cornflakes, pringles, tuna, sugar, strawberry jello, tomato soup, mustard, chocolate jello, spam, coffee grounds, plate, fork, spoon, cup, knife, bowl, rubiks cube, soccer ball, dice, tennis ball, baseball, cleanser, sponge
+        $PERS_INFO    : name, pose, gesture
+        $CATEGORY_OBJ : drinks, fruits, snacks, foods, dishes, toys, cleaning supplies 
+        $POSE/GESTURE : waving persons, persons raising their left arm, persons raising their right arm, persons pointing to the left, persons pointing to the right, sitting persons, standing persons, lying persons # or some of the clothes color
+        $OBJ_COMP     : biggest, largest, smallest, heaviest, lightest, thinnest
+        $TELL_LIST    : something about yourself, the time, what day is today, what day is tomorrow, your teams name, your teams country, your teams affiliation, the day of the week, the day of the month
+        
+        
         (Questions)
         Question1: which Task is it(just one) [Manipulation1, Manipulation2, Vision (Enumeration)1, Vision (Enumeration)2, Vision (Description)1, Vision (Description)2, Navigation1, Navigation2, Speech1, Speech2] ?
         Question2: give me the $informations(make it in dictionary), for example {"$ROOM1":"Living room","$PLACE1":"Tray A"} ?
         Question3: what the sentence mean, and what I should do(20words)(just give me one sentence)?
 
 
-
-        here is the eanswer_format (in python_dictronary_format)
+        here is the answer_format (in python_dictionary_format)
 
         *** {"1":[],"2":[],"3":[]} ***
         """
@@ -137,8 +139,7 @@ while True:
     elif dictt["Steps"] == "Description":
         promt2 = dictt["Voice"]
         objects = '''
-
-        The Objects can only be : Noodles, Cookies, Potato Chips, Detergent, Cup, Lunch Box, Dice, Light Bulb, Glue gun
+        The Objects can only be : orange juice, red wine, milk, iced tea, cola, tropical juice, juice pack, apple, pear, lemon, peach, banana, strawberry, orange, plum, cheezit, cornflakes, pringles, tuna, sugar, strawberry jello, tomato soup, mustard, chocolate jello, spam, coffee grounds, plate, fork, spoon, cup, knife, bowl, rubiks cube, soccer ball, dice, tennis ball, baseball, cleanser, sponge
         '''
         promt = promt2 + objects
         image_url = f"http://192.168.50.147:8888{'/uploads/GSPR.jpg'}"
@@ -180,11 +181,15 @@ while True:
         promt2 = dictt["Voice"].lower()
         if "food" in promt2 or "kitchen" in promt2 or "item" in promt2:
             promt1 = '''
-                    (Category)      (Object)
-                    Food:           Noodles, Cookies, Potato Chips, Caramel Corn
-                    Kitchen Item:   Detergent, Cup, Lunch Box, Sponge
-                    Task Item :     Light Bulb, Dice, Glue Gun, Phone Stand
-                    Question:
+                    (Category)         (Object)
+                    drinks:            orange juice, red wine, milk, iced tea, cola, tropical juice, juice pack
+                    fruits:            apple, pear, lemon, peach, banana, strawberry, orange, plum
+                    snacks:            cheezit, cornflakes, pringles
+                    foods:             tuna, sugar, strawberry jello, tomato soup, mustard, chocolate jello, spam, coffee grounds
+                    dishes:            plate, fork, spoon, cup, knife, bowl
+                    toys:              rubiks cube, soccer ball, dice, tennis ball, baseball
+                    cleaning supplies: cleanser, sponge
+                    
                     '''
             promt = promt1 + promt2
         else:
@@ -225,117 +230,9 @@ while True:
         result = response.json()
         print(result)
         time.sleep(2)
-    elif dictt["Steps"] == "talk_list":
-        now = datetime.now()
 
-        # Extract information
-        current_time = now.strftime("%H:%M:%S")
-        current_month = now.strftime("%B")  # Full month name
-        current_day_name = now.strftime("%A")  # Full weekday name
-        day_of_month = now.strftime("%d")  # Day of the month as zero-padded decimal
-        genai.configure(api_key='AIzaSyBdTRu-rcBKbf86gjiMNtezBu1dEuxrWyE')
-        model = genai.GenerativeModel("gemini-2.0-flash")
-        sample_txt = f'''
-        #	Talk , Answer
-        01	something about yourself: We are Fambot from Macau Puiching Middle School, and I was made in 2024
-        02	what day today is: today is 10th April in 2025
-        03	what day tomorrow is: tomorrow is 10th April in 2025
-        04	where RoboCup is held this year: the robocup 2025 is held in Brazil,Salvador
-        05	what the result of 3 plus 5 is: The result of 3 plus 5 is 8.
-        06	your team's name: my team name is Fambot
-        07	where you come from: We are Fambot from Macau Puiching Middle School
-        08	what the weather is like today: today weather is Raining
-        09	what the time is: the current time is {current_time}
-        Answer my question
-        '''
-        s1 = dictt["Questionasking"]
-        response = model.generate_content([s1, sample_txt])
-        print(response.text)
-
-        questions = {
-            "Question1": "None",
-            "Question2": "None",
-            "Question3": "None",
-            "Steps": "answer",
-            "Voice": "None",
-            "Questionasking": "talk_list",
-            "answer": response.text
-        }
-        api_url = "http://192.168.50.147:8888/Fambot"
-        response = requests.post(api_url, json=questions)
-        result = response.json()
-        print(result)
-        time.sleep(2)
-    elif dictt["Steps"] == "answer_list":
-        now = datetime.now()
-
-        # Extract information
-        current_time = now.strftime("%H:%M:%S")
-        current_month = now.strftime("%B")  # Full month name
-        current_day_name = now.strftime("%A")  # Full weekday name
-        day_of_month = now.strftime("%d")  # Day of the month as zero-padded decimal
-        genai.configure(api_key='AIzaSyBdTRu-rcBKbf86gjiMNtezBu1dEuxrWyE')
-        model = genai.GenerativeModel("gemini-2.0-flash")
-        sample_txt = f'''
-        Today is 10th April in 2025
-        #	Question	Answer format
-        01	What day is it today?	It is {current_month} {day_of_month}
-        02	What is your team's name?	My team's name is FAMBOT
-        03	What day is it tomorrow?	It is {current_month} {day_of_month}
-        04	What is your name?	My name is FAMBOT robot
-        05	What time is it?	It is {current_time}
-        06	How many days are there in a week?	There are seven days in a week
-        07	What is the prefectural capital of Shiga?	Ōtsu is the capital of Shiga Prefecture, Japan
-        08	Where are you from?	I am from Macau Puiching middle school, Macau China
-        09	What is the name of the venue for RoboCup Japan Open 2024?	The name of the venue is Shiga Daihatsu Arena
-        10	Who is the leader on your team?	Our leader is Wu Iat Long
-        11	What day of the week is today?	It is {current_day_name}
-        12	What day of the month is today?	It is {day_of_month}
-        13	What can you tell me about yourself	I am a robot made in 2024
-        14	How many members are in your team?	We are 4 members in our team
-        15	What has to be broken before you can use it?	An egg
-        16	What is half of 1 plus 1?	It is 1.5
-        17	What is the only mammal that can fly?	It is the bat
-        18	What is the only bird that can fly backward?	It is the hummingbird
-
-        Answer my question
-        '''
-        s1 = dictt["Questionasking"]
-        s = "My question:" + s1
-        response = model.generate_content([s, sample_txt])
-        print(response.text)
-        questions = {
-            "Question1": "None",
-            "Question2": "None",
-            "Question3": "None",
-            "Steps": "answer",
-            "Voice": "answer_list",
-            "Questionasking": "None",
-            "answer": response.text
-        }
-        api_url = "http://192.168.50.147:8888/Fambot"
-        response = requests.post(api_url, json=questions)
-        result = response.json()
-        print(result)
-        time.sleep(2)
     elif dictt["Steps"] == "color":
-        promt2 = '''
-        what color of clothes is this(you only can answer the following colors)
-        01	Red
-        02	Orange
-        03	Yellow
-        04	Green
-        05	Blue
-        06	Purple
-        07	Pink
-        08	Black
-        09	White
-        10	Gray
-        11	Brown
-        (answer format)
-        the guy is wearing **color** t-shirt
-        '''
-        promt = promt2
+        sample_txt = dictt["Questionasking"].lower()
         image_url = f"http://192.168.50.147:8888{'/uploads/GSPR_color.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
@@ -350,7 +247,6 @@ while True:
         model = genai.GenerativeModel("gemini-2.0-flash")
         path_sample = "C:/Users/rayso/Desktop/python/Robot_view.jpg"  # Use raw string to handle backslashes
         # Prepare the prompt template
-        sample_txt = promt
         img = PIL.Image.open(path_sample)
         response = model.generate_content([img, sample_txt])
         file_data_string = response.text
