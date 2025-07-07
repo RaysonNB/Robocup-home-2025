@@ -31,7 +31,7 @@ def callback_depth1(msg):
 
 locations = {
     # Furniture and objects
-    "first": [-0.927, 0.086, 0.1],
+    "first": [1.13,3.29,1.53],
     "seats": [-0.927, 0.086, 0.1],
     "guest": [1.193, 2.021, 1.53],
     "drinktable": [2.47, 3.36, -1.607],
@@ -71,9 +71,9 @@ def move(forward_speed: float = 0, turn_speed: float = 0):
 def turn(angle):
     print("hi")
     if angle==-1:
-        move(0, 0.35)
+        move(0, 0.25)
     elif angle==1:
-        move(0, -0.35)
+        move(0, -0.25)
     else:
         if angle < 0:
             for i in range(-angle):
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     rospy.loginfo("demo node start!")
     # open things
     chassis = RobotChassis()
-
+    clear_costmaps
     print("cmd_vel")
     _cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
     print("gemini2 rgb")
@@ -122,12 +122,14 @@ if __name__ == "__main__":
     _depth1 = None
     _sub_down_cam_depth1 = rospy.Subscriber("/cam1/depth/image_raw", Image, callback_depth1)
     yn="yes"
+    '''
+    speak1("going to drink table")
+    walk_to("drinktable")
     speak1("going to guest")
     walk_to("guest")
     speak1("going to seats")
     walk_to("seats")
-    speak1("going to drink table")
-    walk_to("drinktable")
+    '''
     if yn=="yes":
         speak1("check turning angles")
         for i in [1,2,3,4,5]:
