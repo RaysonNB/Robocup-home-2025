@@ -15,6 +15,8 @@ from Generate_command import kitchen_items
 genai.configure(api_key='AIzaSyBdTRu-rcBKbf86gjiMNtezBu1dEuxrWyE')
 model = genai.GenerativeModel("gemini-2.0-flash")
 cnt_yy = 0
+
+#Big promt
 while True:
 
     while True:
@@ -45,8 +47,8 @@ while True:
         Speech2: Go to the $ROOM1, find the person who is $POSE/GESTURE and tell (him | her) $TELL_LIST.
 
         %possible information options
-        %ROOM         : bedroom, kitchen, office, living room, bathroom
-        %PLACE        : bed, bedside table, shelf, trashbin, dishwasher, potted plant, kitchen table, chairs, pantry, refrigerator, sink, cabinet, coatrack, desk, armchair, desk lamp, waste basket, tv stand, storage rack, lamp, side tables, sofa, bookshelf, entrance, exit
+        %ROOM         : bedroom, dining room, studying room, living room
+        %PLACE        : bed, exit, dining table, couch, entrance, shelf, left chair, right chair, left kachaka station, right kachaka station, counter, left tray, right tray, pen holder, container, left kachaka shelf, right kachaka shelf, low table, tall table, trash bin
         $OBJECT       : orange juice, red wine, milk, iced tea, cola, tropical juice, juice pack, apple, pear, lemon, peach, banana, strawberry, orange, plum, cheezit, cornflakes, pringles, tuna, sugar, strawberry jello, tomato soup, mustard, chocolate jello, spam, coffee grounds, plate, fork, spoon, cup, knife, bowl, rubiks cube, soccer ball, dice, tennis ball, baseball, cleanser, sponge
         $PERS_INFO    : name, pose, gesture
         $CATEGORY_OBJ : drinks, fruits, snacks, foods, dishes, toys, cleaning supplies 
@@ -54,12 +56,10 @@ while True:
         $OBJ_COMP     : biggest, largest, smallest, heaviest, lightest, thinnest
         $TELL_LIST    : something about yourself, the time, what day is today, what day is tomorrow, your teams name, your teams country, your teams affiliation, the day of the week, the day of the month
         
-        
         (Questions)
         Question1: which Task is it(just one) [Manipulation1, Manipulation2, Vision (Enumeration)1, Vision (Enumeration)2, Vision (Description)1, Vision (Description)2, Navigation1, Navigation2, Speech1, Speech2] ?
         Question2: give me the $informations(make it in dictionary), for example {"$ROOM1":"Living room","$PLACE1":"Tray A"} ?
         Question3: what the sentence mean, and what I should do(20words)(just give me one sentence)?
-
 
         here is the answer_format (in python_dictionary_format)
 
