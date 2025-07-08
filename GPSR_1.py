@@ -28,7 +28,7 @@ import os
 from datetime import datetime
 from dynamixel_control import DynamixelController
 from robotic_arm_control import RoboticController
-
+'''
 # Robotic Arm launch
 Dy = DynamixelController()
 Ro = RoboticController()
@@ -39,7 +39,7 @@ Ro.open_robotic_arm("/dev/arm", id_list, Dy)
 
 # Ro.go_to_real_xyz_alpha(id_list, (0, 125, 80), 0, 0, 90, 1, Dy)
 # time.sleep(2.0)
-
+'''
 # gemini2
 def callback_image2(msg):
     global _frame2
@@ -447,6 +447,11 @@ if __name__ == "__main__":
         frame = cv2.putText(frame, f"{depth}", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         if depth > 2000:
             walk_to("instruction point")
+            break
+        print("depthtt", depth)
+        cv2.imshow("door_check", frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     command_list = [
         "Say your team's name to the person pointing to the left in the bedroom",
