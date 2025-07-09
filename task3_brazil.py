@@ -601,8 +601,6 @@ if __name__ == "__main__":
                     speak(
                         "dear " + name + " this is the first guest " + pre_name + " favourite drink is " + pre_drink + " interest is " + pre_interest)
                     time.sleep(1)
-                    speak("here are the feature")
-                    speak(speech_robot_guest2)
                     turn(90)
                 step = "tell"
             if step == "tell":
