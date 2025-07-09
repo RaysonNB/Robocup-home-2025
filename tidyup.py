@@ -15,8 +15,8 @@ from dynamixel_control import DynamixelController
 from robotic_arm_control import RoboticController
 
 
-TABLE_P = (3.498, 3.339, -1.664)
-GOAL_P = (0, 0, 0)
+TABLE_P = (2.47, 3.36, -1.607)
+GOAL_P = (-0.927, 0.086, 0.1)
 # FOOD_POINT = (6.34, 3.07, 1.5)
 # TASK_POINT = (5.13, 2.90, 1.5)
 # UNKNOWN_POINT = (3.97, 2.85, 1.5)
