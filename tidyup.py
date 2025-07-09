@@ -14,17 +14,20 @@ from RobotChassis import RobotChassis
 from dynamixel_control import DynamixelController
 from robotic_arm_control import RoboticController
 
-# TABLE_P = (3.498, 3.339, -1.664)
+
+TABLE_P = (3.498, 3.339, -1.664)
+GOAL_P = (0, 0, 0)
 # FOOD_POINT = (6.34, 3.07, 1.5)
 # TASK_POINT = (5.13, 2.90, 1.5)
 # UNKNOWN_POINT = (3.97, 2.85, 1.5)
 # KITCHEN_POINT = (2.05, 3.72, 0)
 
-TABLE_P = (1.772, -0.118, 0.8)
-FOOD_POINT = (0.278, -0.139, -2.462)
-TASK_POINT = (-0.529, 0.443, 2.197)
-UNKNOWN_POINT = (1.638, -0.231, -0.910)
-KITCHEN_POINT = (1.638, -0.231, -0.910)
+# TABLE_P = (1.772, -0.118, 0.8)
+# FOOD_POINT = (0.278, -0.139, -2.462)
+
+
+# UNKNOWN_POINT = (1.638, -0.231, -0.910)
+# KITCHEN_POINT = (1.638, -0.231, -0.910)
 
 
 
@@ -343,10 +346,7 @@ def main():
             time.sleep(5)
 
             respeaker.say(a_object["category"])
-            if a_object["category"].lower() == "unknown":        walk_to(UNKNOWN_POINT)            
-            if a_object["category"].lower() == "task item":     walk_to(TASK_POINT)
-            if a_object["category"].lower() == "kitchen item":    walk_to(KITCHEN_POINT)
-            if a_object["category"].lower() == "food":        walk_to(FOOD_POINT)
+            walk_to(GOAL_P)
             
             respeaker.say("Putting Object")
             print("**OPEN_ARM")
