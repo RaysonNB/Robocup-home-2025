@@ -2,6 +2,7 @@ import rospy
 import re, json, requests
 import cv2, os, time
 import mimetypes
+import random as r
 from loguru import logger
 from geometry_msgs.msg import Twist
 from std_srvs.srv import Empty
@@ -34,37 +35,58 @@ If an object isn't listed, use category `Unknown`. Be careful not to leave any i
 You Must output *only* a JSON list containing objects with keys `"object"` and `"category"`. 
 If no object here, please output a empty json list ```json[]```
 
-
 # Object List
-| ID | Object        | Category     |
-|----|---------------|--------------|
-| 1  | Noodles       | Food         |
-| 2  | Cookies       | Food         |
-| 3  | Potato Chips  | Food         |
-| 4  | Caramel Corn  | Food         |
-| 4  | Detergent     | Kitchen Item |
-| 5  | Cup           | Kitchen Item |
-| 7  | Sponge        | Kitchen Item |
-| 6  | Lunch Box     | Kitchen Item |
-| 7  | Dice          | Task Item    |
-| 8  | Light Bulb     | Task Item    |
-| 9  | Glue Gun       | Task Item    |
-| 10 | Phone Stand    | Task Item    |
+| Name | Category |
+|:---|:---|
+| orange_juice | drink |
+| red_wine | drink |
+| milk | drink |
+| iced_tea | drink |
+| cola | drink |
+| tropical_juice | drink |
+| juice_pack | drink |
+| apple | fruit |
+| pear | fruit |
+| lemon | fruit |
+| peach | fruit |
+| banana | fruit |
+| strawberry | fruit |
+| orange | fruit |
+| plum | fruit |
+| cheezit | snack |
+| cornflakes | snack |
+| pringles | snack |
+| tuna | food |
+| sugar | food |
+| strawberry_jello | food |
+| tomato_soup | food |
+| mustard | food |
+| chocolate_jello | food |
+| spam | food |
+| coffee_grounds | food |
+| plate | dish |
+| fork | dish |
+| spoon | dish |
+| cup | dish |
+| knife | dish |
+| bowl | dish |
+| rubiks_cube | toy |
+| soccer_ball | toy |
+| dice | toy |
+| tennis_ball | toy |
+| baseball | toy |
+| cleanser | cleaning_supply |
+| sponge | cleaning_supply |
+
 
 * Furnitures (i.e. Table, Chair) is not an object
-*  The `Light Bulb` will be packed in a box
-* `Lunch Box` is a small, pink square container with a white lid featuring Piglet and hearts.
-* `Caramel Corn` is a blue bag of Tohato Salty Caramel Corn snack mix.
-* `Detergent` is a white bottle of Japanese cream cleanser with an orange scent.
-* `Cup` is a blue plastic mug with a handle, decorated with characters from SpongeBob SquarePants.
-* `Phone Stand` is a brown plastic cup designed with a bear face and ears.
 
 # Example Output
 ```json
 [
-  {"object": "Dice", "category": "Task Item"},
-  {"object": "Cookies", "category": "Food"},
-  {"object": "Pen", "category": "Unknown"}
+  {"name": "dice", "category": "toy"},
+  {"name": "bowl", "category": "dish"},
+  {"name": "cheezit", "category": "snack"}
 ]
 ```
 """
@@ -133,9 +155,9 @@ def main():
 
     # navigator = Navigator()
     cam1 = Camera("/camera/color/image_raw", "bgr8")
-    cam2 = Camera("/camera/depth/image_raw", "passthrough")
+    # cam2 = Camera("/camera/depth/image_raw", "passthrough")
     width, height = cam1.width, cam1.height
-    cx, cy = width // 2, height // 2
+    # cx, cy = width // 2, height // 2
     rate = rospy.Rate(20)
     
     def walk_to(point):
@@ -187,30 +209,19 @@ def main():
                 json_object = json.loads(json_string)
                 return json_object
 
-   def ask_gemini_for_bbox(text):
-        match = False
+    def ask_gemini_for_bbox(text, path=None):
         while True:
-            logger.info("Asking Gemini for objects")
-            frame = cam1.get_frame()
-            cv2.imwrite("./image.jpg", frame)
-            text = generate_content(f"Detect {text}. The box_2d should be [ymin, xmin, ymax, xmax] normalized to 0-1000.", "./image.jpg").get('generated_text')
-            if text is None:
-                respeaker.say("Failed")
-                continue
-            text = text.replace("\n", "")
-            text = text.replace("\r", "")
-            print("Gemini Res", text)
-    
-            bounding_boxes = json.loads(text)
-            converted_bounding_boxes = []
-            for bounding_box in bounding_boxes:
-                abs_y1 = int(bounding_box["box_2d"][0]/1000 * height)
-                abs_x1 = int(bounding_box["box_2d"][1]/1000 * width)
-                abs_y2 = int(bounding_box["box_2d"][2]/1000 * height)
-                abs_x2 = int(bounding_box["box_2d"][3]/1000 * width)
-                converted_bounding_boxes.append([abs_x1, abs_y1, abs_x2, abs_y2])
-
-            return converted_bounding_boxes
+            try:
+                logger.info("Asking Gemini for bbox")
+                if path is None:
+                    frame = cam1.get_frame()
+                    cv2.imwrite("./image.jpg", frame)
+                    bboxes = generate_content("$bbox$"+text, "./image.jpg")
+                else:
+                    bboxes = generate_content("$bbox$"+text, path)
+                return bboxes
+            except:
+                logger.error("Error @ ask_gemini_for_bbox")
 
     def close_grip(grip_id):
         logger.info("Start Closing Grip")
@@ -243,7 +254,25 @@ def main():
         time.sleep(1)
         Ro.go_to_real_xyz_alpha(id_list, [0, 250, 150], -25, 0, final_angle, 0, Dy)
 
+    def draw_bbox(img, boxes_json: list, label=""):
+        color = (r.randint(1,254), r.randint(1,254), r.randint(1,254))
+        height, width = img.shape[:2]
+        for box in boxes_json:
+            abs_y1 = int(box["box_2d"][0] / 1000 * height)
+            abs_x1 = int(box["box_2d"][1] / 1000 * width)
+            abs_y2 = int(box["box_2d"][2] / 1000 * height)
+            abs_x2 = int(box["box_2d"][3] / 1000 * width)
+            cv2.rectangle(img, (abs_x1, abs_y1), (abs_x2, abs_y2), color, 2)
+            if "label" in box and label == "":
+                label = str(box.get("label"))
 
+            cv2.putText(
+                img, label, (abs_x1, abs_y1 - 10),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2
+            )
+
+        return img
+        
 
     ##################################
     
@@ -273,10 +302,26 @@ def main():
     clear_costmaps
     walk_to(TABLE_P)
     
+    is_first = True
     while True:
         respeaker.say("I am recognizing objects")
         json_object = ask_gemini(PROMPT)
-        
+
+        if is_first:
+            respeaker.say("I am detecting and categorying objects, it might take some time")
+            img_cpy = cam1.get_frame()
+            cv2.imwrite("./image2.jpg", img_cpy)
+            for otype in "drink fruit snack food dish toy cleaning_supply".split(" "):
+                obj_names = []
+                for obj in json_object:
+                    if obj["category"].lower() == otype:
+                        obj_names.append(obj["name"])
+                bboxes = ask_gemini_for_bbox(f" {', '.join(obj_names)} ", "./image2.jpg")
+                draw_bbox(img_cpy, bboxes, label=otype)
+
+            cv2.imwrite("./image3.jpg", img_cpy)
+            is_first = False
+
         if len(json_object) == 0:
             respeaker.say("It seems the table is empty, task end")
             break
@@ -285,9 +330,9 @@ def main():
         for a_object in json_object[:3]:
             print(a_object)
 
-            respeaker.say(f"Please help me take the {a_object['object']} on the table")
+            respeaker.say(f"Please help me take the {a_object['name']} on the table")
             time.sleep(5)
-            respeaker.say("Help me put the " + a_object["object"] + "on my robot arm and wait for the gripper close")
+            respeaker.say("Help me put the " + a_object["name"] + "on my robot arm and wait for the gripper close")
             print("**OPEN_ARM")
             Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0, Dy)
             time.sleep(10)
