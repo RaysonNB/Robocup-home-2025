@@ -35,7 +35,7 @@ PROMPT = """
 # Instruction
 Analyze the input image. Detect distinct objects on the table and try your best to classify them using the `Object List` below. 
 If an object isn't listed, use category `Unknown`. Be careful not to leave any items behide
-You Must output *only* a JSON list containing objects with keys `"object"` and `"category"`. 
+You Must output *only* a JSON list containing objects with keys `"name"` and `"category"`. 
 If no object here, please output a empty json list ```json[]```
 
 # Object List
@@ -108,7 +108,8 @@ def generate_content(prompt_text: str = None, image_path: str = None) -> dict:
     Returns:
         A dictionary containing the API response, or None if an error occurred.
     """
-    url = "http://192.168.50.142:5000/generate"  # Adjust if your server is running on a different host/port
+    url = "http://192.168.50.143:5000/generate"  # Adjust if your server is running on a different host/port
+    logger.info(f"Generate content: {prompt_text}, {image_path}")
     files = {}
     data = {}
     if prompt_text:
@@ -154,7 +155,7 @@ def main():
 
     Dy = DynamixelController()
     Ro = RoboticController()
-    Ro.open_robotic_arm("/dev/arm", id_list, Dy)
+    # Ro.open_robotic_arm("/dev/arm", id_list, Dy)
 
     # navigator = Navigator()
     cam1 = Camera("/camera/color/image_raw", "bgr8")
@@ -258,6 +259,8 @@ def main():
         Ro.go_to_real_xyz_alpha(id_list, [0, 250, 150], -25, 0, final_angle, 0, Dy)
 
     def draw_bbox(img, boxes_json: list, label=""):
+        if "bounding_boxes" in boxes_json:
+            boxes_json = boxes_json["bounding_boxes"]
         color = (r.randint(1,254), r.randint(1,254), r.randint(1,254))
         height, width = img.shape[:2]
         for box in boxes_json:
@@ -317,9 +320,13 @@ def main():
             for otype in "drink fruit snack food dish toy cleaning_supply".split(" "):
                 obj_names = []
                 for obj in json_object:
-                    if obj["category"].lower() == otype:
+                    if obj["category"].lower() == otype and obj["name"].lower() != "unknown":
                         obj_names.append(obj["name"])
+                if len(obj_names) == 0:
+                    continue
                 bboxes = ask_gemini_for_bbox(f" {', '.join(obj_names)} ", "./image2.jpg")
+                print(bboxes)
+                
                 draw_bbox(img_cpy, bboxes, label=otype)
 
             cv2.imwrite("./image3.jpg", img_cpy)
