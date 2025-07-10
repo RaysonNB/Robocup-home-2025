@@ -1,13 +1,10 @@
-import google.generativeai as genai
 import json
 import time
 import requests
 import google.generativeai as genai
-import os
 import PIL.Image
 import cv2
 import numpy as np
-from datetime import datetime
 
 pathnum = r"C:/Users/rayso/Desktop/python/"
 from Generate_command import kitchen_items
@@ -16,9 +13,8 @@ genai.configure(api_key='AIzaSyBdTRu-rcBKbf86gjiMNtezBu1dEuxrWyE')
 model = genai.GenerativeModel("gemini-2.0-flash")
 cnt_yy = 0
 
-#Big promt
+#all big promt
 while True:
-
     while True:
         r = requests.get("http://192.168.50.147:8888/Fambot", timeout=2.5)
         response_data = r.text
@@ -33,7 +29,7 @@ while True:
         s = "***The Sentence:" + s1
         print("question", s)
         sample_txt = """
-
+        Manipulation1, Manipulation2 is only for graping object
         (The Sentence)(Task: Sentence Structure)(I given u)
         Manipulation1: Go to the $ROOM1, grasp the $OBJECT on the $PLACE1 and place it on the $PLACE2.
         Manipulation2: Go to the $ROOM1, grasp the $OBJECT on the $PLACE1 and give it to $PERSON on the $ROOM2.(if &PERSON is me than $ROOM2:"instruction point" just edit $ROOM2)
@@ -64,6 +60,7 @@ while True:
         here is the answer_format (in python_dictionary_format)
 
         *** {"1":[],"2":[],"3":[]} ***
+        
         """
         response = model.generate_content([s, sample_txt])
         file_data_string = response.text
@@ -139,7 +136,7 @@ while True:
     elif dictt["Steps"] == "Description":
         promt2 = dictt["Voice"]
         objects = '''
-        The Objects can only be : orange juice, red wine, milk, iced tea, cola, tropical juice, juice pack, apple, pear, lemon, peach, banana, strawberry, orange, plum, cheezit, cornflakes, pringles, tuna, sugar, strawberry jello, tomato soup, mustard, chocolate jello, spam, coffee grounds, plate, fork, spoon, cup, knife, bowl, rubiks cube, soccer ball, dice, tennis ball, baseball, cleanser, sponge
+        The Objects can only be: orange juice, red wine, milk, iced tea, cola, tropical juice, juice pack, apple, pear, lemon, peach, banana, strawberry, orange, plum, cheezit, cornflakes, pringles, tuna, sugar, strawberry jello, tomato soup, mustard, chocolate jello, spam, coffee grounds, plate, fork, spoon, cup, knife, bowl, rubiks cube, soccer ball, dice, tennis ball, baseball, cleanser, sponge
         '''
         promt = promt2 + objects
         image_url = f"http://192.168.50.147:8888{'/uploads/GSPR.jpg'}"
@@ -189,7 +186,6 @@ while True:
                     dishes:            plate, fork, spoon, cup, knife, bowl
                     toys:              rubiks cube, soccer ball, dice, tennis ball, baseball
                     cleaning supplies: cleanser, sponge
-                    
                     '''
             promt = promt1 + promt2
         else:
@@ -198,9 +194,7 @@ while True:
         image_url = f"http://192.168.50.147:8888{'/uploads/GSPR.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
-
         image_array = np.frombuffer(image_response.content, dtype=np.uint8)
-
         # Decode the image using OpenCV
         img = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
         # Save the image using OpenCV
@@ -230,7 +224,6 @@ while True:
         result = response.json()
         print(result)
         time.sleep(2)
-
     elif dictt["Steps"] == "color":
         sample_txt = dictt["Questionasking"].lower()
         image_url = f"http://192.168.50.147:8888{'/uploads/GSPR_color.jpg'}"
