@@ -170,7 +170,7 @@ while True:
         print(result)
         time.sleep(2)
     if dictt["Steps"] == "interest":
-        promt = dictt["Questionasking"]+" (only need 10 words)"
+        promt = dictt["Questionasking"]+" (only need 20 words)"
         print(promt)
         response = model.generate_content(promt)
         file_data_string = response.text
