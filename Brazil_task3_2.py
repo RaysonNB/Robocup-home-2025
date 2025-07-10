@@ -5,7 +5,6 @@ import google.generativeai as genai
 import PIL.Image
 import cv2
 import numpy as np
-from Generate_command import kitchen_items
 import re
 pathnum = r"C:/Users/rayso/Desktop/python/"
 genai.configure(api_key='AIzaSyBdTRu-rcBKbf86gjiMNtezBu1dEuxrWyE')
