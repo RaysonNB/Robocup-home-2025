@@ -118,7 +118,7 @@ def callback_voice(msg):
 
 def speak(g):
     print("[robot said]: ", end=" ")
-    os.system(f'espeak -s 150 "{g}"')
+    os.system(f'espeak -s 180 "{g}"')
     # rospy.loginfo(g)
     print(g)
     time.sleep(0.5)
@@ -416,6 +416,7 @@ if __name__ == "__main__":
     confirm_command = 0
     speak("I am ready")
     time.sleep(5)
+    depth_zero=0
     while not rospy.is_shutdown():
         frame = _frame2.copy()
         depth_frame = _depth2.copy()
@@ -423,7 +424,14 @@ if __name__ == "__main__":
         depth = depth_frame[cy, cx]
         frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
         frame = cv2.putText(frame, f"{depth}", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        if depth > 2000:
+        if depth_zero>=400:
+            speak("the door is open")
+            walk_to("instruction point")
+            break
+        if depth == 0: depth_zero+=1
+        else: depth_zero=0
+        if depth > 1700:
+            speak("the door is open")
             walk_to("instruction point")
             break
         print("depthtt", depth)
@@ -431,15 +439,7 @@ if __name__ == "__main__":
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-    '''
-    "Get a drink from the container and bring it to me",
-        "Take a cola from the left tray and deliver it to Adel in the study room",
-        "Look for a cleaning supply in the bedroom then take it and place it on the shelf",'''
     command_list = [
-        "Tell me what is the biggest object on the trash bin",
-        "Follow the person raising their right arm in the living room",
-        "Take the person raising their left arm from the left chair to the bedroom",
-        "Take the lying person from the left Kachaka shelf to the bedroom",
         "Tell me the name of the person at the tall table",
         "Tell me the pose of the person in the study room",
         "Tell me how many snacks there are on the container",
@@ -489,14 +489,16 @@ if __name__ == "__main__":
         print("********************")
         time.sleep(0.3)
         s = ""
+        user_input = data
+        gg = post_message_request("first", user_input, "")
         speak("please answer robot yes yes yes or robot no no no, thank you")
         while True:
-            if "yes" in s: break
+            if "yes" in s "robot" in s: break
         #time.sleep(6)
         speak("ok")
-        user_input = data
-        # post question
-        gg = post_message_request("first", user_input, "")  # step
+        
+        # post questio
+          # step
         print("post", gg)
         # get gemini answer
         nigga = 1
@@ -1035,7 +1037,7 @@ if __name__ == "__main__":
                             if skip_cnt_vd >= 250:
                                 step_action = 2
                                 speak("hello hazel, I gonna go now")
-                                final_speak_to_guest = "the guys name is chikako"
+                                final_speak_to_guest = "the guys name is hazel"
                                 print(skip_cnt_vd)
                             if "otto" in s or "adel" in s or "adolf" in s: name_cnt = "adel"
                             if "angel" in s: name_cnt = "angel"
@@ -1047,6 +1049,8 @@ if __name__ == "__main__":
                             if "paris" in s: name_cnt = "paris"
                             if "robin" in s or "robbie" in s or "ruby" in s or "woman" in s or "robert" in s: name_cnt = "robin"
                             if "seymour" in s or "simone" in s or "simon" in s: name_cnt = "simone"
+                            if name_cnt=="none" and s!="": speak("please speak it again")
+                            s=""
                             if name_cnt != "none":
                                 print("***************")
                                 speak("hello " + name_cnt + " I gonna go now.")
