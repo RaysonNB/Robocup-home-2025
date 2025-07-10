@@ -15,8 +15,8 @@ from dynamixel_control import DynamixelController
 from robotic_arm_control import RoboticController
 
 
-TABLE_P = (3.498, 3.339, -1.664)
-GOAL_P = (0, 0, 0)
+TABLE_P = (0.284, 3.317, -1.57)
+GOAL_P = (-0.677, 3.620, 1.57)
 # FOOD_POINT = (6.34, 3.07, 1.5)
 # TASK_POINT = (5.13, 2.90, 1.5)
 # UNKNOWN_POINT = (3.97, 2.85, 1.5)
@@ -115,9 +115,10 @@ def generate_content(prompt_text: str = None, image_path: str = None) -> dict:
     Returns:
         A dictionary containing the API response, or None if an error occurred.
     """
-    url = "http://192.168.50.142:5000/generate"  # Adjust if your server is running on a different host/port
+    url = "http://192.168.50.143:5000/generate"  # Adjust if your server is running on a different host/port
     files = {}
     data = {}
+    logger.info(f"Generate Content (\"{prompt_text}\", {image_path})")
     if prompt_text:
         data['prompt'] = prompt_text
     if image_path:
@@ -139,7 +140,9 @@ def generate_content(prompt_text: str = None, image_path: str = None) -> dict:
     try:
         response = requests.post(url, files=files, data=data)
         response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
-        return response.json()  # Parse JSON response
+        result = response.json()
+        logger.info(f"Output... {result}")
+        return result  # Parse JSON response
 
     except requests.exceptions.RequestException as e:
         print(f"Request failed: {e}")
@@ -161,7 +164,7 @@ def main():
 
     Dy = DynamixelController()
     Ro = RoboticController()
-    Ro.open_robotic_arm("/dev/arm", id_list, Dy)
+    # Ro.open_robotic_arm("/dev/arm", id_list, Dy)
 
     # navigator = Navigator()
     cam1 = Camera("/camera/color/image_raw", "bgr8")
@@ -189,7 +192,7 @@ def main():
                 respeaker.say("I am blocked, please move aside")
                 clear_costmaps
                 chassis.move_to(*point)
-                if tried > 5:
+                if tried > 3:
                     break
                 tried += 1
 
@@ -235,6 +238,9 @@ def main():
 
     def close_grip(grip_id):
         logger.info("Start Closing Grip")
+
+        #####
+        return 0
         Dy.profile_velocity(grip_id, 20)
         final_angle = 0
         dt = 0.2
@@ -265,6 +271,8 @@ def main():
         Ro.go_to_real_xyz_alpha(id_list, [0, 250, 150], -25, 0, final_angle, 0, Dy)
 
     def draw_bbox(img, boxes_json: list, label="", color=(255, 0, 0), thickness=2):
+        if "bounding_boxes" in boxes_json:
+            boxes_json = boxes_json["bounding_boxes"]
         height, width = img.shape[:2]
         for box in boxes_json:
             abs_y1 = int(box["box_2d"][0] / 1000 * height)
@@ -340,7 +348,7 @@ def main():
             img_base = img_cpy.copy()
             logger.info(f"Requesting for... {a_object}")
 
-            draw_bbox(img_base, bboxes, label=f"{name}:{categ}", color=(0, 9, 255), thickness=3)
+            draw_bbox(img_base, a_object["bbox"], label=f"{name}:{categ}", color=(0, 9, 255), thickness=3)
             cv2.imwrite("./image.jpg", img_base)
 
             respeaker.say(f"Please help me take {a_object['name']} on the table")
@@ -364,6 +372,7 @@ def main():
             Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0, Dy)
 
             walk_to(TABLE_P)
+        break
     
 
 if __name__ == '__main__':
