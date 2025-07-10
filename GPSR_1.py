@@ -451,12 +451,12 @@ if __name__ == "__main__":
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-    command_list = ["Get a drink from the cabinet and bring it to me",
-"Take a cola from the sink and deliver it to Adel in the office",
-"Look for a cleaning supply in the bedroom then take it and place it on the side tables",
-"Tell me what is the biggest object on the tv stand",
+    command_list = ["Get a drink from the container and bring it to me",
+"Take a cola from the left tray and deliver it to Adel in the study room",
+"Look for a cleaning supply in the bedroom then take it and place it on the shelf",
+"Tell me what is the biggest object on the trash bin",
 "Follow the person raising their right arm in the living room",
-"Take the person raising their left arm from the chairs to the bedroom",
+"Take the person raising their left arm from the left chair to the bedroom",
 "Take the lying person from the left Kachaka shelf to the bedroom",
 "Tell me the name of the person at the tall table",
 "Tell me the pose of the person in the study room",
