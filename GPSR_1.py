@@ -306,45 +306,46 @@ class FollowMe(object):
 locations = {
 # Furniture and objects
 "counter": [3.154, 2.870, 1.53],
-"left tray": [3.350, 3.111, -1.5],
-"right tray": [2.507, 3.287, -1.607],
+"left tray": [3.350, 3.111, -1.53],
+"right tray": [2.507, 3.287, -1.53],
 "pen holder": [3.154, 2.870, 1.53],
-"container": [3.350, 3.111, -1.5],
-"left kachaka shelf": [2.507, 3.287, -1.607],
-"right kachaka shelf": [-0.715, -0.193, 1.569],
-"low table": [-1.182, 3.298, 3.12],
-"left chair": [-0.261, -0.067, 0],
-"right chair": [-0.265, 0.633, 0],
+"container": [3.350, 3.111, -1.53],
+"left kachaka shelf": [2.507, 3.287, -1.53],
+"right kachaka shelf": [-0.715, -0.193, 1.53],
+"low table": [-1.182, 3.298, 3.14],
+"left chair": [-0.261, -0.067, 0.1],
+"right chair": [-0.265, 0.633, 0.1],
 "trash bin": [2.490, 3.353, 1.53],
 "tall table": [3.238, 3.351, 1.53],
-"left kachaka station": [3.829, 3.092, 1.55],
+"left kachaka station": [3.829, 3.092, 1.53],
 "right kachaka station": [3.031, 3.436, 1.53],
 "shelf": [-1.182, 3.298, 3.12],
 # bed
-"bed": [5.080, 3.032, 1.54],
+"bed": [5.080, 3.032, 1.53],
 # dining room
-"dining table": [-1.058, 4.001, 3.11],
-"couch": [5.661, 3.102, 1.54],
+"dining table": [-1.058, 4.001, 3.14],
+"couch": [5.661, 3.102, 1.53],
 # Locations and special points
-"entrance": [3.809, 2.981, 3.053],
-"exit": [6.796, 3.083, 0],
-"instruction point": [-0.967, -0.013, -1.709],
-"dining room": [-0.397, 0.297, 0],
-"living room": [3.364, 2.991, 1.436],
+"entrance": [3.809, 2.981, 3.14],
+"exit": [6.796, 3.083, 0.1],
+"instruction point": [-0.967, -0.013, -1.53],
+"dining room": [-0.397, 0.297, 0.1],
+"living room": [3.364, 2.991, 1.53],
 "bedroom": [0.028, 3.514, 3.139],
-"study room": [-0.397, 0.297, 0]
+"study room": [-0.397, 0.297, 0.1]
 }
 # front 0 back 3.14 left 90 1.5 right 90 -1.5
 cout_location = {
-"living room": [1.153, 3.338, 0],
+"living room": [1.153, 3.338, 0.1],
 "bedroom": [1.153, 3.338, 3.14],
-"dining room": [-1.545, -0.303, 0.4],
+"dining room": [-1.545, -0.303, 0.1],
 "study room": [-1.581, -0.345, 0.15]
 }
 dining_room_dif = {
-"din1": [-1.545, -0.303, 1.57],
-"din2": [1.214, 1.960, -1.57] ##
+"din1": [-1.545, -0.303, 1.53],
+"din2": [1.214, 1.960, -1.53] ##
 }
+
 
 # name
 # qestion list
@@ -430,29 +431,31 @@ if __name__ == "__main__":
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-    command_list = ["Get a drink from the container and bring it to me",
-"Take a cola from the left tray and deliver it to Adel in the study room",
-"Look for a cleaning supply in the bedroom then take it and place it on the shelf",
-"Tell me what is the biggest object on the trash bin",
-"Follow the person raising their right arm in the living room",
-"Take the person raising their left arm from the left chair to the bedroom",
-"Take the lying person from the left Kachaka shelf to the bedroom",
-"Tell me the name of the person at the tall table",
-"Tell me the pose of the person in the study room",
-"Tell me how many snacks there are on the container",
-"Tell me how many people in the bedroom are wearing white jackets",
-"Tell me what is the smallest drink on the trash bin",
-"Tell me what is the lightest dish on the shelf",
-"Say hello to Charlie in the living room and answer a quiz",
-"Greet Paris in the bathroom and answer a question",
-"Say what day is today to the person raising their left arm in the living room",
-"Introduce yourself to Charlie in the bedroom and follow them to the pen holder",
-"Salute the person wearing a black shirt in the bedroom and escort them to the shelf",
-"Tell your teams name to the person raising their left arm in the study room",
-"Look for a lying person in the dining room and say what day is today"]
+    '''
+    "Get a drink from the container and bring it to me",
+        "Take a cola from the left tray and deliver it to Adel in the study room",
+        "Look for a cleaning supply in the bedroom then take it and place it on the shelf",'''
+    command_list = [
+        "Tell me what is the biggest object on the trash bin",
+        "Follow the person raising their right arm in the living room",
+        "Take the person raising their left arm from the left chair to the bedroom",
+        "Take the lying person from the left Kachaka shelf to the bedroom",
+        "Tell me the name of the person at the tall table",
+        "Tell me the pose of the person in the study room",
+        "Tell me how many snacks there are on the container",
+        "Tell me how many people in the bedroom are wearing white jackets",
+        "Tell me what is the smallest drink on the trash bin",
+        "Tell me what is the lightest dish on the shelf",
+        "Say hello to Charlie in the living room and answer a quiz",
+        "Greet Paris in the bathroom and answer a question",
+        "Say what day is today to the person raising their left arm in the living room",
+        "Introduce yourself to Charlie in the bedroom and follow them to the pen holder",
+        "Salute the person wearing a black shirt in the bedroom and escort them to the shelf",
+        "Tell your teams name to the person raising their left arm in the study room",
+        "Look for a lying person in the dining room and say what day is today"]
 
     commandcntcnt = 0
-    for i in range(1, 4):
+    for i in range(1, 15):
         commandcntcnt = commandcntcnt + 1
         s = ""
         dining_room_action = 0
@@ -652,9 +655,10 @@ if __name__ == "__main__":
                     #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
                     #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
                     #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
-                    time.sleep(3)
+                    time.sleep(10)
                     speak("robot arm is in error I can't get it, going back to instruction point")
                     step_action = 100
+                    time.sleep(3)
                 if step_action == 2:
                     name_position = "$PLACE2"
                     if "$PLACE2" not in liyt:
@@ -686,9 +690,10 @@ if __name__ == "__main__":
                     #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
                     #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
                     #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
-                    time.sleep(3)
+                    time.sleep(10)
                     speak("robot arm is in error I can't get it, going back to instruction point")
                     step_action = 100
+                    time.sleep(3)
                 if step_action == 2:
                     if " me " in user_input:
                         walk_to("instruction point")
@@ -1840,5 +1845,4 @@ if __name__ == "__main__":
         speak(final_speak_to_guest)
         print("***************")
         time.sleep(2)
-    walk_to("exit2")
     speak("end")
