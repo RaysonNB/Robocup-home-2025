@@ -237,8 +237,9 @@ if __name__ == "__main__":
                     print("Upload Status Code:", response.status_code)
                     upload_result = response.json()
                     print("sent image")
-                    who_help = "Is the guy " + feature
-                    gg = post_message_request("checkpeople", feature, who_help)
+                    feature="raising hand"
+                    who_help = "Is the guy " + "raising hand"
+                    gg = post_message_request("checkpeople", "raising hand", who_help)
                     print(gg)
                     # get answer from gemini
                     while True:
@@ -349,7 +350,7 @@ if __name__ == "__main__":
                 s = s.lower()
                 if "coffee" in s: name_cnt = "Coffee"
                 if "tea" in s: name_cnt = "Tea"
-                if "orangle" in s: name_cnt = "Orangle Juice"
+                if "orange" in s: name_cnt = "Orange Juice"
                 if "apple" in s: name_cnt = "Apple Juice"
                 if "Cola" in s: name_cnt = "Cola"
                 if "chocolate" in s: name_cnt = "chocolate"
