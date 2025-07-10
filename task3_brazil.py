@@ -43,9 +43,7 @@ def callback_depth2(msg):
 
 def callback_image1(msg):
     global _frame1
-    src = CvBridge().imgmsg_to_cv2(msg, "bgr8")
-    _frame1 = cv2.flip(src, 0)
-    _frame1 = cv2.flip(_frame1, 1)
+    _frame1 = CvBridge().imgmsg_to_cv2(msg, "bgr8")
 
 
 def callback_depth1(msg):
@@ -162,7 +160,6 @@ def walk_to(name):
         name = name.lower()
         real_name = check_item(name)
         if real_name in locations:
-            speak1("going to " + str(name))
             num1, num2, num3 = locations[real_name]
             chassis.move_to(num1, num2, num3)
             while not rospy.is_shutdown():
@@ -180,7 +177,6 @@ def walk_to(name):
 
 
 def turn(angle):
-    print("hi")
     if angle==-1:
         move(0, 0.2)
     elif angle==1:
@@ -207,7 +203,7 @@ def seat_turn(num12):
     elif "2" in check_num:
         turn(angle2)
     elif "3" in check_num:
-        turn(angle3)
+        pass
     elif "4" in check_num:
         turn(angle4)
     elif "5" in check_num:
@@ -218,8 +214,8 @@ def seat_turn(num12):
 locations = {
     # Furniture and objects
     "seats": [-0.927, 0.086, 0.1],
-    "guest": [1.09, 1.58, 1.53],
-    "drinktable": [2.47, 3.36, -1.607],
+    "guest": [1.09, 1.58, 1.6],
+    "drinktable": [2.11,3.49,-1.607],
 }
 
 
@@ -239,7 +235,7 @@ def seat_turn_back(num12):
     elif "2" in check_num:
         turn(angle2)
     elif "3" in check_num:
-        turn(angle3)
+        pass
     elif "4" in check_num:
         turn(angle4)
     elif "5" in check_num:
@@ -302,8 +298,6 @@ if __name__ == "__main__":
                 print("no depth")
             code_image = _frame2.copy()
             code_depth = _depth2.copy()
-            print("step", step)
-            
             if step == "fp":
                 yn=0
                 robot_height = 1170
@@ -324,6 +318,7 @@ if __name__ == "__main__":
                     speak1("hello dear guest, can you stand in front of me thank you")
                     if nigga_i == 1:
                         speak1("please look at the camera on top, I will take your a picture")
+                        time.sleep(2)
                         step = "fp1"
                     if nigga_i == 2:
                         step = "name"
@@ -381,7 +376,6 @@ if __name__ == "__main__":
                 if "paris" in s: name_cnt = "paris"
                 if "robin" in s or "robbie" in s or "ruby" in s or "woman" in s or "robert" in s: name_cnt = "robin"
                 if "seymour" in s or "simone" in s or "simon" in s: name_cnt = "simone"
-                print(name_cnt,s)
                 if (name_cnt=="none" and s!=""):
                     speak("please repeat")
                 if name_cnt != "none":
@@ -427,8 +421,26 @@ if __name__ == "__main__":
                     print(speakooo)
                     speak1(speakooo)
                     if nigga_i == 2:
+                        question="what is the similarity between the interest of "+interest_name+" and "+pre_interest
+                        gg = post_message_request("interest", question,question)
+                        print("********************")
                         speak1("dear "+name+" here are the first guest "+pre_name+" features")
                         speak(speech_robot_guest2)
+                        print("********************")
+                        
+                        while True:
+                            r = requests.get("http://192.168.50.147:8888/Fambot", timeout=10)
+                            response_data = r.text
+                            dictt = json.loads(response_data)
+                            time.sleep(2)
+                            if dictt["Steps"] == 100:
+                                gg = post_message_request("-1", "", "")
+                                aaa = dictt["Voice"].lower()
+                                speech_robot_guest2 = aaa
+                                speak("here are the similarity between the interest of "+interest_name+" and "+pre_interest)
+                                time.sleep(1)
+                                speak(aaa)
+                                break
                 s=""
             if step == "drinktable":
                 speak1("dear guest i will bring you to the drink table")
@@ -479,8 +491,7 @@ if __name__ == "__main__":
                     step = "walk"
             if step == "walk":
                 walk_to("seats")
-                speak1("dear guest, can u stand on my left left left side, thank you")
-                time.sleep(1)
+                
                 check_empty_img = _frame1.copy()
                 font = cv2.FONT_HERSHEY_SIMPLEX
                 font_scale = 1.5
@@ -525,6 +536,8 @@ if __name__ == "__main__":
                 elif nigga_i == 2:
                     gg = post_message_request("seat2", "", "")
                     print(gg)
+                speak1("dear guest, can u stand on my left left left side, thank you")
+                time.sleep(1)
                 step = "waitempty"
             if step == "waitempty":
                 r = requests.get("http://192.168.50.147:8888/Fambot", timeout=10)
