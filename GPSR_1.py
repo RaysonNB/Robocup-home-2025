@@ -28,7 +28,6 @@ import os
 from datetime import datetime
 from dynamixel_control import DynamixelController
 from robotic_arm_control import RoboticController
-'''
 # Robotic Arm launch
 Dy = DynamixelController()
 Ro = RoboticController()
@@ -39,7 +38,6 @@ Ro.open_robotic_arm("/dev/arm", id_list, Dy)
 
 # Ro.go_to_real_xyz_alpha(id_list, (0, 125, 80), 0, 0, 90, 1, Dy)
 # time.sleep(2.0)
-'''
 # gemini2
 def callback_image2(msg):
     global _frame2
@@ -453,17 +451,26 @@ if __name__ == "__main__":
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-    command_list = [
-        "Say your team's name to the person pointing to the left in the bedroom",
-        "Give me a cup from the shelf",
-        "Meet Yoshimura in the study room and escort them to the tall table",
-        "Navigate to the study room then meet Andrew and follow them to the dining room",
-        "Meet Jack at the right tray then locate them in the study room",
-        "Answer the quiz of the person giving the V sign in the study room",
-        "Answer the question of the person pointing to the left in the living room",
-        "Tell me what is the thinnest object on the low table",
-        "Tell me what is the heaviest object on the shelf"
-    ]
+    command_list = ["Get a drink from the cabinet and bring it to me",
+"Take a cola from the sink and deliver it to Adel in the office",
+"Look for a cleaning supply in the bedroom then take it and place it on the side tables",
+"Tell me what is the biggest object on the tv stand",
+"Follow the person raising their right arm in the living room",
+"Take the person raising their left arm from the chairs to the bedroom",
+"Take the lying person from the left Kachaka shelf to the bedroom",
+"Tell me the name of the person at the tall table",
+"Tell me the pose of the person in the study room",
+"Tell me how many snacks there are on the container",
+"Tell me how many people in the bedroom are wearing white jackets",
+"Tell me what is the smallest drink on the trash bin",
+"Tell me what is the lightest dish on the shelf",
+"Say hello to Charlie in the living room and answer a quiz",
+"Greet Paris in the bathroom and answer a question",
+"Say what day is today to the person raising their left arm in the living room",
+"Introduce yourself to Charlie in the bedroom and follow them to the pen holder",
+"Salute the person wearing a black shirt in the bedroom and escort them to the shelf",
+"Tell your teams name to the person raising their left arm in the study room",
+"Look for a lying person in the dining room and say what day is today"]
 
     commandcntcnt = 0
     for i in range(1, 4):
@@ -489,9 +496,9 @@ if __name__ == "__main__":
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         cv2.destroyAllWindows()
-        # data = command_list[i]
+        data = command_list[i]
         # continue
-        '''
+
         speak("dear host your command is")
         time.sleep(0.3)
         print("Your command is **********************")
@@ -502,8 +509,7 @@ if __name__ == "__main__":
         s = ""
         #speak("please answer yes or no, thank you")
         #time.sleep(6)
-        speak("ok")
-        '''
+        #speak("ok")
         user_input = data
         # post question
         gg = post_message_request("first", user_input, "")  # step
