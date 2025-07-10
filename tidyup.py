@@ -338,41 +338,37 @@ def main():
     cv2.imwrite("./image_all_box_evidence.jpg", img_cpy)
 
     img_cpy = cv2.imread("./image2.jpg")
-    while True:
-        if len(json_object) == 0:
-            respeaker.say("It seems the table is empty, task end")
-            break
         
-        respeaker.say("I see")
-        for a_object in saved_bboxes:
-            img_base = img_cpy.copy()
-            logger.info(f"Requesting for... {a_object}")
+    respeaker.say("I see")
+    for a_object in saved_bboxes:
+        img_base = img_cpy.copy()
+        logger.info(f"Requesting for... {a_object}")
 
-            draw_bbox(img_base, a_object["bbox"], label=f"{name}:{categ}", color=(0, 9, 255), thickness=3)
-            cv2.imwrite("./image.jpg", img_base)
+        draw_bbox(img_base, a_object["bbox"], label=f"{a_object["name"]}:{a_object["category"]}", color=(0, 9, 255), thickness=3)
+        cv2.imwrite("./image.jpg", img_base)
 
-            respeaker.say(f"Please help me take {a_object['name']} on the table")
-            time.sleep(5)
-            respeaker.say("Help me put it on my robot arm and wait for the gripper close")
-            print("**OPEN_ARM")
-            Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0, Dy)
-            time.sleep(10)
+        respeaker.say(f"Please help me take {a_object['name']} on the table")
+        time.sleep(5)
+        respeaker.say("Help me put it on my robot arm and wait for the gripper close")
+        print("**OPEN_ARM")
+        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0, Dy)
+        time.sleep(10)
 
-            print("**CLOSE_ARM")
-            close_grip(id_list[-1])
-            respeaker.say("Thank you")
-            time.sleep(5)
+        print("**CLOSE_ARM")
+        close_grip(id_list[-1])
+        respeaker.say("Thank you")
+        time.sleep(5)
 
-            respeaker.say(a_object["category"])
-            walk_to(GOAL_P)
-            
-            respeaker.say("Putting Object")
-            print("**OPEN_ARM")
-            time.sleep(5)
-            Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0, Dy)
+        respeaker.say(a_object["category"])
+        walk_to(GOAL_P)
+        
+        respeaker.say("Putting Object")
+        print("**OPEN_ARM")
+        time.sleep(5)
+        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0, Dy)
 
-            walk_to(TABLE_P)
-        break
+        walk_to(TABLE_P)
+    break
     
 
 if __name__ == '__main__':
