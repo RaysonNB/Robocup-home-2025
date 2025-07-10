@@ -489,9 +489,11 @@ if __name__ == "__main__":
         print("********************")
         time.sleep(0.3)
         s = ""
-        #speak("please answer yes or no, thank you")
+        speak("please answer robot yes yes yes or robot no no no, thank you")
+        while True:
+            if "yes" in s: break
         #time.sleep(6)
-        #speak("ok")
+        speak("ok")
         user_input = data
         # post question
         gg = post_message_request("first", user_input, "")  # step
@@ -518,9 +520,9 @@ if __name__ == "__main__":
         Q3 = Q3.replace(" me", " you")
         # print("My understanding for command", i)
         gg = post_message_request("-1", "", "")
-        # print("************************")
-        # speak(Q3)
-        # print("************************")
+        print("************************")
+        speak(Q3)
+        print("************************")
         # say how the robot understand
         # speak(Q3[0])
         # divide
@@ -650,15 +652,22 @@ if __name__ == "__main__":
                     if name_position in liyt:
                         walk_to(liyt[name_position])
                     cv2.imshow("man1", code_image)
-                    time.sleep(2)
-                    speak("moving robot arm")
-                    #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
-                    #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
-                    #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
-                    time.sleep(10)
-                    speak("robot arm is in error I can't get it, going back to instruction point")
-                    step_action = 100
-                    time.sleep(3)
+                    if "look" in user_input:
+                        for i in range(500):
+                            move(0, 0 - .6)
+                            time.sleep(0.026)
+                        step_action = 100
+                        speak("sorry, I can't find it, going back to instruction point")
+                    else:
+                        time.sleep(2)
+                        speak("moving robot arm")
+                        #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
+                        #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
+                        #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
+                        time.sleep(10)
+                        speak("robot arm is in error I can't get it, going back to instruction point")
+                        step_action = 100
+                        time.sleep(3)
                 if step_action == 2:
                     name_position = "$PLACE2"
                     if "$PLACE2" not in liyt:
@@ -685,15 +694,22 @@ if __name__ == "__main__":
                     if name_position in liyt:
                         walk_to(liyt[name_position])
                     cv2.imshow("man1", code_image)
-                    time.sleep(2)
-                    speak("getting now")
-                    #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
-                    #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
-                    #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
-                    time.sleep(10)
-                    speak("robot arm is in error I can't get it, going back to instruction point")
-                    step_action = 100
-                    time.sleep(3)
+                    if "look" in user_input:
+                        for i in range(500):
+                            move(0, 0 - .6)
+                            time.sleep(0.026)
+                        step_action = 100
+                        speak("sorry, I can't find it, going back to instruction point")
+                    else:
+                        time.sleep(2)
+                        speak("getting now")
+                        #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
+                        #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
+                        #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
+                        time.sleep(10)
+                        speak("robot arm is in error I can't get it, going back to instruction point")
+                        step_action = 100
+                        time.sleep(3)
                 if step_action == 2:
                     if " me " in user_input:
                         walk_to("instruction point")
@@ -1161,8 +1177,11 @@ if __name__ == "__main__":
                                     time.sleep(0.125)
                         gg = post_message_request("-1", "", "")
                     if action == "find":
-                        code_image = _frame2.copy()
-                        detections = dnn_yolo1.forward(code_image)[0]["det"]
+                        if "lying" in feature:
+                            checking_image=_frame1.copy()
+                        else:
+                            checking_image = _frame2.copy()
+                        detections = dnn_yolo1.forward(checking_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
                         nx = 1750
@@ -1200,7 +1219,7 @@ if __name__ == "__main__":
                             print(e)
                             output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
                             face_box = [x1, y1, x2, y2]
-                            box_roi = _frame2[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
+                            box_roi = checking_image[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
                             fh, fw = abs(x1 - x2), abs(y1 - y2)
                             cv2.imwrite(output_dir + "GSPR_people.jpg", box_roi)
 
@@ -1433,8 +1452,11 @@ if __name__ == "__main__":
                         gg = post_message_request("-1", "", "")
 
                     if action == "find":
-                        code_image = _frame2.copy()
-                        detections = dnn_yolo1.forward(code_image)[0]["det"]
+                        if "lying" in feature:
+                            checking_image = _frame1.copy()
+                        else:
+                            checking_image = _frame2.copy()
+                        detections = dnn_yolo1.forward(checking_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
                         nx = 1750
@@ -1472,7 +1494,7 @@ if __name__ == "__main__":
                             print(e)
                             output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
                             face_box = [x1, y1, x2, y2]
-                            box_roi = _frame2[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
+                            box_roi = checking_image[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
                             fh, fw = abs(x1 - x2), abs(y1 - y2)
                             cv2.imwrite(output_dir + "GSPR_people.jpg", box_roi)
 
@@ -1727,8 +1749,11 @@ if __name__ == "__main__":
                                     time.sleep(0.125)
                         gg = post_message_request("-1", "", "")
                     if action == "find":
-                        code_image = _frame2.copy()
-                        detections = dnn_yolo1.forward(code_image)[0]["det"]
+                        if "lying" in feature:
+                            checking_image = _frame1.copy()
+                        else:
+                            checking_image = _frame2.copy()
+                        detections = dnn_yolo1.forward(checking_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
                         nx = 1750
@@ -1766,7 +1791,7 @@ if __name__ == "__main__":
                             print(e)
                             output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
                             face_box = [x1, y1, x2, y2]
-                            box_roi = _frame2[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
+                            box_roi = checking_image[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
                             fh, fw = abs(x1 - x2), abs(y1 - y2)
                             cv2.imwrite(output_dir + "GSPR_people.jpg", box_roi)
                             if abs(e) <= 5:
@@ -1811,9 +1836,9 @@ if __name__ == "__main__":
                             "something" in user_input and "yourself" in user_input):
                         speak("We are Fambot from Macau Puiching Middle School, and I was made in 2024")
                     elif "what day today is" in user_input or ("today" in user_input and "day" in user_input):
-                        speak("today is 6 th of july in 2025")
+                        speak("today is 10 th of july in 2025")
                     elif "what day tomorrow is" in user_input or ("tomorrow" in user_input and "day" in user_input):
-                        speak("today is 7 th of july in 2025")
+                        speak("today is 11 th of july in 2025")
                     elif "your team's name" in user_input or ("name" in user_input and "team" in user_input):
                         speak("my team name is Fambot")
                     elif "your teams country" in user_input or (
@@ -1829,7 +1854,7 @@ if __name__ == "__main__":
                         speak("Today is Sunday")
                     elif "the day of the month" in user_input or (
                             "month" in user_input and "day" in user_input):
-                        speak("Today is the six th of July in 2025")
+                        speak("Today is the ten th of July in 2025")
                     step_action = 3
                     print("***************")
                 if step_action == 3:
@@ -1845,4 +1870,4 @@ if __name__ == "__main__":
         speak(final_speak_to_guest)
         print("***************")
         time.sleep(2)
-    speak("end")
+    speak("GPSR end")
