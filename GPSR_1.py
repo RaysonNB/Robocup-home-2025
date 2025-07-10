@@ -26,8 +26,9 @@ import speech_recognition as sr
 import json
 import os
 from datetime import datetime
-from dynamixel_control import DynamixelController
-from robotic_arm_control import RoboticController
+'''
+#from dynamixel_control import DynamixelController
+#from robotic_arm_control import RoboticController
 # Robotic Arm launch
 Dy = DynamixelController()
 Ro = RoboticController()
@@ -39,6 +40,7 @@ Ro.open_robotic_arm("/dev/arm", id_list, Dy)
 # Ro.go_to_real_xyz_alpha(id_list, (0, 125, 80), 0, 0, 90, 1, Dy)
 # time.sleep(2.0)
 # gemini2
+'''
 def callback_image2(msg):
     global _frame2
     _frame2 = CvBridge().imgmsg_to_cv2(msg, "bgr8")
@@ -627,6 +629,7 @@ if __name__ == "__main__":
         speak_nack = 0
         none_cnt = 0
         followmecnt = 0
+        final_speak_to_guest=""
         while not rospy.is_shutdown():
             # voice check
             # break
@@ -669,12 +672,12 @@ if __name__ == "__main__":
                     cv2.imshow("man1", code_image)
                     time.sleep(2)
                     speak("moving robot arm")
-                    Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
-                    Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
-                    Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
+                    #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
+                    #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
+                    #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
                     time.sleep(3)
-                    speak("I can't get it")
-                    step_action = 2
+                    speak("robot arm is in error I can't get it, going back to instruction point")
+                    step_action = 100
                 if step_action == 2:
                     name_position = "$PLACE2"
                     if "$PLACE2" not in liyt:
@@ -682,7 +685,7 @@ if __name__ == "__main__":
                     if name_position in liyt:
                         walk_to(liyt[name_position])
                     step_action = 100
-                    Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, 90, 0, Dy)
+                    #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, 90, 0, Dy)
                     speak("storing")
                     final_speak_to_guest = ""
             # Manipulation2 just walk
@@ -703,12 +706,12 @@ if __name__ == "__main__":
                     cv2.imshow("man1", code_image)
                     time.sleep(2)
                     speak("getting now")
-                    Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
-                    Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
-                    Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
+                    #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
+                    #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
+                    #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
                     time.sleep(3)
-                    speak("I can't get it")
-                    step_action = 2
+                    speak("robot arm is in error I can't get it, going back to instruction point")
+                    step_action = 100
                 if step_action == 2:
                     if " me " in user_input:
                         walk_to("instruction point")
@@ -719,7 +722,7 @@ if __name__ == "__main__":
                         if name_position in liyt:
                             walk_to(liyt[name_position])
                     step_action = 100
-                    Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, 90, 0, Dy)
+                    #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, 90, 0, Dy)
                     final_speak_to_guest = "here you are"
             # Vision E 1,2
             elif ("vision (enumeration)1" in command_type or (
@@ -878,8 +881,8 @@ if __name__ == "__main__":
                         v2_turn_skip = 0
                         step = "none"
                         action = "none"
-                        step_action = 1
-                        speak("bye bye")
+                        step_action = 100
+                        speak("I can't finish the command, I gonna go back now")
                 if action == "find":
                     code_image = _frame2.copy()
                     detections = dnn_yolo1.forward(code_image)[0]["det"]
@@ -1096,7 +1099,7 @@ if __name__ == "__main__":
                             step = "none"
                             action = "none"
                             step_action = 3
-                            speak("I can't find you I gonna go back to the host")
+                            speak("I can't find you I gonna go back to the instruction point")
                     elif step == "turn" and dining_room_action == 1:
                         move(0, -0.2)
                         nav1_skip_cnt += 1
@@ -1175,7 +1178,6 @@ if __name__ == "__main__":
                                     move(0, -0.2)
                                     time.sleep(0.125)
                         gg = post_message_request("-1", "", "")
-
                     if action == "find":
                         code_image = _frame2.copy()
                         detections = dnn_yolo1.forward(code_image)[0]["det"]
@@ -1226,7 +1228,6 @@ if __name__ == "__main__":
                                 step = "confirm"
                                 print("turned")
                                 move(0, 0)
-
                     if action == "front":
                         speed = 0.2
                         h, w, c = code_image.shape
@@ -1559,7 +1560,7 @@ if __name__ == "__main__":
                     answer = "none"
                     none_cnt = 0
                     speak(real_name)
-                    speak("please speak your question in complete sentence after the")
+                    speak("dear guest please speak your question in complete sentence after the")
                     playsound("nigga2.mp3")
                     speak("sound")
                     # time.sleep(0.5)
