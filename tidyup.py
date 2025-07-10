@@ -15,8 +15,8 @@ from dynamixel_control import DynamixelController
 from robotic_arm_control import RoboticController
 
 
-TABLE_P = (2.47, 3.36, -1.607)
-GOAL_P = (-0.927, 0.086, 0.1)
+TABLE_P = (3.498, 3.339, -1.664)
+GOAL_P = (0, 0, 0)
 # FOOD_POINT = (6.34, 3.07, 1.5)
 # TASK_POINT = (5.13, 2.90, 1.5)
 # UNKNOWN_POINT = (3.97, 2.85, 1.5)
@@ -34,9 +34,15 @@ GOAL_P = (-0.927, 0.086, 0.1)
 PROMPT = """
 # Instruction
 Analyze the input image. Detect distinct objects on the table and try your best to classify them using the `Object List` below. 
-If an object isn't listed, use category `Unknown`. Be careful not to leave any items behide
+If the object is not listed, use the class "Unknown" and fill in a short description of the item in the name field.
+Be careful not to leave any items behide
+
 You Must output *only* a JSON list containing objects with keys `"name"` and `"category"`. 
-If no object here, please output a empty json list ```json[]```
+If no object here, please output a empty json list 
+
+```json
+[]
+```
 
 # Object List
 | Name | Category |
@@ -90,6 +96,7 @@ If no object here, please output a empty json list ```json[]```
   {"name": "dice", "category": "toy"},
   {"name": "bowl", "category": "dish"},
   {"name": "cheezit", "category": "snack"}
+  {"name": "a red bottle", "category": "unknown"}
 ]
 ```
 """
@@ -108,8 +115,7 @@ def generate_content(prompt_text: str = None, image_path: str = None) -> dict:
     Returns:
         A dictionary containing the API response, or None if an error occurred.
     """
-    url = "http://192.168.50.143:5000/generate"  # Adjust if your server is running on a different host/port
-    logger.info(f"Generate content: {prompt_text}, {image_path}")
+    url = "http://192.168.50.142:5000/generate"  # Adjust if your server is running on a different host/port
     files = {}
     data = {}
     if prompt_text:
@@ -155,7 +161,7 @@ def main():
 
     Dy = DynamixelController()
     Ro = RoboticController()
-    # Ro.open_robotic_arm("/dev/arm", id_list, Dy)
+    Ro.open_robotic_arm("/dev/arm", id_list, Dy)
 
     # navigator = Navigator()
     cam1 = Camera("/camera/color/image_raw", "bgr8")
@@ -258,17 +264,14 @@ def main():
         time.sleep(1)
         Ro.go_to_real_xyz_alpha(id_list, [0, 250, 150], -25, 0, final_angle, 0, Dy)
 
-    def draw_bbox(img, boxes_json: list, label=""):
-        if "bounding_boxes" in boxes_json:
-            boxes_json = boxes_json["bounding_boxes"]
-        color = (r.randint(1,254), r.randint(1,254), r.randint(1,254))
+    def draw_bbox(img, boxes_json: list, label="", color=(255, 0, 0), thickness=2):
         height, width = img.shape[:2]
         for box in boxes_json:
             abs_y1 = int(box["box_2d"][0] / 1000 * height)
             abs_x1 = int(box["box_2d"][1] / 1000 * width)
             abs_y2 = int(box["box_2d"][2] / 1000 * height)
             abs_x2 = int(box["box_2d"][3] / 1000 * width)
-            cv2.rectangle(img, (abs_x1, abs_y1), (abs_x2, abs_y2), color, 2)
+            cv2.rectangle(img, (abs_x1, abs_y1), (abs_x2, abs_y2), color, thickness=thickness)
             if "label" in box and label == "":
                 label = str(box.get("label"))
 
@@ -307,42 +310,42 @@ def main():
 
     clear_costmaps
     walk_to(TABLE_P)
-    
-    is_first = True
+    saved_bboxes = []
+
+    respeaker.say("I am recognizing objects")
+    json_object = ask_gemini(PROMPT)
+    respeaker.say("I am detecting and categorying objects, it might take some time")
+    img_cpy = cam1.get_frame()
+    cv2.imwrite("./image2.jpg", img_cpy)
+
+    for obj in json_object:
+        logger.info(f"Detecting {obj['name']}")
+        name, categ = obj["name"].lower(), obj["category"].lower()
+        bboxes = ask_gemini_for_bbox(f"{name}", "./image2.jpg")
+        saved_bboxes.append(obj)
+        saved_bboxes[-1]["bbox"] = bboxes
+        
+        draw_bbox(img_cpy, bboxes, label=f"{name}:{categ}")
+        cv2.imwrite("./image3.jpg", img_cpy)
+    cv2.imwrite("./image_all_box_evidence.jpg", img_cpy)
+
+    img_cpy = cv2.imread("./image2.jpg")
     while True:
-        respeaker.say("I am recognizing objects")
-        json_object = ask_gemini(PROMPT)
-
-        if is_first:
-            respeaker.say("I am detecting and categorying objects, it might take some time")
-            img_cpy = cam1.get_frame()
-            cv2.imwrite("./image2.jpg", img_cpy)
-            for otype in "drink fruit snack food dish toy cleaning_supply".split(" "):
-                obj_names = []
-                for obj in json_object:
-                    if obj["category"].lower() == otype and obj["name"].lower() != "unknown":
-                        obj_names.append(obj["name"])
-                if len(obj_names) == 0:
-                    continue
-                bboxes = ask_gemini_for_bbox(f" {', '.join(obj_names)} ", "./image2.jpg")
-                print(bboxes)
-                
-                draw_bbox(img_cpy, bboxes, label=otype)
-
-            cv2.imwrite("./image3.jpg", img_cpy)
-            is_first = False
-
         if len(json_object) == 0:
             respeaker.say("It seems the table is empty, task end")
             break
         
         respeaker.say("I see")
-        for a_object in json_object[:3]:
-            print(a_object)
+        for a_object in saved_bboxes:
+            img_base = img_cpy.copy()
+            logger.info(f"Requesting for... {a_object}")
 
-            respeaker.say(f"Please help me take the {a_object['name']} on the table")
+            draw_bbox(img_base, bboxes, label=f"{name}:{categ}", color=(0, 9, 255), thickness=3)
+            cv2.imwrite("./image.jpg", img_base)
+
+            respeaker.say(f"Please help me take {a_object['name']} on the table")
             time.sleep(5)
-            respeaker.say("Help me put the " + a_object["name"] + "on my robot arm and wait for the gripper close")
+            respeaker.say("Help me put it on my robot arm and wait for the gripper close")
             print("**OPEN_ARM")
             Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0, Dy)
             time.sleep(10)
