@@ -7,8 +7,6 @@ import cv2
 import numpy as np
 
 pathnum = r"C:/Users/rayso/Desktop/python/"
-from Generate_command import kitchen_items
-
 genai.configure(api_key='AIzaSyBdTRu-rcBKbf86gjiMNtezBu1dEuxrWyE')
 model = genai.GenerativeModel("gemini-2.0-flash")
 cnt_yy = 0
