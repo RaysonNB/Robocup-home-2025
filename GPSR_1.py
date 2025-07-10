@@ -455,7 +455,7 @@ if __name__ == "__main__":
         "Look for a lying person in the dining room and say what day is today"]
 
     commandcntcnt = 0
-    for i in range(1, 15):
+    for i in [0,0,1,1,2,2,3,3,4,5,6,7,8,9,10,11,12,13]:
         commandcntcnt = commandcntcnt + 1
         s = ""
         dining_room_action = 0
@@ -490,12 +490,19 @@ if __name__ == "__main__":
         time.sleep(0.3)
         s = ""
         user_input = data
-        gg = post_message_request("first", user_input, "")
+        
         speak("please answer robot yes yes yes or robot no no no, thank you")
+        yes_cnt=0
+        s=""
+        start_time=time.time()
         while True:
-            if "yes" in s "robot" in s: break
+            now_time=time.time()
+            #print(abs(start_time-now_time),s)
+            if abs(start_time-now_time)>=5: break
+            if "yes" in s or "robot" in s: break
         #time.sleep(6)
-        speak("ok")
+        gg = post_message_request("first", user_input, "")
+        speak("ok I got it")
         
         # post questio
           # step
