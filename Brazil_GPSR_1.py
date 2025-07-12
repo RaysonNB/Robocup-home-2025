@@ -629,12 +629,17 @@ if __name__ == "__main__":
         none_cnt = 0
         followmecnt = 0
         final_speak_to_guest = ""
+        command_stare_time=time.time()
         while not rospy.is_shutdown():
             # voice check
             # break
             now1 = datetime.now()
             current_time = now1.strftime("%H:%M:%S")
             rospy.Rate(10).sleep()
+            if abs(command_stare_time-time.time())>=120:
+                step_action=100
+                step="none"
+                action="none"
             if step_action == 100 or step_action == 101:
                 break
             confirm_command = 0
