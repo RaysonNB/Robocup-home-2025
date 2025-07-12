@@ -27,7 +27,7 @@ while True:
         s = "***The Sentence:" + s1
         print("question", s)
         sample_txt = """
-        Manipulation1, Manipulation2 is only for graping object
+        *** please remember Manipulation1, Manipulation2 is only for graping object not for taking/graping person
         (The Sentence)(Task: Sentence Structure)(I given u)
         Manipulation1: Go to the $ROOM1, grasp the $OBJECT on the $PLACE1 and place it on the $PLACE2.
         Manipulation2: Go to the $ROOM1, grasp the $OBJECT on the $PLACE1 and give it to $PERSON on the $ROOM2.(if &PERSON is me than $ROOM2:"instruction point" just edit $ROOM2)
@@ -184,6 +184,8 @@ while True:
                     dishes:            plate, fork, spoon, cup, knife, bowl
                     toys:              rubiks cube, soccer ball, dice, tennis ball, baseball
                     cleaning supplies: cleanser, sponge
+                    
+                    just one sentence(15 words) is enough
                     '''
             promt = promt1 + promt2
         else:
