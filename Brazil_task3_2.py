@@ -5,12 +5,14 @@ import google.generativeai as genai
 import PIL.Image
 import cv2
 import numpy as np
+from Generate_command import kitchen_items
 import re
 pathnum = r"C:/Users/rayso/Desktop/python/"
 genai.configure(api_key='AIzaSyBdTRu-rcBKbf86gjiMNtezBu1dEuxrWyE')
 model = genai.GenerativeModel("gemini-2.0-flash")
 cnt_yy = 0
-answergg=""
+answernigga=""
+
 while True:
     while True:
         r = requests.get("http://192.168.50.147:8888/Fambot", timeout=2.5)
@@ -69,19 +71,19 @@ while True:
             matches = re.findall(r'\*\*\*\*\*\*(.*?)\*\*\*\*\*\*', a)
 
             # Printing the extracted values
-            answergg = ""
+            answernigga = ""
             for match in matches:
                 g = match.strip()
-                answergg = g
+                answernigga = g
                 print(g)  # Output: [1, 2, 4, 5]
-            if answergg!="": break
+            if answernigga!="": break
     if dictt["Steps"] == "feature":
         questions = {
             "Question1": "None",
             "Question2": "None",
             "Question3": "None",
             "Steps": 100,
-            "Voice": answergg,
+            "Voice": answernigga,
             "Questionasking": "None",
             "answer": "None"
         }
