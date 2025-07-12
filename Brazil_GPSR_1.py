@@ -26,6 +26,7 @@ import speech_recognition as sr
 import json
 import os
 from datetime import datetime
+
 '''
 #from dynamixel_control import DynamixelController
 #from robotic_arm_control import RoboticController
@@ -41,6 +42,8 @@ Ro.open_robotic_arm("/dev/arm", id_list, Dy)
 # time.sleep(2.0)
 # gemini2
 '''
+
+
 def callback_image2(msg):
     global _frame2
     _frame2 = CvBridge().imgmsg_to_cv2(msg, "bgr8")
@@ -304,46 +307,46 @@ class FollowMe(object):
 
 
 locations = {
-# Furniture and objects
-"counter": [3.154, 2.870, 1.53],
-"left tray": [3.350, 3.111, -1.53],
-"right tray": [2.507, 3.287, -1.53],
-"pen holder": [3.154, 2.870, 1.53],
-"container": [3.350, 3.111, -1.53],
-"left kachaka shelf": [2.507, 3.287, -1.53],
-"right kachaka shelf": [-0.715, -0.193, 1.53],
-"low table": [-1.182, 3.298, 3.14],
-"left chair": [-0.261, -0.067, 0.1],
-"right chair": [-0.265, 0.633, 0.1],
-"trash bin": [2.490, 3.353, 1.53],
-"tall table": [3.238, 3.351, 1.53],
-"left kachaka station": [3.829, 3.092, 1.53],
-"right kachaka station": [3.031, 3.436, 1.53],
-"shelf": [-1.182, 3.298, 3.12],
-# bed
-"bed": [5.080, 3.032, 1.53],
-# dining room
-"dining table": [-1.058, 4.001, 3.14],
-"couch": [5.661, 3.102, 1.53],
-# Locations and special points
-"entrance": [3.809, 2.981, 3.14],
-"exit": [6.796, 3.083, 0.1],
-"instruction point": [-0.967, -0.013, -1.53],
-"dining room": [-0.397, 0.297, 0.1],
-"living room": [3.364, 2.991, 1.53],
-"bedroom": [0.028, 3.514, 3.139],
-"study room": [-0.397, 0.297, 0.1]
+    # Furniture and objects
+    "counter": [3.154, 2.870, 1.53],
+    "left tray": [3.350, 3.111, -1.53],
+    "right tray": [2.507, 3.287, -1.53],
+    "pen holder": [3.154, 2.870, 1.53],
+    "container": [3.350, 3.111, -1.53],
+    "left kachaka shelf": [2.507, 3.287, -1.53],
+    "right kachaka shelf": [-0.715, -0.193, 1.53],
+    "low table": [-1.182, 3.298, 3.14],
+    "left chair": [-0.261, -0.067, 0.1],
+    "right chair": [-0.265, 0.633, 0.1],
+    "trash bin": [2.490, 3.353, 1.53],
+    "tall table": [3.238, 3.351, 1.53],
+    "left kachaka station": [3.829, 3.092, 1.53],
+    "right kachaka station": [3.031, 3.436, 1.53],
+    "shelf": [-1.182, 3.298, 3.12],
+    # bed
+    "bed": [5.080, 3.032, 1.53],
+    # dining room
+    "dining table": [-1.058, 4.001, 3.14],
+    "couch": [5.661, 3.102, 1.53],
+    # Locations and special points
+    "entrance": [3.809, 2.981, 3.14],
+    "exit": [6.796, 3.083, 0.1],
+    "instruction point": [-0.967, -0.013, -1.53],
+    "dining room": [-0.397, 0.297, 0.1],
+    "living room": [3.364, 2.991, 1.53],
+    "bedroom": [0.028, 3.514, 3.139],
+    "study room": [-0.397, 0.297, 0.1]
 }
 # front 0 back 3.14 left 90 1.5 right 90 -1.5
 cout_location = {
-"living room": [1.153, 3.338, 0.1],
-"bedroom": [1.153, 3.338, 3.14],
-"dining room": [-1.545, -0.303, 0.1],
-"study room": [-1.581, -0.345, 0.15]
+    "living room": [1.153, 3.338, 0.1],
+    "bedroom": [1.153, 3.338, 3.14],
+    "dining room": [-1.545, -0.303, 0.1],
+    "study room": [-1.581, -0.345, 0.15]
 }
 dining_room_dif = {
-"din1": [-1.545, -0.303, 1.53],
-"din2": [1.214, 1.960, -1.53] ##
+    "din1": [-1.545, -0.303, 1.53],
+    "din2": [1.214, 1.960, -1.53]  ##
 }
 
 
@@ -370,6 +373,8 @@ def walk_to1(name):
             speak("arrived")
             time.sleep(1)
             clear_costmaps
+
+
 if __name__ == "__main__":
     rospy.init_node("demo")
     rospy.loginfo("demo node start!")
@@ -415,7 +420,7 @@ if __name__ == "__main__":
     step = "none"
     confirm_command = 0
     speak("I am ready")
-    depth_zero=0
+    depth_zero = 0
     while not rospy.is_shutdown():
         frame = _frame2.copy()
         depth_frame = _depth2.copy()
@@ -423,12 +428,14 @@ if __name__ == "__main__":
         depth = depth_frame[cy, cx]
         frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
         frame = cv2.putText(frame, f"{depth}", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        if depth_zero>=400:
+        if depth_zero >= 400:
             speak("the door is open")
             walk_to("instruction point")
             break
-        if depth == 0: depth_zero+=1
-        else: depth_zero=0
+        if depth == 0:
+            depth_zero += 1
+        else:
+            depth_zero = 0
         if depth > 1700:
             speak("the door is open")
             walk_to("instruction point")
@@ -455,7 +462,7 @@ if __name__ == "__main__":
         "Look for a lying person in the dining room and say what day is today"]
 
     commandcntcnt = 0
-    for i in [0,0,1,1,2,2,3,3,4,5,6,7,8,9,10,11,12,13]:
+    for i in [0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]:
         commandcntcnt = commandcntcnt + 1
         s = ""
         dining_room_action = 0
@@ -490,23 +497,23 @@ if __name__ == "__main__":
         time.sleep(0.3)
         s = ""
         user_input = data.lower()
-        
+
         speak("please answer robot yes yes yes or robot no no no, thank you")
-        yes_cnt=0
-        s=""
-        start_time=time.time()
+        yes_cnt = 0
+        s = ""
+        start_time = time.time()
         gg = post_message_request("first", user_input, "")
         while True:
-            now_time=time.time()
-            #print(abs(start_time-now_time),s)
-            if abs(start_time-now_time)>=5: break
+            now_time = time.time()
+            # print(abs(start_time-now_time),s)
+            if abs(start_time - now_time) >= 5: break
             if "yes" in s or "robot" in s: break
-        #time.sleep(6)
-        
+        # time.sleep(6)
+
         speak("ok I got it")
-        
+
         # post questio
-          # step
+        # step
         print("post", gg)
         # get gemini answer
         nigga = 1
@@ -572,7 +579,7 @@ if __name__ == "__main__":
             if "nigga room" in questiong:
                 dining_room_action = 1
 
-        #Questions, Names, Position
+        # Questions, Names, Position
         if "ROOM1" not in liyt and "$ROOM1" not in liyt and ("PLACE1" in liyt or "$PLACE1" in liyt):
             # Bedroom: bed
             # Dining room: dining table, couch
@@ -621,7 +628,7 @@ if __name__ == "__main__":
         speak_nack = 0
         none_cnt = 0
         followmecnt = 0
-        final_speak_to_guest=""
+        final_speak_to_guest = ""
         while not rospy.is_shutdown():
             # voice check
             # break
@@ -641,7 +648,7 @@ if __name__ == "__main__":
             code_image = _frame2.copy()
             code_depth = _depth2.copy()
             catch_image = _frame1.copy()
-            
+
             # DIVIDE
             # Manipulation1 just walk
             if "manipulation1" in command_type or ("mani" in command_type and "1" in command_type):
@@ -668,9 +675,9 @@ if __name__ == "__main__":
                     else:
                         time.sleep(2)
                         speak("moving robot arm")
-                        #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
-                        #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
-                        #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
+                        # Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
+                        # Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
+                        # Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
                         time.sleep(10)
                         speak("robot arm is in error I can't get it, going back to instruction point")
                         step_action = 100
@@ -682,7 +689,7 @@ if __name__ == "__main__":
                     if name_position in liyt:
                         walk_to(liyt[name_position])
                     step_action = 100
-                    #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, 90, 0, Dy)
+                    # Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, 90, 0, Dy)
                     speak("storing")
                     final_speak_to_guest = ""
             # Manipulation2 just walk
@@ -710,9 +717,9 @@ if __name__ == "__main__":
                     else:
                         time.sleep(2)
                         speak("getting now")
-                        #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
-                        #Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
-                        #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
+                        # Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
+                        # Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
+                        # Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
                         time.sleep(10)
                         speak("robot arm is in error I can't get it, going back to instruction point")
                         step_action = 100
@@ -727,7 +734,7 @@ if __name__ == "__main__":
                         if name_position in liyt:
                             walk_to(liyt[name_position])
                     step_action = 100
-                    #Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, 90, 0, Dy)
+                    # Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, 90, 0, Dy)
                     final_speak_to_guest = "here you are"
             # Vision E 1,2
             elif ("vision (enumeration)1" in command_type or (
@@ -941,7 +948,7 @@ if __name__ == "__main__":
                             step_action = 1
                 if step_action == 1:
                     if "pose" in user_input or "gesture" in user_input:
-                        promt_gemini="what is the guy's gesture"
+                        promt_gemini = "what is the guy's gesture"
                         if "pose" in user_input:
                             promt_gemini = "what is the guy's pose"
                         code_image = _frame2.copy()
@@ -1054,8 +1061,8 @@ if __name__ == "__main__":
                             if "paris" in s: name_cnt = "paris"
                             if "robin" in s or "robbie" in s or "ruby" in s or "woman" in s or "robert" in s: name_cnt = "robin"
                             if "seymour" in s or "simone" in s or "simon" in s: name_cnt = "simone"
-                            if name_cnt=="none" and s!="": speak("please speak it again")
-                            s=""
+                            if name_cnt == "none" and s != "": speak("please speak it again")
+                            s = ""
                             if name_cnt != "none":
                                 print("***************")
                                 speak("hello " + name_cnt + " I gonna go now.")
@@ -1186,10 +1193,7 @@ if __name__ == "__main__":
                                     time.sleep(0.125)
                         gg = post_message_request("-1", "", "")
                     if action == "find":
-                        if "lying" in feature:
-                            checking_image=_frame1.copy()
-                        else:
-                            checking_image = _frame2.copy()
+                        checking_image = _frame2.copy()
                         detections = dnn_yolo1.forward(checking_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
@@ -1214,16 +1218,7 @@ if __name__ == "__main__":
                                 cv2.circle(code_image, (cx, cy), 5, (0, 255, 0), -1)
                                 print("people distance", d)
                                 CX_ER = 320 - cx
-                                start_time=time.time()
                         if need_position != 0:
-                            if abs(start_time-time.time())>=25:
-                                action = "find"
-                                need_position=0
-                                step = "turn"
-                                if dining_room_action == 0:
-                                    for i in range(55):
-                                        move(0, -0.2)
-                                        time.sleep(0.125)
                             step = "none"
                             h, w, c = code_image.shape
                             x1, y1, x2, y2, cx2, cy2 = map(int, need_position)
@@ -1240,7 +1235,6 @@ if __name__ == "__main__":
                             box_roi = checking_image[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
                             fh, fw = abs(x1 - x2), abs(y1 - y2)
                             cv2.imwrite(output_dir + "GSPR_people.jpg", box_roi)
-
                             if abs(e) <= 10:
                                 # speak("walk")
                                 action = "none"
@@ -1470,10 +1464,7 @@ if __name__ == "__main__":
                         gg = post_message_request("-1", "", "")
 
                     if action == "find":
-                        if "lying" in feature:
-                            checking_image = _frame1.copy()
-                        else:
-                            checking_image = _frame2.copy()
+                        checking_image = _frame2.copy()
                         detections = dnn_yolo1.forward(checking_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
@@ -1498,16 +1489,7 @@ if __name__ == "__main__":
                                 cv2.circle(code_image, (cx, cy), 5, (0, 255, 0), -1)
                                 print("people distance", d)
                                 CX_ER = 320 - cx
-                                start_time=time.time()
                         if need_position != 0:
-                            if abs(start_time-time.time())>=25:
-                                action = "find"
-                                need_position=0
-                                step = "turn"
-                                if dining_room_action == 0:
-                                    for i in range(55):
-                                        move(0, -0.2)
-                                        time.sleep(0.125)
                             step = "none"
                             h, w, c = code_image.shape
                             x1, y1, x2, y2, cx2, cy2 = map(int, need_position)
@@ -1591,12 +1573,10 @@ if __name__ == "__main__":
                     answer = "none"
                     none_cnt = 0
                     speak(real_name)
-                    speak("dear guest please speak your question in complete sentence after the")
+                    speak("hello, dear guest please speak your question in complete sentence after the")
                     playsound("nigga2.mp3")
                     speak("sound")
-                    # time.sleep(0.5)
-                    speak("for example hi robot what day is it today")
-                    # time.sleep(0.5)
+                    time.sleep(0.5)
                     playsound("nigga2.mp3")
                     step_action = 3
                 if step_action == 3:
@@ -1776,10 +1756,7 @@ if __name__ == "__main__":
                                     time.sleep(0.125)
                         gg = post_message_request("-1", "", "")
                     if action == "find":
-                        if "lying" in feature:
-                            checking_image = _frame1.copy()
-                        else:
-                            checking_image = _frame2.copy()
+                        checking_image = _frame2.copy()
                         detections = dnn_yolo1.forward(checking_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
@@ -1804,16 +1781,7 @@ if __name__ == "__main__":
                                 cv2.circle(code_image, (cx, cy), 5, (0, 255, 0), -1)
                                 print("people distance", d)
                                 CX_ER = 320 - cx
-                                start_time=time.time()
                         if need_position != 0:
-                            if abs(start_time-time.time())>=25:
-                                action = "find"
-                                need_position=0
-                                step = "turn"
-                                if dining_room_action == 0:
-                                    for i in range(55):
-                                        move(0, -0.2)
-                                        time.sleep(0.125)
                             step = "none"
                             h, w, c = code_image.shape
                             x1, y1, x2, y2, cx2, cy2 = map(int, need_position)
@@ -1886,7 +1854,7 @@ if __name__ == "__main__":
                     elif "what the time is" in user_input or ("time" in user_input):
                         speak("the current time is " + current_time)
                     elif "the day of the week" in user_input or (
-                                "week" in user_input and "day" in user_input):
+                            "week" in user_input and "day" in user_input):
                         speak("Today is Sunday")
                     elif "the day of the month" in user_input or (
                             "month" in user_input and "day" in user_input):
