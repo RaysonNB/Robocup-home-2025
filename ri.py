@@ -41,7 +41,7 @@ def main():
                 clear_costmaps
                 chassis.move_to(*point)
         return
-    
+    depth_zero = 0
     while not rospy.is_shutdown():
         frame = cam1.get_frame()
         depth_frame = cam2.get_frame()
@@ -50,7 +50,12 @@ def main():
 
         frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
         frame = cv2.putText(frame, f"{depth}", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        if depth > 2000:
+        if depth == 0:
+            depth_zero += 1
+        else:
+            depth_zero = 0
+            
+        if depth > 2000 or depth_zero:
             respeaker.say("The door is opened")
 
             chassis_move.set_linear(0.25)
