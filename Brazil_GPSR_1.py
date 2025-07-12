@@ -27,21 +27,14 @@ import json
 import os
 from datetime import datetime
 
-'''
-#from dynamixel_control import DynamixelController
-#from robotic_arm_control import RoboticController
-# Robotic Arm launch
-Dy = DynamixelController()
+# from LemonEngine.hardwares.respeaker import Respeaker
+from robotic_arm_control import RoboticController
+
 Ro = RoboticController()
-id_list = [11, 13, 15, 14, 12, 1, 2]
-print('robot arm')
-Ro.open_robotic_arm("/dev/arm", id_list, Dy)
 
-
-# Ro.go_to_real_xyz_alpha(id_list, (0, 125, 80), 0, 0, 90, 1, Dy)
-# time.sleep(2.0)
-# gemini2
-'''
+# re = Respeaker()
+id_list = [11, 12, 0, 15, 14, 13, 1, 2]
+Ro.open_robotic_arm("/dev/arm", id_list)
 
 
 def callback_image2(msg):
@@ -446,23 +439,23 @@ if __name__ == "__main__":
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     command_list = [
-        "Look for a lying person in the dining room and say what day is today",
-        "Tell me the name of the person at the tall table",
-        "Tell me the pose of the person in the study room",
-        "Tell me how many snacks there are on the container",
-        "Tell me how many people in the bedroom are wearing white jackets",
-        "Tell me what is the smallest drink on the trash bin",
-        "Tell me what is the lightest dish on the shelf",
-        "Say hello to Charlie in the living room and answer a quiz",
-        "Greet Paris in the bathroom and answer a question",
-        "Say what day is today to the person raising their left arm in the living room",
-        "Introduce yourself to Charlie in the bedroom and follow them to the pen holder",
-        "Salute the person wearing a black shirt in the bedroom and escort them to the shelf",
-        "Tell your teams name to the person raising their left arm in the study room",
-        "Look for a lying person in the dining room and say what day is today"]
-
+"Take the person raising their left arm from the left chair to the bedroom",
+"Take the lying person from the left Kachaka shelf to the bedroom",
+"Tell me the name of the person at the tall table",
+"Tell me the pose of the person in the study room",
+"Tell me how many snacks there are on the container",
+"Tell me how many people in the bedroom are wearing white jackets",
+"Tell me what is the smallest drink on the trash bin",
+"Tell me what is the lightest dish on the shelf",
+"Say hello to Charlie in the living room and answer a quiz",
+"Greet Paris in the bathroom and answer a question",
+"Say what day is today to the person raising their left arm in the living room",
+"Introduce yourself to Charlie in the bedroom and follow them to the pen holder",
+"Salute the person wearing a black shirt in the bedroom and escort them to the shelf",
+"Tell your teams name to the person raising their left arm in the study room",
+"Look for a lying person in the dining room and say what day is today"]
     commandcntcnt = 0
-    for i in [0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]:
+    for i in range(0,21):
         commandcntcnt = commandcntcnt + 1
         s = ""
         dining_room_action = 0
@@ -636,9 +629,12 @@ if __name__ == "__main__":
             now1 = datetime.now()
             current_time = now1.strftime("%H:%M:%S")
             rospy.Rate(10).sleep()
-            if abs(command_stare_time-time.time())>=120:
+            time_cnounting=150
+            if "follow" in user_input or ("navi" in command_type and "1" in command_type): time_cnounting=180
+            if abs(command_stare_time-time.time())>=time_cnounting:
                 step_action=100
                 step="none"
+                speak("I can't finish the command")
                 action="none"
             if step_action == 100 or step_action == 101:
                 break
@@ -680,13 +676,14 @@ if __name__ == "__main__":
                     else:
                         time.sleep(2)
                         speak("moving robot arm")
-                        # Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
-                        # Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
-                        # Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
+                        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 10, 0, 60, 0)
+                        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 10, 0, 10, 0)
+                        # re.say("I cant get the object")
+                        Ro.go_to_real_xyz_alpha(id_list, [0, 100, 100], 0, 0, 10, 0)
                         time.sleep(10)
                         speak("robot arm is in error I can't get it, going back to instruction point")
                         step_action = 100
-                        time.sleep(3)
+                        time.sleep(1)
                 if step_action == 2:
                     name_position = "$PLACE2"
                     if "$PLACE2" not in liyt:
@@ -722,13 +719,13 @@ if __name__ == "__main__":
                     else:
                         time.sleep(2)
                         speak("getting now")
-                        # Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, 90, 0, Dy)
-                        # Ro.go_to_real_xyz_alpha(id_list, [0, 150, 200], 25, 0, -8, 0, Dy)
-                        # Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, -8, 0, Dy)
-                        time.sleep(10)
+                        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 10, 0, 60, 0)
+                        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 10, 0, 10, 0)
+                        # re.say("I cant get the object")
+                        Ro.go_to_real_xyz_alpha(id_list, [0, 100, 100], 0, 0, 10, 0)
                         speak("robot arm is in error I can't get it, going back to instruction point")
                         step_action = 100
-                        time.sleep(3)
+                        time.sleep(1)
                 if step_action == 2:
                     if " me " in user_input:
                         walk_to("instruction point")
@@ -944,7 +941,7 @@ if __name__ == "__main__":
                         box_roi = _frame2[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
                         fh, fw = abs(x1 - x2), abs(y1 - y2)
                         cv2.imwrite(output_dir + "GSPR_people.jpg", box_roi)
-                        if abs(e) <= 10:
+                        if abs(e) <= 5:
                             # speak("walk")
                             action = "none"
                             step = "none"
@@ -1186,7 +1183,7 @@ if __name__ == "__main__":
                         feature = feature.lower()
                         if "yes" in aaa or "ys" in aaa or "none" in feature:
 
-                            speak("found you the guest " + feature)
+                            speak("found you the guest " + feature+" my name is Fambot")
                             action = "front"
                             step = "none"
                         else:
@@ -1240,7 +1237,7 @@ if __name__ == "__main__":
                             box_roi = checking_image[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
                             fh, fw = abs(x1 - x2), abs(y1 - y2)
                             cv2.imwrite(output_dir + "GSPR_people.jpg", box_roi)
-                            if abs(e) <= 10:
+                            if abs(e) <= 5:
                                 # speak("walk")
                                 action = "none"
                                 step = "confirm"
@@ -1803,7 +1800,7 @@ if __name__ == "__main__":
                             box_roi = checking_image[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
                             fh, fw = abs(x1 - x2), abs(y1 - y2)
                             cv2.imwrite(output_dir + "GSPR_people.jpg", box_roi)
-                            if abs(e) <= 10:
+                            if abs(e) <= 5:
                                 # speak("walk")
                                 action = "none"
                                 step = "confirm"
