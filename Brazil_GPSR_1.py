@@ -415,8 +415,11 @@ if __name__ == "__main__":
     speak("I am ready")
     depth_zero = 0
     while not rospy.is_shutdown():
+        if _frame2 is None: continue
+        if _depth2 is None: continue
         frame = _frame2.copy()
         depth_frame = _depth2.copy()
+        
         cx, cy = 640 // 2, 320 // 2
         depth = depth_frame[cy, cx]
         frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
@@ -629,6 +632,8 @@ if __name__ == "__main__":
             now1 = datetime.now()
             current_time = now1.strftime("%H:%M:%S")
             rospy.Rate(10).sleep()
+            if step_action == 100 or step_action == 101:
+                break
             time_cnounting=150
             if "follow" in user_input or ("navi" in command_type and "1" in command_type): time_cnounting=180
             if abs(command_stare_time-time.time())>=time_cnounting:
@@ -636,8 +641,7 @@ if __name__ == "__main__":
                 step="none"
                 speak("I can't finish the command")
                 action="none"
-            if step_action == 100 or step_action == 101:
-                break
+            
             confirm_command = 0
             if s != "" and s != pre_s:
                 print(s)
