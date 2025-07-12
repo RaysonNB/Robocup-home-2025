@@ -641,6 +641,7 @@ if __name__ == "__main__":
                 step="none"
                 speak("I can't finish the command")
                 action="none"
+                break
             
             confirm_command = 0
             if s != "" and s != pre_s:
