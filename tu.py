@@ -2,6 +2,7 @@ import rospy
 import re, json, requests
 import cv2, os, time
 import mimetypes
+import random as r
 from loguru import logger
 from geometry_msgs.msg import Twist
 from std_srvs.srv import Empty
@@ -10,63 +11,92 @@ from LemonEngine.hardwares.respeaker import Respeaker
 from LemonEngine.hardwares.chassis import Chassis
 from RobotChassis import RobotChassis
 
-from dynamixel_control import DynamixelController
-from robotic_arm_control import RoboticController
+from robotic_arm_control import RoboticController, Dy
 
-# TABLE_P = (3.498, 3.339, -1.664)
+
+# TABLE_P = (0.284, 3.317, -1.57)
+TABLE_P = (2.185, 3.201, -1.358)
+GOAL_P = (4.602, 3.462, 1.548)
 # FOOD_POINT = (6.34, 3.07, 1.5)
 # TASK_POINT = (5.13, 2.90, 1.5)
 # UNKNOWN_POINT = (3.97, 2.85, 1.5)
 # KITCHEN_POINT = (2.05, 3.72, 0)
 
-TABLE_P         = (-2.937, 1.331, -1.57)
-FOOD_POINT      = (-4.138, 1.344, 1.57)
-UNKNOWN_POINT   = (-4.138, 1.344, 1.57)
-# UNKNOWN_POINT   = (-4.760, 1.952, 1.57)
-TASK_POINT      = (-4.138, 1.344, 1.57)
-KITCHEN_POINT   = (-4.138, 1.344, 1.57)
+# TABLE_P = (1.772, -0.118, 0.8)
+# FOOD_POINT = (0.278, -0.139, -2.462)
+
+
+# UNKNOWN_POINT = (1.638, -0.231, -0.910)
+# KITCHEN_POINT = (1.638, -0.231, -0.910)
 
 
 
 PROMPT = """
 # Instruction
-Analyze the input image. Detect every objects on the table and try your best to classify them using the `Object List` below. 
-If an object isn't listed, use category `Unknown` with its name in `object` field
-Please make sure not to leave any items behide
-You **MUST** output *only* a JSON list containing objects with keys `"object"` and `"category"`. 
+Analyze the input image. Detect distinct objects on the table and try your best to classify them using the `Object List` below. 
+If the object is not listed, use the class "Unknown" and fill in a short description of the item in the name field.
+Be careful not to leave any items behide
 
+You Must output *only* a JSON list containing objects with keys `"name"` and `"category"`. 
+If no object here, please output a empty json list 
+
+```json
+[]
+```
 
 # Object List
-| ID | Object        | Category     |
-|----|---------------|--------------|
-| 1  | Noodles       | Food         |
-| 2  | Cookies       | Food         |
-| 3  | Potato Chips  | Food         |
-| 4  | Caramel Corn  | Food         |
-| 5  | Detergent     | Kitchen Item |
-| 6  | Cup           | Kitchen Item |
-| 7  | Sponge        | Kitchen Item |
-| 8  | Lunch Box     | Kitchen Item |
-| 9  | Dice          | Task Item    |
-| 10 | Light Bulb    | Task Item    |
-| 11 | Glue Gun      | Task Item    |
-| 12 | Phone Stand   | Task Item    |
+| Name | Category |
+|:---|:---|
+| orange_juice | drink |
+| red_wine | drink |
+| milk | drink |
+| iced_tea | drink |
+| cola | drink |
+| tropical_juice | drink |
+| juice_pack | drink |
+| apple | fruit |
+| pear | fruit |
+| lemon | fruit |
+| peach | fruit |
+| banana | fruit |
+| strawberry | fruit |
+| orange | fruit |
+| plum | fruit |
+| cheezit | snack |
+| cornflakes | snack |
+| pringles | snack |
+| tuna | food |
+| sugar | food |
+| strawberry_jello | food |
+| tomato_soup | food |
+| mustard | food |
+| chocolate_jello | food |
+| spam | food |
+| coffee_grounds | food |
+| plate | dish |
+| fork | dish |
+| spoon | dish |
+| cup | dish |
+| knife | dish |
+| bowl | dish |
+| rubiks_cube | toy |
+| soccer_ball | toy |
+| dice | toy |
+| tennis_ball | toy |
+| baseball | toy |
+| cleanser | cleaning_supply |
+| sponge | cleaning_supply |
+
 
 * Furnitures (i.e. Table, Chair) is not an object
-* `Cookies` is a green, rectangular box of Matcha Flavored cookies
-*  The `Light Bulb` will be packed in a black box
-* `Lunch Box` is a small, pink square container with a white lid featuring Piglet and hearts.
-* `Caramel Corn` is a blue bag of Tohato Salty Caramel Corn snack mix.
-* `Detergent` is a white bottle of Japanese cream cleanser with an orange scent.
-* `Cup` is a blue plastic mug with a handle, decorated with characters from SpongeBob SquarePants.
-* `Phone Stand` is a brown plastic cup designed with a bear face and ears.
 
 # Example Output
 ```json
 [
-  {"object": "Dice", "category": "Task Item"},
-  {"object": "Cookies", "category": "Food"},
-  {"object": "Pen", "category": "Unknown"}
+  {"name": "dice", "category": "toy"},
+  {"name": "bowl", "category": "dish"},
+  {"name": "cheezit", "category": "snack"}
+  {"name": "a red bottle", "category": "unknown"}
 ]
 ```
 """
@@ -85,9 +115,10 @@ def generate_content(prompt_text: str = None, image_path: str = None) -> dict:
     Returns:
         A dictionary containing the API response, or None if an error occurred.
     """
-    url = "http://192.168.100.16:5000/generate"  # Adjust if your server is running on a different host/port
+    url = "http://192.168.50.143:5000/generate"  # Adjust if your server is running on a different host/port
     files = {}
     data = {}
+    logger.info(f"Generate Content (\"{prompt_text}\", {image_path})")
     if prompt_text:
         data['prompt'] = prompt_text
     if image_path:
@@ -109,7 +140,9 @@ def generate_content(prompt_text: str = None, image_path: str = None) -> dict:
     try:
         response = requests.post(url, files=files, data=data)
         response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
-        return response.json()  # Parse JSON response
+        result = response.json()
+        logger.info(f"Output... {result}")
+        return result  # Parse JSON response
 
     except requests.exceptions.RequestException as e:
         print(f"Request failed: {e}")
@@ -127,17 +160,16 @@ def main():
     
     chassis = RobotChassis()
     respeaker = Respeaker(enable_espeak_fix=True)
-    id_list = [11, 13, 15, 14, 12, 1, 2]
-
-    Dy = DynamixelController()
+    
+    id_list = [11, 12, 0, 15, 14, 13, 1, 2]
     Ro = RoboticController()
-    Ro.open_robotic_arm("/dev/arm", id_list, Dy)
+    Ro.open_robotic_arm("/dev/arm", id_list)
 
     # navigator = Navigator()
-    cam1 = Camera("/cam1/color/image_raw", "bgr8")
-    cam2 = Camera("/cam1/depth/image_raw", "passthrough")
+    cam1 = Camera("/camera/color/image_raw", "bgr8")
+    # cam2 = Camera("/camera/depth/image_raw", "passthrough")
     width, height = cam1.width, cam1.height
-    cx, cy = width // 2, height // 2
+    # cx, cy = width // 2, height // 2
     rate = rospy.Rate(20)
     
     def walk_to(point):
@@ -147,7 +179,7 @@ def main():
         clear_costmaps
         while not rospy.is_shutdown():
             # 4. Get the chassis status.
-            rate.sleep()
+            rate = rospy.Rate(20)
             code = chassis.status_code
             text = chassis.status_text
             if code == 3:
@@ -156,7 +188,7 @@ def main():
                 
             if code == 4:
                 logger.error(f"Plan Failed (tried {tried})")
-                respeaker.say("I am blocked, please leave me some space")
+                respeaker.say("I am blocked, please move aside")
                 clear_costmaps
                 chassis.move_to(*point)
                 if tried > 3:
@@ -171,7 +203,6 @@ def main():
         while True:
             logger.info("Asking Gemini for objects")
             frame = cam1.get_frame()
-            # frame = cv2.flip(frame, 0)
             cv2.imwrite("./image.jpg", frame)
             text = generate_content(text, "./image.jpg").get('generated_text')
             if text is None:
@@ -189,6 +220,20 @@ def main():
                 logger.debug(json_string)
                 json_object = json.loads(json_string)
                 return json_object
+
+    def ask_gemini_for_bbox(text, path=None):
+        while True:
+            try:
+                logger.info("Asking Gemini for bbox")
+                if path is None:
+                    frame = cam1.get_frame()
+                    cv2.imwrite("./image.jpg", frame)
+                    bboxes = generate_content("$bbox$"+text, "./image.jpg")
+                else:
+                    bboxes = generate_content("$bbox$"+text, path)
+                return bboxes
+            except:
+                logger.error("Error @ ask_gemini_for_bbox")
 
     def close_grip(grip_id):
         logger.info("Start Closing Grip")
@@ -216,78 +261,116 @@ def main():
             if angle_speed <= 20.0 and i > 3:
             # if False:
                 logger.debug(f"Stop at {Dy.present_position(grip_id)}")
-                final_angle = Dy.present_position(grip_id) + 4
+                final_angle = Dy.present_position(grip_id) + 5
                 Dy.goal_absolute_direction(grip_id, final_angle)
                 break
 
         time.sleep(1)
-        return final_angle
+        Ro.go_to_real_xyz_alpha(id_list, [0, 250, 150], -25, 0, final_angle, 0)
+
+    def draw_bbox(img, boxes_json: list, label="", color=(255, 0, 0), thickness=2):
+        if "bounding_boxes" in boxes_json:
+            boxes_json = boxes_json["bounding_boxes"]
+        height, width = img.shape[:2]
+        for box in boxes_json:
+            abs_y1 = int(box["box_2d"][0] / 1000 * height)
+            abs_x1 = int(box["box_2d"][1] / 1000 * width)
+            abs_y2 = int(box["box_2d"][2] / 1000 * height)
+            abs_x2 = int(box["box_2d"][3] / 1000 * width)
+            cv2.rectangle(img, (abs_x1, abs_y1), (abs_x2, abs_y2), color, thickness=thickness)
+            if "label" in box and label == "":
+                label = str(box.get("label"))
+
+            cv2.putText(
+                img, label, (abs_x1, abs_y1 - 10),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2
+            )
+
+        return img
+        
+
+    ##################################
+    
+    # while not rospy.is_shutdown():
+    #     frame = cam1.get_frame()
+    #     depth_frame = cam2.get_frame()
+    #     depth_frame = cv2.resize(depth_frame, (width, height))
+    #     depth = depth_frame[cy, cx]
+
+    #     frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
+    #     frame = cv2.putText(frame, f"{depth}", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    #     if depth > 2000:
+    #         respeaker.say("The door is opened")
+
+    #         for i in range(10):
+    #             move(0.25, 0)
+    #             time.sleep(0.1)
+            
+    #         move(0, 0)
+    #         break
+
+    #     cv2.imshow("depth", depth_frame)
+    #     cv2.imshow("frame", frame)
+    #     if cv2.waitKey(1) & 0xFF == ord('q'):
+    #         break
 
     clear_costmaps
     walk_to(TABLE_P)
-    
+    saved_bboxes = []
+
+    respeaker.say("I am recognizing objects")
+    json_object = ask_gemini(PROMPT)
+    respeaker.say("I am detecting and categorying objects, it might take some time")
+    img_cpy = cam1.get_frame()
+    cv2.imwrite("./image2.jpg", img_cpy)
+
+    for obj in json_object:
+        logger.info(f"Detecting {obj['name']}")
+        name, categ = obj["name"].lower(), obj["category"].lower()
+        bboxes = ask_gemini_for_bbox(f"{name}", "./image2.jpg")
+        saved_bboxes.append(obj)
+        saved_bboxes[-1]["bbox"] = bboxes
+        
+        draw_bbox(img_cpy, bboxes, label=f"{name}:{categ}")
+        cv2.imwrite("./image3.jpg", img_cpy)
+    cv2.imwrite("./image_all_box_evidence.jpg", img_cpy)
+
+    img_cpy = cv2.imread("./image2.jpg")
     while True:
-        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], -15, 0, 90, 0, Dy)
-        respeaker.say("I am recognizing objects")
-        json_object = ask_gemini(PROMPT)
-        
-        json_object = [obj for obj in json_object \
-        if obj["object"].lower() not in \
-            ["cup", "caramel corn"] ]
-        
-        have_food = False
-        for i in json_object:
-            if i["category"].lower() == "food":
-                have_food = True
-
-        if have_food:
-            json_object = [obj for obj in json_object if obj["category"].lower() == "food" ]
-
         if len(json_object) == 0:
             respeaker.say("It seems the table is empty, task end")
             break
         
         respeaker.say("I see")
-        for a_object in json_object[:3]:
-            print(a_object)
+        for a_object in saved_bboxes:
+            img_base = img_cpy.copy()
+            logger.info(f"Requesting for... {a_object}")
 
-            respeaker.say(f"Please help me take the {a_object['object']} on the table")
-            # Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], -15, 0, 90, 0, Dy)
-            respeaker.say("Please hold the " + a_object["object"] + "on my robot arm and wait for the gripper close")
+            draw_bbox(img_base, a_object["bbox"], label=f"{a_object['name']}:{a_object['category']}", color=(0, 9, 255), thickness=3)
+            cv2.imwrite("./image.jpg", img_base)
+
+            respeaker.say(f"Please help me take {a_object['name']} on the table")
+            time.sleep(5)
+            respeaker.say("Help me put it on my robot arm and wait for the gripper close")
+            print("**OPEN_ARM")
+            Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0)
+            time.sleep(10)
+
+            print("**CLOSE_ARM")
+            close_grip(id_list[-1])
+            respeaker.say("Thank you")
             time.sleep(5)
 
-            logger.info("**CLOSE_ARM")
-            angle = close_grip(id_list[-1])
-            respeaker.say("Thank you")
-            time.sleep(3)
-
             respeaker.say(a_object["category"])
-            if a_object["category"].lower() == "unknown":     
-                walk_to(UNKNOWN_POINT)            
-            if a_object["category"].lower() == "task item":   
-                walk_to(TASK_POINT)
-            if a_object["category"].lower() == "kitchen item":
-                walk_to(KITCHEN_POINT)
-            if a_object["category"].lower() == "food":        
-                walk_to(FOOD_POINT)
+            walk_to(GOAL_P)
             
             respeaker.say("Putting Object")
             print("**OPEN_ARM")
-            for i in range(8):
-                move(0.25, 0)
-                time.sleep(0.1)
+            time.sleep(5)
+            Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0)
 
-            time.sleep(3)
-            Ro.go_to_real_xyz_alpha(id_list, [0, 420, 120], -15, 0, angle, 0, Dy)
-            Ro.go_to_real_xyz_alpha(id_list, [0, 420, 120], -15, 0, 90, 0, Dy)
-
-            for i in range(10):
-                move(-0.25, 0)
-                time.sleep(0.1)
-
-            logger.info("**OPEN_ARM")
-            Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], -15, 0, 90, 0, Dy)
             walk_to(TABLE_P)
+        break
     
 
 if __name__ == '__main__':
