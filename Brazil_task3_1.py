@@ -189,7 +189,7 @@ def turn(angle):
                 time.sleep(0.026)
         else:
             for i in range(angle):
-                move(0, 0 -0.6)
+                move(0, 0 - 0.6)
                 time.sleep(0.026)
         time.sleep(1.5)
 
@@ -210,12 +210,14 @@ def seat_turn(num12):
         turn(angle4)
     time.sleep(1)
 
+
 locations = {
     # Furniture and objects
     "seats": [0.401, 2.622, -0.81],
     "guest": [-0.453, 0.179, -3.1],
     "drinktable": [5.454, 2.794, 1.55],
 }
+
 
 def seat_turn_back(num12):
     check_num = str(num12)
@@ -448,7 +450,7 @@ if __name__ == "__main__":
                 print("sent image")
                 who_help = '''
                 this is the drink list
-                
+
                 | Name         | Appearance |
                 |:-------------|:-----------|
                 | coffee       | Two cartons of protein coffee drinks. |
@@ -500,10 +502,10 @@ if __name__ == "__main__":
                 height = 320
                 # correct the numbers************************************
                 positions = {
-                    1: (int(width * 0.08), int(height * 0.4)),
-                    2: (int(width * 0.35), int(height * 0.4)),
-                    3: (int(width * 0.5), int(height * 0.4)),
-                    4: (int(width * 0.68), int(height * 0.4)),
+                    1: (int(width * 0.08), int(height * 0.5)),
+                    2: (int(width * 0.3), int(height * 0.5)),
+                    3: (int(width * 0.7), int(height * 0.5)),
+                    4: (int(width * 0.88), int(height * 0.5)),
                 }
                 for number, pos in positions.items():
                     text_size = cv2.getTextSize(str(number), font, font_scale, font_thickness)[0]
