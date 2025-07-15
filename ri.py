@@ -7,16 +7,14 @@ from LemonEngine.hardwares.respeaker import Respeaker
 from LemonEngine.hardwares.chassis import Chassis
 from RobotChassis import RobotChassis
 
-POINT_DINING_ROOM = (-0.913,0.257,0.001) ##
-
-
+POINT_DINING_ROOM = (-0,0,0.001) ##
 
 def main():
     clear_costmaps = rospy.ServiceProxy("/move_base/clear_costmaps", Empty)
     chassis_move = Chassis()
     chassis = RobotChassis()
-
     # navigator = Navigator()
+    
     respeaker = Respeaker(enable_espeak_fix=True)
     cam1 = Camera("/cam2/color/image_raw", "bgr8")
     cam2 = Camera("/cam2/depth/image_raw", "passthrough")
@@ -25,24 +23,28 @@ def main():
     rate = rospy.Rate(20)
 
     def walk_to(point):
+        # navigate
         chassis.move_to(*point)
         while not rospy.is_shutdown():
             # 4. Get the chassis status.
-            rate = rospy.Rate(20)
+            rate.sleep()
             code = chassis.status_code
             text = chassis.status_text
-            logger.debug(f"Nav: {text}")
-            rate.sleep()
-            
             if code == 3:
                 break
             if code == 4:
                 logger.error("Fail to get a plan")
+                respeaker.say("Fail to get a plan")
+                time.sleep(1)
                 clear_costmaps
                 chassis.move_to(*point)
-        return
-    depth_zero = 0
+
+        clear_costmaps
+
+    zero_count = 0
+
     while not rospy.is_shutdown():
+        rate.sleep()
         frame = cam1.get_frame()
         depth_frame = cam2.get_frame()
         depth_frame = cv2.resize(depth_frame, (width, height))
@@ -51,33 +53,38 @@ def main():
         frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
         frame = cv2.putText(frame, f"{depth}", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         if depth == 0:
-            depth_zero += 1
+            zero_count += 1
         else:
-            depth_zero = 0
-            
-        if depth > 2000 or depth_zero:
+            zero_count = 0
+        
+        if depth > 2000 or zero_count > 100:
             respeaker.say("The door is opened")
 
-            chassis_move.set_linear(0.25)
             time.sleep(5)
-
-            chassis_move.stop_moving()
+            for i in range(50):
+                chassis_move.set_linear(0.25)
+                time.sleep(0.1)
+            time.sleep(3)
+            clear_costmaps
             break
 
         cv2.imshow("depth", depth_frame)
         cv2.imshow("frame", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+    cv2.destroyAllWindows()
 
+    walk_to([4.130, 3.064, -3.074])
+    time.sleep(2)
+    respeaker.say("Testing testing")
+    prompt = ""
+    while prompt != "ok":
+        prompt = input(">>")
 
-    # navigate
-    clear_costmaps
-    walk_to([1.577, 0.142, -3.119])
-    clear_costmaps
-    walk_to([-1.271, 0.224, 1.571])
-    clear_costmaps
-    walk_to([-2.709, 1.147, 0.000])
+    walk_to([-1.032, 7.978, -3.092])
+    time.sleep(2)
 
+    respeaker.say("Done")
 
 if __name__ == '__main__':
     rospy.init_node('test_camera', anonymous=True)
