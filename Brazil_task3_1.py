@@ -449,12 +449,15 @@ if __name__ == "__main__":
                 print("sent image")
                 who_help = '''
                 this is the drink list
-                | coffee        | Two protein shakes: banana and chocolate flavors. |
-                | kuat          | Green Kuat guarana soda can. |
-                | milk          | Blue G Barbosa Integral milk carton. |
-                | orange juice  | Large bottle of Sukita orange soda. |
-                | fanta         | Orange Fanta can, "Laranja" flavor. |
-                | coke          |Red Coca-Cola Zero Açúcar soda can. |
+                
+                | Name         | Appearance |
+                |:-------------|:-----------|
+                | coffee       | Two cartons of protein coffee drinks. |
+                | kuat         | Green aluminum can of Kuat soda. |
+                | milk         | Blue and white carton of milk. |
+                | orange juice | Large plastic bottle of orange soda. |
+                | fanta        | Orange aluminum can of Fanta soda. |
+                | coke         | Red can of Coca-Cola Zero Sugar. |
 
                 now, you are going to find guest favourite drink on this table(the image).
 
