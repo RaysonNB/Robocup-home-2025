@@ -210,12 +210,11 @@ def seat_turn(num12):
         turn(angle4)
     time.sleep(1)
 
-
 locations = {
     # Furniture and objects
-    "seats": [-0.927, 0.086, 0.1],
-    "guest": [1.09, 1.58, 1.6],
-    "drinktable": [2.11, 3.49, -1.607],
+    "seats": [0.401, 2.622, -0.81],
+    "guest": [-0.453, 0.179, -3.1],
+    "drinktable": [5.454, 2.794, 1.55],
 }
 
 def seat_turn_back(num12):
