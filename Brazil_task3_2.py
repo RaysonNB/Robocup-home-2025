@@ -7,11 +7,12 @@ import cv2
 import numpy as np
 from Generate_command import kitchen_items
 import re
+
 pathnum = r"C:/Users/rayso/Desktop/python/"
 genai.configure(api_key='AIzaSyBdTRu-rcBKbf86gjiMNtezBu1dEuxrWyE')
 model = genai.GenerativeModel("gemini-2.0-flash")
 cnt_yy = 0
-answernigga=""
+answernigga = ""
 
 while True:
     while True:
@@ -60,7 +61,7 @@ while True:
             answer format: ******[entire_answer]******)
 
             you must answer give me the answer
-            
+
             '''
             response = model.generate_content([img, promt])
             a = str(response)
@@ -71,7 +72,7 @@ while True:
                 g = match.strip()
                 answernigga = g
                 print(g)
-            if answernigga!="": break
+            if answernigga != "": break
     if dictt["Steps"] == "feature":
         questions = {
             "Question1": "None",
@@ -166,7 +167,7 @@ while True:
         print(result)
         time.sleep(2)
     if dictt["Steps"] == "interest":
-        promt = dictt["Questionasking"]+" (only need 20 words)"
+        promt = dictt["Questionasking"] + " (only need 10 words)"
         print(promt)
         response = model.generate_content(promt)
         file_data_string = response.text
@@ -203,12 +204,14 @@ while True:
         sample_txt = promt
         img = PIL.Image.open(path_sample)
         img2 = PIL.Image.open("C:/Users/rayso/Desktop/python/guest1.jpg")
-        response = model.generate_content([img2, "this is the first guest",img,"here have 5 seats please tell me where is he sitting, just give me number in [1,2,3,4,5], there should be 1 numbers, answer format: ******[...]******"])
+        response = model.generate_content([img2, "this is the first guest", img,
+                                           "here have 4 seats please tell me where is he sitting, just give me number in [1,2,3,4], there should be 1 numbers, answer format: ******[...]******"])
         file_data_string = response.text
         print(file_data_string)
         time.sleep(1)
         file_data_string = file_data_string.replace("**", "")
-        response = model.generate_content([img,"here have 5 seats please tell me where have empty seat(chair), just give me number in [1,2,3,4,5], there should be 3 numbers, answer format: ******[numbers]******, for example ******[1,2,3]******"])
+        response = model.generate_content([img,
+                                           "here have 4 seats please tell me where have empty seat(chair), just give me number in [1,2,3,4], there should be 2 numbers, answer format: ******[numbers]******, for example ******[1,2,3]******"])
         file_data_string1 = response.text
         print(file_data_string)
         file_data_string1 = file_data_string1.replace("**", "")
