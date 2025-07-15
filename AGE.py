@@ -31,7 +31,7 @@ locations = {
 }
 # front 0 back 3.14 left 90 1.5 right 90 -1.5
 cout_location = {
-    #"bedroom": [2.9,3.642,1.109],
+    "bedroom": [3.020, 3.555,1.109],
     "kitchen": [2.732,3.355,2.145],
     "office": [2.216,3.961,-0.646],
     "living room": [3.644,3.931,-2.409]
