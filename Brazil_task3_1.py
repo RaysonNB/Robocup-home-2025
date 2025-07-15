@@ -131,7 +131,7 @@ def move(forward_speed: float = 0, turn_speed: float = 0):
 
 
 def post_message_request(step, s1, question):
-    api_url = "http://172.20.10.5:8888/Fambot"
+    api_url = "http://192.168.0.121:8888/Fambot"
     my_todo = {"Question1": "None",
                "Question2": "None",
                "Question3": "None",
@@ -214,8 +214,8 @@ def seat_turn(num12):
 locations = {
     # Furniture and objects
     "seats": [-0.927, 0.086, 0.1],
-    "guest": [-0.453, 0.179, -3.1],
-    "drinktable": [0.658, 2.254, -0.85],
+    "guest": [1.09, 1.58, 1.6],
+    "drinktable": [2.11, 3.49, -1.607],
 }
 
 def seat_turn_back(num12):
@@ -341,7 +341,7 @@ if __name__ == "__main__":
                         file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/guest1.jpg"
                         with open(file_path, 'rb') as f:
                             files = {'image': (file_path.split('/')[-1], f)}
-                            url = "http://172.20.10.5:8888/upload_image"
+                            url = "http://192.168.0.121:8888/upload_image"
                             response = requests.post(url, files=files)
                             # remember to add the text question on the computer code
                         print("Upload Status Code:", response.status_code)
@@ -416,7 +416,7 @@ if __name__ == "__main__":
                         print("********************")
 
                         while True:
-                            r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
+                            r = requests.get("http://192.168.0.121:8888/Fambot", timeout=10)
                             response_data = r.text
                             dictt = json.loads(response_data)
                             time.sleep(2)
@@ -441,7 +441,7 @@ if __name__ == "__main__":
                 file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/task3.jpg"
                 with open(file_path, 'rb') as f:
                     files = {'image': (file_path.split('/')[-1], f)}
-                    url = "http://172.20.10.5:8888/upload_image"
+                    url = "http://192.168.0.121:8888/upload_image"
                     response = requests.post(url, files=files)
                     # remember to add the text question on the computer code
                 print("Upload Status Code:", response.status_code)
@@ -476,7 +476,7 @@ if __name__ == "__main__":
                 step = "waitdrink"
                 # get answer from gemini
             if step == "waitdrink":
-                r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
+                r = requests.get("http://192.168.0.121:8888/Fambot", timeout=10)
                 response_data = r.text
                 dictt = json.loads(response_data)
                 time.sleep(2)
@@ -521,7 +521,7 @@ if __name__ == "__main__":
                 file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/emptyseat.jpg"
                 with open(file_path, 'rb') as f:
                     files = {'image': (file_path.split('/')[-1], f)}
-                    url = "http://172.20.10.5:8888/upload_image"
+                    url = "http://192.168.0.121:8888/upload_image"
                     response = requests.post(url, files=files)
                     # remember to add the text question on the computer code
                 print("Upload Status Code:", response.status_code)
@@ -540,7 +540,7 @@ if __name__ == "__main__":
                 time.sleep(1)
                 step = "waitempty"
             if step == "waitempty":
-                r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
+                r = requests.get("http://192.168.0.121:8888/Fambot", timeout=10)
                 response_data = r.text
                 dictt = json.loads(response_data)
                 time.sleep(2)
@@ -630,7 +630,7 @@ if __name__ == "__main__":
                 if nigga_i == 1:
                     gg = post_message_request("feature", "", "")
                     while True:
-                        r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
+                        r = requests.get("http://192.168.0.121:8888/Fambot", timeout=10)
                         response_data = r.text
                         dictt = json.loads(response_data)
                         time.sleep(2)
