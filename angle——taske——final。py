@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+import rospy
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+import cv2, os
+import time
+from RobotChassis import RobotChassis
+from std_srvs.srv import Empty
+from geometry_msgs.msg import Twist
+
+def callback_image2(msg):
+    global _frame2
+    _frame2 = CvBridge().imgmsg_to_cv2(msg, "bgr8")
+
+
+def callback_depth2(msg):
+    global _depth2
+    _depth2 = CvBridge().imgmsg_to_cv2(msg, "passthrough")
+
+
+def callback_image1(msg):
+    global _frame1
+    src = CvBridge().imgmsg_to_cv2(msg, "bgr8")
+    _frame1 = cv2.flip(src, 0)
+    _frame1 = cv2.flip(_frame1, 1)
+
+
+def callback_depth1(msg):
+    global _depth1
+    _depth1 = CvBridge().imgmsg_to_cv2(msg, "passthrough")
+
+locations = {
+    # Furniture and objects
+    "first": [1.13,3.29,1.53],
+    "seats": [-0.927, 0.086, 0.1],
+    "guest": [1.193, 2.021, 1.53],
+    "drinktable": [2.47, 3.36, -1.607],
+}
+
+def speak1(g):
+    print("[robot say]:", end=" ")
+    os.system(f'espeak -s 170 "{g}"')
+    # rospy.loginfo(g)
+    print(g)
+    time.sleep(0.3)
+
+def walk_to(name):
+    name = name.lower()
+    num1, num2, num3 = locations[name]
+    chassis.move_to(num1, num2, num3)
+    while not rospy.is_shutdown():
+        # 4. Get the chassis status.
+        code = chassis.status_code
+        text = chassis.status_text
+        if code == 3:
+            break
+        if code == 4:
+            break
+    speak1("arrived")
+    time.sleep(1)
+    clear_costmaps
+clear_costmaps = rospy.ServiceProxy("/move_base/clear_costmaps", Empty)
+
+def move(forward_speed: float = 0, turn_speed: float = 0):
+    global _cmd_vel
+    msg = Twist()
+    msg.linear.x = forward_speed
+    msg.angular.z = turn_speed
+    _cmd_vel.publish(msg)
+
+def turn(angle):
+    print("hi")
+    if angle==-1:
+        move(0, 0.25)
+    elif angle==1:
+        move(0, -0.25)
+    else:
+        if angle < 0:
+            for i in range(-angle):
+                move(0, 0.6)
+                time.sleep(0.026)
+        else:
+            for i in range(angle):
+                move(0, 0 -0.6)
+                time.sleep(0.026)
+        time.sleep(1.5)
+def seat_turn(num12):
+    check_num = str(num12)
+    angle1 = -2
+    angle2 = -1
+    angle3 = 1
+    angle4 = 2
+    if "1" in check_num:
+        turn(angle1)
+    elif "2" in check_num:
+        turn(angle2)
+    elif "3" in check_num:
+        turn(angle3)
+    elif "4" in check_num:
+        turn(angle4)
+    time.sleep(1)
+def seat_turn_back(num12):
+    check_num = str(num12)
+    angle1 = 2
+    angle2 = 1
+    angle3 = -1
+    angle4 = -2
+    if "1" in check_num:
+        turn(angle1)
+    elif "2" in check_num:
+        turn(angle2)
+    elif "3" in check_num:
+        turn(angle3)
+    elif "4" in check_num:
+        turn(angle4)
+    time.sleep(1)
+if __name__ == "__main__":
+    rospy.init_node("demo")
+    rospy.loginfo("demo node start!")
+    # open things
+    chassis = RobotChassis()
+    clear_costmaps
+    print("cmd_vel")
+    _cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+    time.sleep(5)
+    for i in [1,2,3,4]:
+        print("hh",i)
+        seat_turn(str(i))
+        time.sleep(5)
+        seat_turn_back(str(i))
+        a=input()
+        time.sleep(2)
+    
