@@ -464,14 +464,24 @@ if __name__ == "__main__":
                 upload_result = response.json()
                 print("sent image")
                 who_help = '''
+                this is the drink list
+                
+                | kuat | drink | Green Kuat guarana soda can. |
+                | milk | drink | Blue G Barbosa Integral milk carton. |
+                | orange_juice | drink | Large bottle of Sukita orange soda. |
+                | fanta | drink | Orange Fanta can, "Laranja" flavor. |
+                | coke | drink | Red Coca-Cola Zero Açúcar soda can. |
+                    
                 now, you are going to find guest favourite drink on this table(the image).
 
                 tell me where is guest favourite drink with definite position on the table.
 
-                you may answer your favourite drink isn't on the table or your favourite drink is in the ... position of the table
-
+                you may answer your favourite drink is in the ... position of the table(the drink must be in the image)
+                
+                words limit: 20 words
+                
                 answer format: ******[dear guest your favourite drink is......]******
-
+                
 
                 '''
                 favhh = " guest favourite drink is " + drink_name
