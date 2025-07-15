@@ -131,7 +131,7 @@ def move(forward_speed: float = 0, turn_speed: float = 0):
 
 
 def post_message_request(step, s1, question):
-    api_url = "http://192.168.50.147:8888/Fambot"
+    api_url = "http://172.20.10.5:8888/Fambot"
     my_todo = {"Question1": "None",
                "Question2": "None",
                "Question3": "None",
@@ -200,17 +200,14 @@ def seat_turn(num12):
     angle2 = -1
     angle3 = 0
     angle4 = 1
-    angle5 = 2
     if "1" in check_num:
         turn(angle1)
     elif "2" in check_num:
         turn(angle2)
     elif "3" in check_num:
-        pass
+        turn(angle3)
     elif "4" in check_num:
         turn(angle4)
-    elif "5" in check_num:
-        turn(angle5)
     time.sleep(1)
 
 
@@ -221,28 +218,20 @@ locations = {
     "drinktable": [2.11, 3.49, -1.607],
 }
 
-
-def hand_turn_left():
-    speak1("robot arm turn left")
-
-
 def seat_turn_back(num12):
     check_num = str(num12)
     angle1 = 2
     angle2 = 1
     angle3 = 0
     angle4 = -1
-    angle5 = -2
     if "1" in check_num:
         turn(angle1)
     elif "2" in check_num:
         turn(angle2)
     elif "3" in check_num:
-        pass
+        turn(angle3)
     elif "4" in check_num:
         turn(angle4)
-    elif "5" in check_num:
-        turn(angle5)
     time.sleep(1)
 
 
@@ -352,7 +341,7 @@ if __name__ == "__main__":
                         file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/guest1.jpg"
                         with open(file_path, 'rb') as f:
                             files = {'image': (file_path.split('/')[-1], f)}
-                            url = "http://192.168.50.147:8888/upload_image"
+                            url = "http://172.20.10.5:8888/upload_image"
                             response = requests.post(url, files=files)
                             # remember to add the text question on the computer code
                         print("Upload Status Code:", response.status_code)
@@ -360,7 +349,6 @@ if __name__ == "__main__":
                         print("sent image")
                         gg = post_message_request("guest1", "", "")
                     step = "name"
-
             if step == "name":
                 # name, favorite drink, and a interest
                 name_cnt = "none"
@@ -389,16 +377,12 @@ if __name__ == "__main__":
             if step == "drink":
                 name_cnt = "none"
                 s = s.lower()
-
                 if "coffee" in s: name_cnt = "Coffee"
-                if "tea" in s: name_cnt = "Tea"
                 if "orange" in s: name_cnt = "Orangle Juice"
-                if "apple" in s: name_cnt = "Apple Juice"
-                if "Cola" in s: name_cnt = "Cola"
-                if "chocolate" in s: name_cnt = "chocolate"
-                if "water" in s: name_cnt = "water"
-                if "wine" in s: name_cnt = "wine"
-                if "beer" in s: name_cnt = "beer"
+                if "milk" in s: name_cnt = "milk"
+                if "fanta" in s: name_cnt = "fanta"
+                if "kuat" in s: name_cnt = "kuat"
+                if "coke" in s: name_cnt = "coke"
                 if (name_cnt == "none" and s != ""):
                     speak("please repeat")
                 if name_cnt != "none":
@@ -409,13 +393,13 @@ if __name__ == "__main__":
             if step == "interest":
                 interest_name = "none"
                 s = s.lower()
-
                 if "art" in s: interest_name = "art"
                 if "act" in s: interest_name = "act"
                 if "animal" in s: interest_name = "animals"
                 if "basketball" in s: interest_name = "basketball"
                 if "football" in s: interest_name = "football"
                 if "eat" in s: interest_name = "eat"
+                if "robot" in s: interest_name = "robot"
                 if (interest_name == "none" and s != ""):
                     speak("please repeat")
                 if interest_name != "none":
@@ -432,7 +416,7 @@ if __name__ == "__main__":
                         print("********************")
 
                         while True:
-                            r = requests.get("http://192.168.50.147:8888/Fambot", timeout=10)
+                            r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                             response_data = r.text
                             dictt = json.loads(response_data)
                             time.sleep(2)
@@ -457,7 +441,7 @@ if __name__ == "__main__":
                 file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/task3.jpg"
                 with open(file_path, 'rb') as f:
                     files = {'image': (file_path.split('/')[-1], f)}
-                    url = "http://192.168.50.147:8888/upload_image"
+                    url = "http://172.20.10.5:8888/upload_image"
                     response = requests.post(url, files=files)
                     # remember to add the text question on the computer code
                 print("Upload Status Code:", response.status_code)
@@ -465,23 +449,22 @@ if __name__ == "__main__":
                 print("sent image")
                 who_help = '''
                 this is the drink list
-                
-                | kuat | drink | Green Kuat guarana soda can. |
-                | milk | drink | Blue G Barbosa Integral milk carton. |
-                | orange_juice | drink | Large bottle of Sukita orange soda. |
-                | fanta | drink | Orange Fanta can, "Laranja" flavor. |
-                | coke | drink | Red Coca-Cola Zero Açúcar soda can. |
-                    
+                | coffee        | Two protein shakes: banana and chocolate flavors. |
+                | kuat          | Green Kuat guarana soda can. |
+                | milk          | Blue G Barbosa Integral milk carton. |
+                | orange juice  | Large bottle of Sukita orange soda. |
+                | fanta         | Orange Fanta can, "Laranja" flavor. |
+                | coke          |Red Coca-Cola Zero Açúcar soda can. |
+
                 now, you are going to find guest favourite drink on this table(the image).
 
                 tell me where is guest favourite drink with definite position on the table.
 
                 you may answer your favourite drink is in the ... position of the table(the drink must be in the image)
-                
+
                 words limit: 20 words
-                
+
                 answer format: ******[dear guest your favourite drink is......]******
-                
 
                 '''
                 favhh = " guest favourite drink is " + drink_name
@@ -490,7 +473,7 @@ if __name__ == "__main__":
                 step = "waitdrink"
                 # get answer from gemini
             if step == "waitdrink":
-                r = requests.get("http://192.168.50.147:8888/Fambot", timeout=10)
+                r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                 response_data = r.text
                 dictt = json.loads(response_data)
                 time.sleep(2)
@@ -513,13 +496,12 @@ if __name__ == "__main__":
                 font_thickness = 5
                 width = 640
                 height = 320
-                # correct the numbers**********************
+                # correct the numbers************************************
                 positions = {
                     1: (int(width * 0.08), int(height * 0.4)),
                     2: (int(width * 0.35), int(height * 0.4)),
                     3: (int(width * 0.5), int(height * 0.4)),
                     4: (int(width * 0.68), int(height * 0.4)),
-                    5: (int(width * 0.85), int(height * 0.4))
                 }
                 for number, pos in positions.items():
                     text_size = cv2.getTextSize(str(number), font, font_scale, font_thickness)[0]
@@ -536,7 +518,7 @@ if __name__ == "__main__":
                 file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/emptyseat.jpg"
                 with open(file_path, 'rb') as f:
                     files = {'image': (file_path.split('/')[-1], f)}
-                    url = "http://192.168.50.147:8888/upload_image"
+                    url = "http://172.20.10.5:8888/upload_image"
                     response = requests.post(url, files=files)
                     # remember to add the text question on the computer code
                 print("Upload Status Code:", response.status_code)
@@ -544,8 +526,8 @@ if __name__ == "__main__":
                 print("sent image")
                 if nigga_i == 1:
                     number = 4
-                    who_help = "here have 5 seats please tell me where have empty seat(chair), just give me number in [1,2,3,4,5], there should be " + str(
-                        number) + " numbers, answer format: ******[numbers]******, for example ******[1,2,3,4]******"  # correct the numbers**********************
+                    who_help = "here have 4 seats please tell me where have empty seat(chair), just give me number in [1,2,3,4], there should be " + str(
+                        number) + " numbers, answer format: ******[numbers]******, for example ******[1,2,3]******"  # correct the numbers**********************
                     gg = post_message_request("seat1", "", who_help)
                     print(gg)
                 elif nigga_i == 2:
@@ -555,7 +537,7 @@ if __name__ == "__main__":
                 time.sleep(1)
                 step = "waitempty"
             if step == "waitempty":
-                r = requests.get("http://192.168.50.147:8888/Fambot", timeout=10)
+                r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                 response_data = r.text
                 dictt = json.loads(response_data)
                 time.sleep(2)
@@ -573,7 +555,6 @@ if __name__ == "__main__":
                         if "2" not in str(aaa): host_seat = "2"
                         if "3" not in str(aaa): host_seat = "3"
                         if "4" not in str(aaa): host_seat = "4"
-                        if "5" not in str(aaa): host_seat = "5"
                         print("answer:", aaa)
                     else:
                         check = ""
@@ -581,13 +562,11 @@ if __name__ == "__main__":
                         if "2" not in str(aab): check += "2"
                         if "3" not in str(aab): check += "3"
                         if "4" not in str(aab): check += "4"
-                        if "5" not in str(aab): check += "5"
                         check1 = ""
                         if "1" in str(aaa): check1 = "1"
                         if "2" in str(aaa): check1 = "2"
                         if "3" in str(aaa): check1 = "3"
                         if "4" in str(aaa): check1 = "4"
-                        if "5" in str(aaa): check1 = "5"
                         guest1_seat = check1  # get by gemini
                         hosts_seat = check.replace(guest1_seat, "")
                         print("guest", guest1_seat, "host", hosts_seat)
@@ -640,8 +619,6 @@ if __name__ == "__main__":
                     seat_turn("3")
                 elif "4" in seat_list:
                     seat_turn("4")
-                elif "5" in seat_list:
-                    seat_turn("5")
                 print("seat_list", seat_list)
                 speak("dear guest " + name + " the way I am facing is a empty seat, please have a sit")
                 pre_name, pre_drink, pre_interest = name, drink_name, interest_name
@@ -650,7 +627,7 @@ if __name__ == "__main__":
                 if nigga_i == 1:
                     gg = post_message_request("feature", "", "")
                     while True:
-                        r = requests.get("http://192.168.50.147:8888/Fambot", timeout=10)
+                        r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                         response_data = r.text
                         dictt = json.loads(response_data)
                         time.sleep(2)
