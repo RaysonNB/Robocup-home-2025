@@ -45,7 +45,7 @@ If no object here, please output a empty json list
 ```
 
 # Object List
-| Name | Category | Apperance |
+| Name | Category | Appearance |
 |:---|:---|:---|
 | mayo | food | Squeeze bottle of green mayonnaise. |
 | tuna | food | Round, blue metal can of tuna. |
