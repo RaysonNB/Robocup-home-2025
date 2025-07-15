@@ -15,7 +15,7 @@ answernigga=""
 
 while True:
     while True:
-        r = requests.get("http://192.168.50.147:8888/Fambot", timeout=2.5)
+        r = requests.get("http://172.20.10.5:8888/Fambot", timeout=2.5)
         response_data = r.text
         print("Response_data", response_data)
         dictt = json.loads(response_data)
@@ -24,7 +24,7 @@ while True:
         else:
             break
     if dictt["Steps"] == "guest1":
-        image_url = f"http://192.168.50.147:8888{'/uploads/guest1.jpg'}"
+        image_url = f"http://172.20.10.5:8888{'/uploads/guest1.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
         image_array = np.frombuffer(image_response.content, dtype=np.uint8)
@@ -41,7 +41,7 @@ while True:
             "Questionasking": "None",
             "answer": "None"
         }
-        api_url = "http://192.168.50.147:8888/Fambot"
+        api_url = "http://172.20.10.5:8888/Fambot"
         response = requests.post(api_url, json=questions)
         while True:
             path_sample = "C:/Users/rayso/Desktop/python/guest1.jpg"  # Use raw string to handle backslashes
@@ -59,42 +59,37 @@ while True:
             just need one sentence
             answer format: ******[entire_answer]******)
 
-            you must answer
+            you must answer give me the answer
+            
             '''
             response = model.generate_content([img, promt])
-            # response = model.generate_content([img2,"where have empty seat , just give me number in [1,2,3,4,5], there should be 4 numbers, answer format: ******[numbers]******"])
-
-
             a = str(response)
             print(a)
-            # Using a regular expression to find text between asterisks
             matches = re.findall(r'\*\*\*\*\*\*(.*?)\*\*\*\*\*\*', a)
-
-            # Printing the extracted values
             answernigga = ""
             for match in matches:
                 g = match.strip()
                 answernigga = g
-                print(g)  # Output: [1, 2, 4, 5]
+                print(g)
             if answernigga!="": break
     if dictt["Steps"] == "feature":
         questions = {
             "Question1": "None",
             "Question2": "None",
             "Question3": "None",
-            "Steps": 100,
+            "Steps": 200,
             "Voice": answernigga,
             "Questionasking": "None",
             "answer": "None"
         }
-        api_url = "http://192.168.50.147:8888/Fambot"
+        api_url = "http://172.20.10.5:8888/Fambot"
         response = requests.post(api_url, json=questions)
         result = response.json()
         print(result)
     if dictt["Steps"] == "task3":
         print("task3")
         promt = dictt["Questionasking"]
-        image_url = f"http://192.168.50.147:8888{'/uploads/task3.jpg'}"
+        image_url = f"http://172.20.10.5:8888{'/uploads/task3.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
         image_array = np.frombuffer(image_response.content, dtype=np.uint8)
@@ -129,14 +124,14 @@ while True:
             "Questionasking": "None",
             "answer": "None"
         }
-        api_url = "http://192.168.50.147:8888/Fambot"
+        api_url = "http://172.20.10.5:8888/Fambot"
         response = requests.post(api_url, json=questions)
         result = response.json()
         print(result)
         time.sleep(2)
     if dictt["Steps"] == "seat1":
         promt = dictt["Questionasking"]
-        image_url = f"http://192.168.50.147:8888{'/uploads/emptyseat.jpg'}"
+        image_url = f"http://172.20.10.5:8888{'/uploads/emptyseat.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
         image_array = np.frombuffer(image_response.content, dtype=np.uint8)
@@ -165,7 +160,7 @@ while True:
             "Questionasking": "None",
             "answer": "None"
         }
-        api_url = "http://192.168.50.147:8888/Fambot"
+        api_url = "http://172.20.10.5:8888/Fambot"
         response = requests.post(api_url, json=questions)
         result = response.json()
         print(result)
@@ -184,14 +179,14 @@ while True:
             "Questionasking": "None",
             "answer": file_data_string
         }
-        api_url = "http://192.168.50.147:8888/Fambot"
+        api_url = "http://172.20.10.5:8888/Fambot"
         response = requests.post(api_url, json=questions)
         result = response.json()
         print(result)
         print(file_data_string)
     if dictt["Steps"] == "seat2":
         promt = dictt["Questionasking"]
-        image_url = f"http://192.168.50.147:8888{'/uploads/emptyseat.jpg'}"
+        image_url = f"http://172.20.10.5:8888{'/uploads/emptyseat.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
         image_array = np.frombuffer(image_response.content, dtype=np.uint8)
@@ -226,7 +221,7 @@ while True:
             "Questionasking": "None",
             "answer": file_data_string1
         }
-        api_url = "http://192.168.50.147:8888/Fambot"
+        api_url = "http://172.20.10.5:8888/Fambot"
         response = requests.post(api_url, json=questions)
         result = response.json()
         print(result)
