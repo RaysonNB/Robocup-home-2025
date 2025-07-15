@@ -214,8 +214,8 @@ def seat_turn(num12):
 locations = {
     # Furniture and objects
     "seats": [-0.927, 0.086, 0.1],
-    "guest": [1.09, 1.58, 1.6],
-    "drinktable": [2.11, 3.49, -1.607],
+    "guest": [-0.453, 0.179, -3.1],
+    "drinktable": [0.658, 2.254, -0.85],
 }
 
 def seat_turn_back(num12):
