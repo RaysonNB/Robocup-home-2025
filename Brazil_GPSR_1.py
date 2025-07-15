@@ -692,7 +692,7 @@ if __name__ == "__main__":
                         # re.say("I cant get the object")
                         Ro.go_to_real_xyz_alpha(id_list, [0, 100, 100], 0, 0, 10, 0)
                         time.sleep(10)
-                        speak("robot arm is in error I can't get it, going back to instruction point")
+                        speak("I can't get it, going back to instruction point")
                         step_action = 100
                         time.sleep(1)
                 if step_action == 2:
@@ -734,7 +734,7 @@ if __name__ == "__main__":
                         Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 10, 0, 10, 0)
                         # re.say("I cant get the object")
                         Ro.go_to_real_xyz_alpha(id_list, [0, 100, 100], 0, 0, 10, 0)
-                        speak("robot arm is in error I can't get it, going back to instruction point")
+                        speak("I can't get it, going back to instruction point")
                         step_action = 100
                         time.sleep(1)
                 if step_action == 2:
@@ -780,7 +780,19 @@ if __name__ == "__main__":
                         cv2.imshow("capture_vision_(enumeration)2_img", _frame2)
                         cv2.imwrite(output_dir + "GSPR.jpg", _frame2)
                     else:
-                        image_flip = cv2.flip(_frame1, 0)
+                        yn = 0
+                        for hijj in ["bedside table", "bed ", "waste basket", "tv stand", "sofa", "seats", "trash bin",
+                                     " bed"]:
+                            if hijj in user_input:
+                                yn = 1
+                        name_position = "$PLACE1"
+                        if "$PLACE1" not in liyt:
+                            name_position = "PLACE1"
+                        if yn == 1 or liyt[name_position] in ["bedside table", "bed ", "waste basket", "tv stand", "sofa", "seats", "trash bin",
+                                     " bed"]:
+                            image_flip = _frame1.copy()
+                        else:
+                            image_flip = _frame2.copy()
                         cv2.imshow("capture_vision_(enumeration)1_img", image_flip)
                         cv2.imwrite(output_dir + "GSPR.jpg", image_flip)
                     # ask gemini
@@ -840,7 +852,20 @@ if __name__ == "__main__":
                     speak("taking picture")
                     print("take picture")
                     # save frame
-                    image_flip = cv2.flip(_frame1, 0)
+                    yn = 0
+                    for hijj in ["bedside table", "bed ", "waste basket", "tv stand", "sofa", "seats", "trash bin",
+                                 " bed"]:
+                        if hijj in user_input:
+                            yn = 1
+                    name_position = "$PLACE1"
+                    if "$PLACE1" not in liyt:
+                        name_position = "PLACE1"
+                    if yn == 1 or liyt[name_position] in ["bedside table", "bed ", "waste basket", "tv stand", "sofa",
+                                                          "seats", "trash bin",
+                                                          " bed"]:
+                        image_flip = _frame1.copy()
+                    else:
+                        image_flip = _frame2.copy()
                     output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
                     cv2.imshow("capture_vision_(descridption)1_img", image_flip)
                     cv2.imwrite(output_dir + "GSPR.jpg", image_flip)
