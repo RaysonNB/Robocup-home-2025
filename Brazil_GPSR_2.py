@@ -14,7 +14,7 @@ cnt_yy = 0
 #all big promt
 while True:
     while True:
-        r = requests.get("http://192.168.50.147:8888/Fambot", timeout=2.5)
+        r = requests.get("http://172.20.10.5:8888/Fambot", timeout=2.5)
         response_data = r.text
         print("Response_data", response_data)
         dictt = json.loads(response_data)
@@ -41,9 +41,9 @@ while True:
         Speech2: Go to the $ROOM1, find the person who is $POSE/GESTURE and tell (him | her) $TELL_LIST.
 
         %possible information options
-        %ROOM         : bedroom, dining room, studying room, living room
-        %PLACE        : bed, exit, dining table, couch, entrance, shelf, left chair, right chair, left kachaka station, right kachaka station, counter, left tray, right tray, pen holder, container, left kachaka shelf, right kachaka shelf, low table, tall table, trash bin
-        $OBJECT       : orange juice, red wine, milk, iced tea, cola, tropical juice, juice pack, apple, pear, lemon, peach, banana, strawberry, orange, plum, cheezit, cornflakes, pringles, tuna, sugar, strawberry jello, tomato soup, mustard, chocolate jello, spam, coffee grounds, plate, fork, spoon, cup, knife, bowl, rubiks cube, soccer ball, dice, tennis ball, baseball, cleanser, sponge
+        %ROOM         : bedroom, kitchen, office, living room
+        %PLACE        : bedside table, side table, bed, kitchen table, dishwasher, sink, microwave, waste basket, shelf, refrigerator, trash bin, desk, bar, tv stand, cabinet, sofa, seats
+        $OBJECT       : mayo, tuna, ketchup, oats, broth, corn flower, peanuts, cornflakes, crisps, pringles, cheese snack, chocolate bar, gum balls, apple, lemon, tangerine, pear, spoon, plate, cup, fork, bowl, knife, cloth, polish, brush, sponge, coffee, kuat, milk, orange juice, fanta, coke
         $PERS_INFO    : name, pose, gesture
         $CATEGORY_OBJ : drinks, fruits, snacks, foods, dishes, toys, cleaning supplies 
         $POSE/GESTURE : waving persons, persons raising their left arm, persons raising their right arm, persons pointing to the left, persons pointing to the right, sitting persons, standing persons, lying persons # or some of the clothes color
@@ -85,7 +85,7 @@ while True:
             "Questionasking": "None",
             "answer": "None"
         }
-        api_url = "http://192.168.50.147:8888/Fambot"
+        api_url = "http://172.20.10.5:8888/Fambot"
         response = requests.post(api_url, json=questions)
         result = response.json()
         print(result)
@@ -93,7 +93,7 @@ while True:
         time.sleep(2)
     elif dictt["Steps"] == "checkpeople":
         promt = dictt["Questionasking"] + " answer my question ys or no only"
-        image_url = f"http://192.168.50.147:8888{'/uploads/GSPR_people.jpg'}"
+        image_url = f"http://172.20.10.5:8888{'/uploads/GSPR_people.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
 
@@ -126,7 +126,7 @@ while True:
             "Questionasking": "None",
             "answer": "None"
         }
-        api_url = "http://192.168.50.147:8888/Fambot"
+        api_url = "http://172.20.10.5:8888/Fambot"
         response = requests.post(api_url, json=questions)
         result = response.json()
         print(result)
@@ -134,10 +134,46 @@ while True:
     elif dictt["Steps"] == "Description":
         promt2 = dictt["Voice"]
         objects = '''
-        The Objects can only be: orange juice, red wine, milk, iced tea, cola, tropical juice, juice pack, apple, pear, lemon, peach, banana, strawberry, orange, plum, cheezit, cornflakes, pringles, tuna, sugar, strawberry jello, tomato soup, mustard, chocolate jello, spam, coffee grounds, plate, fork, spoon, cup, knife, bowl, rubiks cube, soccer ball, dice, tennis ball, baseball, cleanser, sponge
+        The Objects can only be: mayo, tuna, ketchup, oats, broth, corn flower, peanuts, cornflakes, crisps, pringles, cheese snack, chocolate bar, gum balls, apple, lemon, tangerine, pear, spoon, plate, cup, fork, bowl, knife, cloth, polish, brush, sponge, coffee, kuat, milk, orange juice, fanta, coke
+        
+        | Name | Category | Appearance |
+        |:---|:---|:---|
+        | mayo | food | Squeeze bottle of green mayonnaise. |
+        | tuna | food | Round, blue metal can of tuna. |
+        | ketchup | food | Three red plastic squeeze bottles of ketchup. |
+        | oats | food | Two cardboard boxes of Nestlé oats. |
+        | broth | food | Knorr broth box with two cubes. |
+        | corn_flower | food | Yellow and blue bag of corn flour. |
+        | peanuts | snack | Golden-brown bag of Japanese-style peanuts. |
+        | cornflakes | snack | Red Nescau Duo cereal box. |
+        | crisps | snack | Green and blue Ruffles chips bag. |
+        | pringles | snack | Three tall cylindrical cans of Pringles. |
+        | cheese_snack | snack | Yellow bag of Fandangos cheese snacks. |
+        | chocolate_bar | snack | Blue metallic package of Bis chocolate. |
+        | gum_balls | snack | Orange bag of Fini sour gum balls. |
+        | apple | fruit | Round red apple with a stem. |
+        | lemon | fruit | Bright yellow lemon with textured skin. |
+        | tangerine | fruit | Bright orange tangerine with bumpy skin. |
+        | pear | fruit | Light green, bell-shaped pear with stem. |
+        | spoon | dish | Metal spoon with a red handle. |
+        | plate | dish | Solid dark red round dinner plate. |
+        | cup | dish | Red speckled enamel mug with handle. |
+        | fork | dish | Metal fork with a red handle. |
+        | bowl | dish | Round red speckled enamel bowl. |
+        | knife | dish | Small metal knife with a red handle. |
+        | cloth | cleaning_supply | One red and one orange cloth. |
+        | polish | cleaning_supply | Yellow bottle of Bravo furniture polish. |
+        | brush | cleaning_supply | Blue scrub brush with green bristles. |
+        | sponge | cleaning_supply | Yellow sponge with a green scrubber. |
+        | coffee | drink | Two cartons of protein coffee drinks. |
+        | kuat | drink | Green aluminum can of Kuat soda. |
+        | milk | drink | Blue and white carton of milk. |
+        | orange_juice | drink | Large plastic bottle of orange soda. |
+        | fanta | drink | Orange aluminum can of Fanta soda. |
+        | coke | drink | Red can of Coca-Cola Zero Sugar. |
         '''
         promt = promt2 + objects
-        image_url = f"http://192.168.50.147:8888{'/uploads/GSPR.jpg'}"
+        image_url = f"http://172.20.10.5:8888{'/uploads/GSPR.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
 
@@ -167,7 +203,7 @@ while True:
             "Questionasking": "None",
             "answer": "None"
         }
-        api_url = "http://192.168.50.147:8888/Fambot"
+        api_url = "http://172.20.10.5:8888/Fambot"
         response = requests.post(api_url, json=questions)
         result = response.json()
         print(result)
@@ -176,14 +212,41 @@ while True:
         promt2 = dictt["Voice"].lower()
         if "food" in promt2 or "kitchen" in promt2 or "item" in promt2:
             promt1 = '''
-                    (Category)         (Object)
-                    drinks:            orange juice, red wine, milk, iced tea, cola, tropical juice, juice pack
-                    fruits:            apple, pear, lemon, peach, banana, strawberry, orange, plum
-                    snacks:            cheezit, cornflakes, pringles
-                    foods:             tuna, sugar, strawberry jello, tomato soup, mustard, chocolate jello, spam, coffee grounds
-                    dishes:            plate, fork, spoon, cup, knife, bowl
-                    toys:              rubiks cube, soccer ball, dice, tennis ball, baseball
-                    cleaning supplies: cleanser, sponge
+                    | Name | Category | Appearance |
+                    |:---|:---|:---|
+                    | mayo | food | Squeeze bottle of green mayonnaise. |
+                    | tuna | food | Round, blue metal can of tuna. |
+                    | ketchup | food | Three red plastic squeeze bottles of ketchup. |
+                    | oats | food | Two cardboard boxes of Nestlé oats. |
+                    | broth | food | Knorr broth box with two cubes. |
+                    | corn_flower | food | Yellow and blue bag of corn flour. |
+                    | peanuts | snack | Golden-brown bag of Japanese-style peanuts. |
+                    | cornflakes | snack | Red Nescau Duo cereal box. |
+                    | crisps | snack | Green and blue Ruffles chips bag. |
+                    | pringles | snack | Three tall cylindrical cans of Pringles. |
+                    | cheese_snack | snack | Yellow bag of Fandangos cheese snacks. |
+                    | chocolate_bar | snack | Blue metallic package of Bis chocolate. |
+                    | gum_balls | snack | Orange bag of Fini sour gum balls. |
+                    | apple | fruit | Round red apple with a stem. |
+                    | lemon | fruit | Bright yellow lemon with textured skin. |
+                    | tangerine | fruit | Bright orange tangerine with bumpy skin. |
+                    | pear | fruit | Light green, bell-shaped pear with stem. |
+                    | spoon | dish | Metal spoon with a red handle. |
+                    | plate | dish | Solid dark red round dinner plate. |
+                    | cup | dish | Red speckled enamel mug with handle. |
+                    | fork | dish | Metal fork with a red handle. |
+                    | bowl | dish | Round red speckled enamel bowl. |
+                    | knife | dish | Small metal knife with a red handle. |
+                    | cloth | cleaning_supply | One red and one orange cloth. |
+                    | polish | cleaning_supply | Yellow bottle of Bravo furniture polish. |
+                    | brush | cleaning_supply | Blue scrub brush with green bristles. |
+                    | sponge | cleaning_supply | Yellow sponge with a green scrubber. |
+                    | coffee | drink | Two cartons of protein coffee drinks. |
+                    | kuat | drink | Green aluminum can of Kuat soda. |
+                    | milk | drink | Blue and white carton of milk. |
+                    | orange_juice | drink | Large plastic bottle of orange soda. |
+                    | fanta | drink | Orange aluminum can of Fanta soda. |
+                    | coke | drink | Red can of Coca-Cola Zero Sugar. |
                     
                     just one sentence(15 words) is enough
                     '''
@@ -191,7 +254,7 @@ while True:
         else:
             promt = promt2
 
-        image_url = f"http://192.168.50.147:8888{'/uploads/GSPR.jpg'}"
+        image_url = f"http://172.20.10.5:8888{'/uploads/GSPR.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
         image_array = np.frombuffer(image_response.content, dtype=np.uint8)
@@ -219,14 +282,14 @@ while True:
             "Questionasking": "None",
             "answer": "None"
         }
-        api_url = "http://192.168.50.147:8888/Fambot"
+        api_url = "http://172.20.10.5:8888/Fambot"
         response = requests.post(api_url, json=questions)
         result = response.json()
         print(result)
         time.sleep(2)
     elif dictt["Steps"] == "color":
         sample_txt = dictt["Questionasking"].lower()
-        image_url = f"http://192.168.50.147:8888{'/uploads/GSPR_color.jpg'}"
+        image_url = f"http://172.20.10.5:8888{'/uploads/GSPR_color.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
         image_array = np.frombuffer(image_response.content, dtype=np.uint8)
@@ -254,7 +317,7 @@ while True:
             "Questionasking": "None",
             "answer": "None"
         }
-        api_url = "http://192.168.50.147:8888/Fambot"
+        api_url = "http://172.20.10.5:8888/Fambot"
         response = requests.post(api_url, json=questions)
         result = response.json()
         print(result)
