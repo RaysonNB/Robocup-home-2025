@@ -34,7 +34,7 @@ GOAL_P = (4.602, 3.462, 1.548)
 PROMPT = """
 # Instruction
 Analyze the input image. Detect distinct objects on the table and try your best to classify them using the `Object List` below. 
-If the object is not listed, use the class "Unknown" and fill in a short description of the item in the name field.
+If the object is not listed, use the class "Unknown" and **fill in a short description of the item in the key `"name"`**.
 Be careful not to leave any items behide
 
 You Must output *only* a JSON list containing objects with keys `"name"` and `"category"`. 
@@ -45,57 +45,50 @@ If no object here, please output a empty json list
 ```
 
 # Object List
-| Name | Category |
-|:---|:---|
-| orange_juice | drink |
-| red_wine | drink |
-| milk | drink |
-| iced_tea | drink |
-| cola | drink |
-| tropical_juice | drink |
-| juice_pack | drink |
-| apple | fruit |
-| pear | fruit |
-| lemon | fruit |
-| peach | fruit |
-| banana | fruit |
-| strawberry | fruit |
-| orange | fruit |
-| plum | fruit |
-| cheezit | snack |
-| cornflakes | snack |
-| pringles | snack |
-| tuna | food |
-| sugar | food |
-| strawberry_jello | food |
-| tomato_soup | food |
-| mustard | food |
-| chocolate_jello | food |
-| spam | food |
-| coffee_grounds | food |
-| plate | dish |
-| fork | dish |
-| spoon | dish |
-| cup | dish |
-| knife | dish |
-| bowl | dish |
-| rubiks_cube | toy |
-| soccer_ball | toy |
-| dice | toy |
-| tennis_ball | toy |
-| baseball | toy |
-| cleanser | cleaning_supply |
-| sponge | cleaning_supply |
-
+| Name | Category | Apperance |
+|:---|:---|:---|
+| mayo | food | Squeeze bottle of green mayonnaise. |
+| tuna | food | Round, blue metal can of tuna. |
+| ketchup | food | Three red plastic squeeze bottles of ketchup. |
+| oats | food | Two cardboard boxes of Nestlé oats. |
+| broth | food | Knorr broth box with two cubes. |
+| corn_flower | food | Yellow and blue bag of corn flour. |
+| peanuts | snack | Golden-brown bag of Japanese-style peanuts. |
+| cornflakes | snack | Red Nescau Duo cereal box. |
+| crisps | snack | Green and blue Ruffles chips bag. |
+| pringles | snack | Three tall cylindrical cans of Pringles. |
+| cheese_snack | snack | Yellow bag of Fandangos cheese snacks. |
+| chocolate_bar | snack | Blue metallic package of Bis chocolate. |
+| gum_balls | snack | Orange bag of Fini sour gum balls. |
+| apple | fruit | Round red apple with a stem. |
+| lemon | fruit | Bright yellow lemon with textured skin. |
+| tangerine | fruit | Bright orange tangerine with bumpy skin. |
+| pear | fruit | Light green, bell-shaped pear with stem. |
+| spoon | dish | Metal spoon with a red handle. |
+| plate | dish | Solid dark red round dinner plate. |
+| cup | dish | Red speckled enamel mug with handle. |
+| fork | dish | Metal fork with a red handle. |
+| bowl | dish | Round red speckled enamel bowl. |
+| knife | dish | Small metal knife with a red handle. |
+| cloth | cleaning_supply | One red and one orange cloth. |
+| polish | cleaning_supply | Yellow bottle of Bravo furniture polish. |
+| brush | cleaning_supply | Blue scrub brush with green bristles. |
+| sponge | cleaning_supply | Yellow sponge with a green scrubber. |
+| coffee | drink | Two cartons of protein coffee drinks. |
+| kuat | drink | Green aluminum can of Kuat soda. |
+| milk | drink | Blue and white carton of milk. |
+| orange_juice | drink | Large plastic bottle of orange soda. |
+| fanta | drink | Orange aluminum can of Fanta soda. |
+| coke | drink | Red can of Coca-Cola Zero Sugar. |
 
 * Furnitures (i.e. Table, Chair) is not an object
 
 # Example Output
 ```json
 [
-  {"name": "dice", "category": "toy"},
-  {"name": "bowl", "category": "dish"},
-  {"name": "cheezit", "category": "snack"}
+  {"name": "mayo", "category": "food"},
+  {"name": "ketchup", "category": "food"},
+  {"name": "sponge", "category": "cleaning_supply"}
   {"name": "a red bottle", "category": "unknown"}
 ]
 ```
