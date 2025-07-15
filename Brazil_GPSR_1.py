@@ -129,7 +129,7 @@ def move(forward_speed: float = 0, turn_speed: float = 0):
 
 
 def post_message_request(step, s1, question):
-    api_url = "http://192.168.50.147:8888/Fambot"
+    api_url = "http://172.20.10.5:8888/Fambot"
     my_todo = {"Question1": "None",
                "Question2": "None",
                "Question3": "None",
@@ -301,41 +301,40 @@ class FollowMe(object):
 
 locations = {
     # Furniture and objects
-    "counter": [3.154, 2.870, 1.53],
-    "left tray": [3.350, 3.111, -1.53],
-    "right tray": [2.507, 3.287, -1.53],
-    "pen holder": [3.154, 2.870, 1.53],
-    "container": [3.350, 3.111, -1.53],
-    "left kachaka shelf": [2.507, 3.287, -1.53],
-    "right kachaka shelf": [-0.715, -0.193, 1.53],
-    "low table": [-1.182, 3.298, 3.14],
-    "left chair": [-0.261, -0.067, 0.1],
-    "right chair": [-0.265, 0.633, 0.1],
-    "trash bin": [2.490, 3.353, 1.53],
-    "tall table": [3.238, 3.351, 1.53],
-    "left kachaka station": [3.829, 3.092, 1.53],
-    "right kachaka station": [3.031, 3.436, 1.53],
-    "shelf": [-1.182, 3.298, 3.12],
+    "bedside table": [5.4,5.858,0.42],
+    "side table": [4.377,6.747,-3.14],
+    "bed": [3.810,5.442,0.723],
+    "kitchen table": [1.765,5.802,1.774],
+    "dishwasher": [1.481,6.239,-1.53],
+    "sink": [0.440,0.315,-1.53],
+    "microwave": [0.383,5.861,-2.218],
+    "waste basket": [0.528,4.795,-3.085],
+    "shelf": [1.642,5.529,3.14],
+    "refrigerator": [1.138,0.475,2.71],
+    "trash bin": [4.576,-0.088,0],
+    "desk": [5,2.647,-1.237],
+    "bar": [5.496,2,394,1.7],
+    "tv stand": [0.670,1.759,1.610],
+    "cabinet ": [1.35,2.174,3.14],
     # bed
-    "bed": [5.080, 3.032, 1.53],
+    "sofa": [1.659,1.330,-1.542],
     # dining room
-    "dining table": [-1.058, 4.001, 3.14],
-    "couch": [5.661, 3.102, 1.53],
+    "seats": [0.969,0.905,0],
     # Locations and special points
-    "entrance": [3.809, 2.981, 3.14],
-    "exit": [6.796, 3.083, 0.1],
-    "instruction point": [-0.967, -0.013, -1.53],
-    "dining room": [-0.397, 0.297, 0.1],
-    "living room": [3.364, 2.991, 1.53],
-    "bedroom": [0.028, 3.514, 3.139],
-    "study room": [-0.397, 0.297, 0.1]
+    "entry": [0.049,0.188, -3.14],
+    "exit": [0.097,7.848,-3.14],
+    "instruction point": [3.765,3.795, -1.53],
+    "bedroom": [4.1,6.51,2.083],
+    "kitchen": [0.689,6.181,-0.775],
+    "office": [4.357,2.533,0.663],
+    "living room": [1.069,2.017,-0.015]
 }
 # front 0 back 3.14 left 90 1.5 right 90 -1.5
 cout_location = {
-    "living room": [1.153, 3.338, 0.1],
-    "bedroom": [1.153, 3.338, 3.14],
-    "dining room": [-1.545, -0.303, 0.1],
-    "study room": [-1.581, -0.345, 0.15]
+    "bedroom": [2.9,3.642,1.109],
+    "kitchen": [2.732,3.355,2.145],
+    "office": [2.216,3.961,-0.646],
+    "living room": [3.644,3.931,-2.409]
 }
 dining_room_dif = {
     "din1": [-1.545, -0.303, 1.53],
@@ -419,7 +418,7 @@ if __name__ == "__main__":
         if _depth2 is None: continue
         frame = _frame2.copy()
         depth_frame = _depth2.copy()
-        
+
         cx, cy = 640 // 2, 320 // 2
         depth = depth_frame[cy, cx]
         frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
@@ -442,23 +441,23 @@ if __name__ == "__main__":
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     command_list = [
-"Take the person raising their left arm from the left chair to the bedroom",
-"Take the lying person from the left Kachaka shelf to the bedroom",
-"Tell me the name of the person at the tall table",
-"Tell me the pose of the person in the study room",
-"Tell me how many snacks there are on the container",
-"Tell me how many people in the bedroom are wearing white jackets",
-"Tell me what is the smallest drink on the trash bin",
-"Tell me what is the lightest dish on the shelf",
-"Say hello to Charlie in the living room and answer a quiz",
-"Greet Paris in the bathroom and answer a question",
-"Say what day is today to the person raising their left arm in the living room",
-"Introduce yourself to Charlie in the bedroom and follow them to the pen holder",
-"Salute the person wearing a black shirt in the bedroom and escort them to the shelf",
-"Tell your teams name to the person raising their left arm in the study room",
-"Look for a lying person in the dining room and say what day is today"]
+        "Take the person raising their left arm from the left chair to the bedroom",
+        "Take the lying person from the left Kachaka shelf to the bedroom",
+        "Tell me the name of the person at the tall table",
+        "Tell me the pose of the person in the study room",
+        "Tell me how many snacks there are on the container",
+        "Tell me how many people in the bedroom are wearing white jackets",
+        "Tell me what is the smallest drink on the trash bin",
+        "Tell me what is the lightest dish on the shelf",
+        "Say hello to Charlie in the living room and answer a quiz",
+        "Greet Paris in the bathroom and answer a question",
+        "Say what day is today to the person raising their left arm in the living room",
+        "Introduce yourself to Charlie in the bedroom and follow them to the pen holder",
+        "Salute the person wearing a black shirt in the bedroom and escort them to the shelf",
+        "Tell your teams name to the person raising their left arm in the study room",
+        "Look for a lying person in the dining room and say what day is today"]
     commandcntcnt = 0
-    for i in range(0,21):
+    for i in range(3):
         commandcntcnt = commandcntcnt + 1
         s = ""
         dining_room_action = 0
@@ -481,7 +480,7 @@ if __name__ == "__main__":
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         cv2.destroyAllWindows()
-        data = command_list[i]
+        #data = command_list[i]
         # continue
 
         speak("dear host your command is")
@@ -514,7 +513,7 @@ if __name__ == "__main__":
         # get gemini answer
         nigga = 1
         while True:
-            r = requests.get("http://192.168.50.147:8888/Fambot", timeout=2.5)
+            r = requests.get("http://172.20.10.5:8888/Fambot", timeout=2.5)
             response_data = r.text
             dictt = json.loads(response_data)
             if dictt["Steps"] == 1:
@@ -577,47 +576,54 @@ if __name__ == "__main__":
 
         # Questions, Names, Position
         if "ROOM1" not in liyt and "$ROOM1" not in liyt and ("PLACE1" in liyt or "$PLACE1" in liyt):
-            # Bedroom: bed
-            # Dining room: dining table, couch
-            # Studying room: shelf, left chair, right chair, left kachaka station, right kachaka station
-            # Living room: counter, left tray, right tray, pen holder, container, left kachaka shelf, right kachaka shelf, low table, tall table, trash bin
+            #"bedroom": 1,2,3,4
+            #"kitchen": 5,6,7,8,9,10,11,exit
+            #"office": 12,13,14
+            #"living room": 15,16,17,18,entry
             name_position = "$PLACE1"
             if "$PLACE1" not in liyt:
                 name_position = "PLACE1"
             if name_position in liyt:
                 ggg = liyt[name_position].lower()
-                if ggg in ["bed", "exit"]:
+                if ggg in ["bedside table","side table","bed"]:
                     liyt["$ROOM1"] = "bedroom"
-                elif ggg in ["dining table", "couch", "entrance"]:
-                    liyt["$ROOM1"] = "dining room"
-                elif ggg in ["shelf", "left chair", "right chair", "left kachaka station",
-                             "right kachaka station"]:
-                    liyt["$ROOM1"] = "studying room"
-                elif ggg in ["counter", "left tray", "right tray", "pen holder", "container",
-                             "left kachaka shelf", "right kachaka shelf", "low table", "tall table",
-                             "trash bin"]:
+                elif ggg in ["kitchen table", "dishwasher", "sink","exit","microwave","waste basket","shelf","refrigerator"]:
+                    liyt["$ROOM1"] = "kitchen"
+                elif ggg in ["trash bin", "desk", "bar"]:
+                    liyt["$ROOM1"] = "office"
+                elif ggg in ["tv stand", "cabinet", "sofa", "seats", "entry"]:
                     liyt["$ROOM1"] = "living room"
         real_name = "guest"
-        if "adel" in uuu:
-            real_name = "Adel"
-        elif "angel" in uuu:
-            real_name = "Angel"
-        elif "axel" in uuu:
-            real_name = "Axel"
-        elif "charlie" in uuu:
-            real_name = "Charlie"
-        elif "jane" in uuu:
-            real_name = "Jane"
-        elif "jules" in uuu:
-            real_name = "Jules"
-        elif "morgan" in uuu:
-            real_name = "Morgan"
-        elif "paris" in uuu:
-            real_name = "Paris"
-        elif "robin" in uuu:
-            real_name = "Robin"
-        elif "simone" in uuu:
-            real_name = "Simone"
+        if "maria" in uuu:
+            real_name = "maria"
+        elif "ana" in uuu:
+            real_name = "ana"
+        elif "francisca" in uuu:
+            real_name = "francisca"
+        elif "antônia" in uuu or "antonia" in uuu:
+            real_name = "antônia"
+        elif "adriana" in uuu:
+            real_name = "adriana"
+        elif "juliana" in uuu:
+            real_name = "juliana"
+        elif "marcia" in uuu:
+            real_name = "marcia"
+        elif "fernanda" in uuu:
+            real_name = "fernanda"
+        elif "patrícia" in uuu or "patricia" in uuu:
+            real_name = "patrícia"
+        elif "aline" in uuu:
+            real_name = "aline"
+        elif "jose" in uuu:
+            real_name = "jose"
+        elif "joao" in uuu:
+            real_name = "joao"
+        elif "antonio" in uuu:
+            real_name = "antonio"
+        elif "francisco" in uuu:
+            real_name = "francisco"
+        elif "carlos" in uuu:
+            real_name = "carlos"
         v2_turn_skip = 0
         speech2_turn_skip = 0
         nav2_skip_cnt = 0
@@ -625,7 +631,7 @@ if __name__ == "__main__":
         none_cnt = 0
         followmecnt = 0
         final_speak_to_guest = ""
-        command_stare_time=time.time()
+        command_stare_time = time.time()
         while not rospy.is_shutdown():
             # voice check
             # break
@@ -634,15 +640,15 @@ if __name__ == "__main__":
             rospy.Rate(10).sleep()
             if step_action == 100 or step_action == 101:
                 break
-            time_cnounting=150
-            if "follow" in user_input or ("navi" in command_type and "1" in command_type): time_cnounting=180
-            if abs(command_stare_time-time.time())>=time_cnounting:
-                step_action=100
-                step="none"
+            time_cnounting = 150
+            if "follow" in user_input or ("navi" in command_type and "1" in command_type): time_cnounting = 180
+            if abs(command_stare_time - time.time()) >= time_cnounting:
+                step_action = 100
+                step = "none"
                 speak("I can't finish the command")
-                action="none"
+                action = "none"
                 break
-            
+
             confirm_command = 0
             if s != "" and s != pre_s:
                 print(s)
@@ -778,7 +784,7 @@ if __name__ == "__main__":
                         cv2.imshow("capture_vision_(enumeration)1_img", image_flip)
                         cv2.imwrite(output_dir + "GSPR.jpg", image_flip)
                     # ask gemini
-                    url = "http://192.168.50.147:8888/upload_image"
+                    url = "http://172.20.10.5:8888/upload_image"
                     file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/GSPR.jpg"
                     with open(file_path, 'rb') as f:
                         files = {'image': (file_path.split('/')[-1], f)}
@@ -791,7 +797,7 @@ if __name__ == "__main__":
                     print(gg)
                     # get answer from gemini
                     while True:
-                        r = requests.get("http://192.168.50.147:8888/Fambot", timeout=2.5)
+                        r = requests.get("http://172.20.10.5:8888/Fambot", timeout=2.5)
                         response_data = r.text
                         dictt = json.loads(response_data)
                         if dictt["Steps"] == 10:
@@ -839,7 +845,7 @@ if __name__ == "__main__":
                     cv2.imshow("capture_vision_(descridption)1_img", image_flip)
                     cv2.imwrite(output_dir + "GSPR.jpg", image_flip)
                     # ask gemini
-                    url = "http://192.168.50.147:8888/upload_image"
+                    url = "http://172.20.10.5:8888/upload_image"
                     file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/GSPR.jpg"
                     with open(file_path, 'rb') as f:
                         files = {'image': (file_path.split('/')[-1], f)}
@@ -852,7 +858,7 @@ if __name__ == "__main__":
                     print(gg)
                     # get answer from gemini
                     while True:
-                        r = requests.get("http://192.168.50.147:8888/Fambot", timeout=2.5)
+                        r = requests.get("http://172.20.10.5:8888/Fambot", timeout=2.5)
                         response_data = r.text
                         dictt = json.loads(response_data)
                         if dictt["Steps"] == 10:
@@ -999,7 +1005,7 @@ if __name__ == "__main__":
                             file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/GSPR_color.jpg"
                             with open(file_path, 'rb') as f:
                                 files = {'image': (file_path.split('/')[-1], f)}
-                                url = "http://192.168.50.147:8888/upload_image"
+                                url = "http://172.20.10.5:8888/upload_image"
                                 response = requests.post(url, files=files)
                                 # remember to add the text question on the computer code
                             print("Upload Status Code:", response.status_code)
@@ -1011,7 +1017,7 @@ if __name__ == "__main__":
                             print(gg)
                             # get answer from gemini
                             while True:
-                                r = requests.get("http://192.168.50.147:8888/Fambot", timeout=10)
+                                r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                                 response_data = r.text
                                 dictt = json.loads(response_data)
                                 if dictt["Steps"] == 12:
@@ -1154,7 +1160,7 @@ if __name__ == "__main__":
                         file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/GSPR_people.jpg"
                         with open(file_path, 'rb') as f:
                             files = {'image': (file_path.split('/')[-1], f)}
-                            url = "http://192.168.50.147:8888/upload_image"
+                            url = "http://172.20.10.5:8888/upload_image"
                             response = requests.post(url, files=files)
                             # remember to add the text question on the computer code
                         print("Upload Status Code:", response.status_code)
@@ -1165,7 +1171,7 @@ if __name__ == "__main__":
                         print(gg)
                         # get answer from gemini
                         while True:
-                            r = requests.get("http://192.168.50.147:8888/Fambot", timeout=10)
+                            r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                             response_data = r.text
                             dictt = json.loads(response_data)
                             if dictt["Steps"] == 11:
@@ -1188,7 +1194,7 @@ if __name__ == "__main__":
                         feature = feature.lower()
                         if "yes" in aaa or "ys" in aaa or "none" in feature:
 
-                            speak("found you the guest " + feature+" my name is Fambot")
+                            speak("found you the guest " + feature + " my name is Fambot")
                             action = "front"
                             step = "none"
                         else:
@@ -1425,7 +1431,7 @@ if __name__ == "__main__":
                         file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/GSPR_people.jpg"
                         with open(file_path, 'rb') as f:
                             files = {'image': (file_path.split('/')[-1], f)}
-                            url = "http://192.168.50.147:8888/upload_image"
+                            url = "http://172.20.10.5:8888/upload_image"
                             response = requests.post(url, files=files)
                             # remember to add the text question on the computer code
                         print("Upload Status Code:", response.status_code)
@@ -1436,7 +1442,7 @@ if __name__ == "__main__":
                         print(gg)
                         # get answer from gemini
                         while True:
-                            r = requests.get("http://192.168.50.147:8888/Fambot", timeout=10)
+                            r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                             response_data = r.text
                             dictt = json.loads(response_data)
                             if dictt["Steps"] == 11:
@@ -1718,7 +1724,7 @@ if __name__ == "__main__":
                         file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/GSPR_people.jpg"
                         with open(file_path, 'rb') as f:
                             files = {'image': (file_path.split('/')[-1], f)}
-                            url = "http://192.168.50.147:8888/upload_image"
+                            url = "http://172.20.10.5:8888/upload_image"
                             response = requests.post(url, files=files)
                             # remember to add the text question on the computer code
                         print("Upload Status Code:", response.status_code)
@@ -1729,7 +1735,7 @@ if __name__ == "__main__":
                         print(gg)
                         # get answer from gemini
                         while True:
-                            r = requests.get("http://192.168.50.147:8888/Fambot", timeout=10)
+                            r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                             response_data = r.text
                             dictt = json.loads(response_data)
                             if dictt["Steps"] == 11:
