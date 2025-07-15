@@ -1,9 +1,34 @@
-- Say your team's name to the person pointing to the left in the bedroom
-- Give me a cup from the shelf
-- Meet Yoshimura in the study room and escort them to the tall table
-- Navigate to the study room then meet Andrew and follow them to the dining room
-- Meet Jack at the right tray then locate them in the study room
-- Answer the quiz of the person giving the V sign in the study room
-- Answer the question of the person pointing to the left in the living room
-- Tell me what is the thinnest object on the low table
-- Tell me what is the heaviest object on the shelf
+locations = {
+    "bedside table": [5.4,5.858,0.42],
+    "side table": [4.377,6.747,-3.14],
+    "bed": [3.810,5.442,0.723],
+    "kitchen table": [1.765,5.802,1.774],
+    "dishwasher": [1.481,6.239,-1.53],
+    #"sink": [0.440,0.315,-1.53],
+    "microwave": [0.383,5.861,-2.218],
+    #"waste basket": [0.528,4.795,-3.085],
+    "shelf": [1.642,5.529,3.14],
+    #"refrigerator": [1.138,0.475,2.71],
+    #"trash bin": [4.576,-0.088,0],
+    "desk": [5,2.647,-1.237],
+    "bar": [5.496,2.394,1.7],
+    "tv stand": [0.670,1.759,1.610],
+    "cabinet ": [1.35,2.174,3.14],
+    # bed
+    "sofa": [1.659,1.330,-1.542],
+    #"seats": [0.969,0.905,0],
+    #"entry": [0.049,0.188, -3.14],
+    #"exit": [0.097,7.848,-3.14],
+    "instruction point": [3.765,3.795, -1.53],
+    "bedroom": [4.1,6.51,2.083],
+    "kitchen": [0.689,6.181,-0.775],
+    #"office": [4.357,2.533,0.663],
+    #"living room": [1.069,2.017,-0.015]
+}
+# front 0 back 3.14 left 90 1.5 right 90 -1.5
+cout_location = {
+    #"bedroom": [2.9,3.642,1.109],
+    "kitchen": [2.732,3.355,2.145],
+    "office": [2.216,3.961,-0.646],
+    "living room": [3.644,3.931,-2.409]
+}
