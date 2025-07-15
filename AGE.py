@@ -24,6 +24,10 @@ locations = {
     "kitchen": [0.689,6.181,-0.775],
     #"office": [4.357,2.533,0.663],
     #"living room": [1.069,2.017,-0.015]
+    "exit": [0.097,7.848,-3.0],
+    "sink": [0.396,6.064,-1.611],
+    "waste basket": [0.47,5.11,-3.0],
+    "refrigerator": [0.47,6.95,-3.0],
 }
 # front 0 back 3.14 left 90 1.5 right 90 -1.5
 cout_location = {
