@@ -189,7 +189,7 @@ def turn(angle):
                 time.sleep(0.026)
         else:
             for i in range(angle):
-                move(0, 0 - .6)
+                move(0, 0 -0.6)
                 time.sleep(0.026)
         time.sleep(1.5)
 
@@ -198,8 +198,8 @@ def seat_turn(num12):
     check_num = str(num12)
     angle1 = -2
     angle2 = -1
-    angle3 = 0
-    angle4 = 1
+    angle3 = 1
+    angle4 = 2
     if "1" in check_num:
         turn(angle1)
     elif "2" in check_num:
@@ -222,8 +222,8 @@ def seat_turn_back(num12):
     check_num = str(num12)
     angle1 = 2
     angle2 = 1
-    angle3 = 0
-    angle4 = -1
+    angle3 = 1
+    angle4 = -2
     if "1" in check_num:
         turn(angle1)
     elif "2" in check_num:
