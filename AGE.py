@@ -49,3 +49,9 @@ locations = {
     #"seats task3": [0.401, 2.622, -0.81],
     
 }
+
+locations = {
+    "living room": [1.069,2.017,-0.015],
+    "seats task3": [0.401, 2.622, -0.78],
+    
+}
