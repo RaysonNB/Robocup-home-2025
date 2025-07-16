@@ -531,7 +531,7 @@ if __name__ == "__main__":
                 print("sent image")
                 if nigga_i == 1:
                     number = 4
-                    who_help = "here have 4 seats please tell me where have empty seat(chair), just give me number in [1,2,3,4], there should be " + str(
+                    who_help = "here have 4 seats please tell me where have empty seat(sofa), just give me number in [1,2,3,4], there should be " + str(
                         number) + " numbers, answer format: ******[numbers]******, for example ******[1,2,3]******"  # correct the numbers**********************
                     gg = post_message_request("seat1", "", who_help)
                     print(gg)
