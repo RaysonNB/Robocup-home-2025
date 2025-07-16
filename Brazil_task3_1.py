@@ -139,7 +139,7 @@ def post_message_request(step, s1, question):
                "Voice": s1,
                "Questionasking": question,
                "answer": "None"}
-    response = requests.post(api_url, json=my_todo, timeout=2.5)
+    response = requests.post(api_url, json=my_todo, timeout=10)
     result = response.json()
     return result
 
@@ -213,7 +213,7 @@ def seat_turn(num12):
 
 locations = {
     # Furniture and objects
-    "seats": [0.401, 2.622, -0.81],
+    "seats": [0.401, 2.622, -0.78],
     "guest": [-0.453, 0.179, -3.1],
     "drinktable": [5.454, 2.794, 1.55],
 }
