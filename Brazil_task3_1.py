@@ -131,7 +131,7 @@ def move(forward_speed: float = 0, turn_speed: float = 0):
 
 
 def post_message_request(step, s1, question):
-    api_url = "http://192.168.0.121:8888/Fambot"
+    api_url = "http://172.20.10.5:8888/Fambot"
     my_todo = {"Question1": "None",
                "Question2": "None",
                "Question3": "None",
@@ -139,7 +139,7 @@ def post_message_request(step, s1, question):
                "Voice": s1,
                "Questionasking": question,
                "answer": "None"}
-    response = requests.post(api_url, json=my_todo, timeout=10)
+    response = requests.post(api_url, json=my_todo, timeout=20)
     result = response.json()
     return result
 
@@ -213,8 +213,8 @@ def seat_turn(num12):
 
 locations = {
     # Furniture and objects
-    "seats": [0.401, 2.622, -0.78],
-    "guest": [-0.453, 0.179, -3.1],
+    "seats": [0.401, 2.622, -0.81],
+    "guest": [-0.157,0.233, -3.1],
     "drinktable": [5.454, 2.794, 1.55],
 }
 
@@ -343,7 +343,7 @@ if __name__ == "__main__":
                         file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/guest1.jpg"
                         with open(file_path, 'rb') as f:
                             files = {'image': (file_path.split('/')[-1], f)}
-                            url = "http://192.168.0.121:8888/upload_image"
+                            url = "http://172.20.10.5:8888/upload_image"
                             response = requests.post(url, files=files)
                             # remember to add the text question on the computer code
                         print("Upload Status Code:", response.status_code)
@@ -359,7 +359,7 @@ if __name__ == "__main__":
                     speak1("My name is Fambot, please answer my following question in complete sentence")
                     speak1("what is your name")
                     say_cnt += 1
-                if "otto" in s or "adel" in s or "adolf" in s: name_cnt = "adel"
+                if "maria" in s or "Maureen" in s or "adolf" in s: name_cnt = "Maria"
                 if "angel" in s: name_cnt = "angel"
                 if "axel" in s or "hazel" in s or "easel" in s or "crystal" in s: name_cnt = "axel"
                 if "charlie" in s or "holly" in s: name_cnt = "charlie"
@@ -418,7 +418,7 @@ if __name__ == "__main__":
                         print("********************")
 
                         while True:
-                            r = requests.get("http://192.168.0.121:8888/Fambot", timeout=10)
+                            r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                             response_data = r.text
                             dictt = json.loads(response_data)
                             time.sleep(2)
@@ -443,7 +443,7 @@ if __name__ == "__main__":
                 file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/task3.jpg"
                 with open(file_path, 'rb') as f:
                     files = {'image': (file_path.split('/')[-1], f)}
-                    url = "http://192.168.0.121:8888/upload_image"
+                    url = "http://172.20.10.5:8888/upload_image"
                     response = requests.post(url, files=files)
                     # remember to add the text question on the computer code
                 print("Upload Status Code:", response.status_code)
@@ -478,7 +478,7 @@ if __name__ == "__main__":
                 step = "waitdrink"
                 # get answer from gemini
             if step == "waitdrink":
-                r = requests.get("http://192.168.0.121:8888/Fambot", timeout=10)
+                r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                 response_data = r.text
                 dictt = json.loads(response_data)
                 time.sleep(2)
@@ -523,7 +523,7 @@ if __name__ == "__main__":
                 file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/emptyseat.jpg"
                 with open(file_path, 'rb') as f:
                     files = {'image': (file_path.split('/')[-1], f)}
-                    url = "http://192.168.0.121:8888/upload_image"
+                    url = "http://172.20.10.5:8888/upload_image"
                     response = requests.post(url, files=files)
                     # remember to add the text question on the computer code
                 print("Upload Status Code:", response.status_code)
@@ -542,7 +542,7 @@ if __name__ == "__main__":
                 time.sleep(1)
                 step = "waitempty"
             if step == "waitempty":
-                r = requests.get("http://192.168.0.121:8888/Fambot", timeout=10)
+                r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                 response_data = r.text
                 dictt = json.loads(response_data)
                 time.sleep(2)
@@ -632,7 +632,7 @@ if __name__ == "__main__":
                 if nigga_i == 1:
                     gg = post_message_request("feature", "", "")
                     while True:
-                        r = requests.get("http://192.168.0.121:8888/Fambot", timeout=10)
+                        r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                         response_data = r.text
                         dictt = json.loads(response_data)
                         time.sleep(2)
