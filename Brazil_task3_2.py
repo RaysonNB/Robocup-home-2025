@@ -207,13 +207,13 @@ while True:
         img = PIL.Image.open(path_sample)
         img2 = PIL.Image.open("C:/Users/rayso/Desktop/python/guest1.jpg")
         response = model.generate_content([img2, "this is the first guest", img,
-                                           "here have 4 seats please tell me where is he sitting, just give me number in [1,2,3,4], there should be 1 numbers, answer format: ******[...]******"])
+                                           "here have 4 seats(sofa) please tell me where is he sitting, just give me number in [1,2,3,4], there should be 1 numbers, answer format: ******[...]******"])
         file_data_string = response.text
         print(file_data_string)
         time.sleep(1)
         file_data_string = file_data_string.replace("**", "")
         response = model.generate_content([img,
-                                           "here have 4 seats please tell me where have empty seat(chair), just give me number in [1,2,3,4], there should be 2 numbers, answer format: ******[numbers]******, for example ******[1,2,3]******"])
+                                           "here have 4 seats(sofa) please tell me where have empty seats(sofa), just give me number in [1,2,3,4], there should be 2 numbers, answer format: ******[numbers]******, for example ******[1,2,3]******"])
         file_data_string1 = response.text
         print(file_data_string)
         file_data_string1 = file_data_string1.replace("**", "")
