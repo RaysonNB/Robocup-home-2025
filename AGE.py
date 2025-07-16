@@ -1,5 +1,55 @@
-    "bedside table": [5.4, 5.858, 0.42],
-    "side table": [4.377, 6.747, -3.14],
+#!/usr/bin/env python3
+from RobotChassis import RobotChassis
+from std_srvs.srv import Empty
+import rospy
+import os
+import time
+
+
+def speak(g):
+    os.system(f'espeak "{g}"')
+    # rospy.loginfo(g)
+    print(g)
+
+
+def check_item(name):
+    corrected = "starting point"
+    cnt = 0
+    if name in locations:
+        corrected = name
+    else:
+        corrected = corrected.replace("_", " ")
+    return corrected
+
+
+clear_costmaps = rospy.ServiceProxy("/move_base/clear_costmaps", Empty)
+
+
+def walk_to(name):
+    if "none" not in name or "unknow" in name:
+        name = name.lower()
+        real_name = check_item(name)
+        speak("going to " + str(name))
+        if real_name in locations:
+            num1, num2, num3 = locations[real_name]
+            chassis.move_to(num1, num2, num3)
+            while not rospy.is_shutdown():
+                # 4. Get the chassis status.
+                code = chassis.status_code
+                text = chassis.status_text
+                if code == 3:
+                    break
+                if code == 4:
+                    break
+            speak("arrived")
+            time.sleep(1)
+            clear_costmaps
+
+
+#sink, waste basket
+locations = {
+    "bedside table": [4.64, 5.73,0.44],
+    "side table": [4.294,6.624,-3.102],
     "bed": [3.810, 5.442, 0.723],
     "kitchen table": [1.765, 5.802, 1.774],
     "dishwasher": [1.481, 6.239, -1.53],
@@ -35,3 +85,45 @@ cout_location = {
     "office": [2.216, 3.961, -0.646],
     "living room": [3.644, 3.931, -2.409]
 }
+# front 0 back 3.14 left 90 1.5 right 90 -1.5
+
+
+# name
+# qestion list
+# answer
+def walk_to1(name):
+    if "none" not in name or "unknow" in name:
+        name = name.lower()
+        real_name = check_item(name)
+        if real_name in cout_location:
+            speak("going to " + str(name))
+            num1, num2, num3 = cout_location[real_name]
+            chassis.move_to(num1, num2, num3)
+            while not rospy.is_shutdown():
+                # 4. Get the chassis status.
+                code = chassis.status_code
+                text = chassis.status_text
+                if code == 3:
+                    break
+                if code == 4:
+                    break
+            speak("arrived")
+            time.sleep(1)
+            clear_costmaps
+
+
+if __name__ == "__main__":
+    rospy.init_node("demo")
+    rospy.loginfo("demo node start!")
+    # open things
+    chassis = RobotChassis()
+    
+    for x in locations.keys():
+        walk_to(x)
+        time.sleep(2)
+    for x in cout_location.keys():
+        speak("count position")
+        walk_to1(x)
+        time.sleep(2)
+        
+    clear_costmaps
