@@ -213,8 +213,8 @@ def seat_turn(num12):
 
 locations = {
     # Furniture and objects
-    "seats": [0.401, 2.622, -0.812],
-    "guest": [-0.157,0.233, -3.1],
+    "seats": [0.401, 2.622, -0.8115],
+    "guest": [0.456, 0.1, -3.1],
     "drinktable": [5.454, 2.794, 1.55],
 }
 
@@ -359,22 +359,22 @@ if __name__ == "__main__":
                     speak1("My name is Fambot, please answer my following question in complete sentence")
                     speak1("what is your name")
                     say_cnt += 1
-                '''
-                if "maria" in s or "n" in s or "n" in s: name_cnt = "Maria"
-                if "angel" in s or "n" in s or "n" in s: name_cnt = "Ana"
-                if "francisca" in s or "n" in s or "n" in s: name_cnt = "Francisca"
-                if "antônia" in s or "antonia" in s or "n" in s or "n" in s: name_cnt = "Antônia"
-                if "adriana" in s or "n" in s or "n" in s: name_cnt = "Adriana"
-                if "juliana" in s or "n" in s or "n" in s: name_cnt = "Juliana"
-                if "marcia" in s or "n" in s or "n" in s: name_cnt = "Marcia"
-                if "fernanda" in s or "n" in s or "n" in s: name_cnt = "Fernanda"
-                if "patrícia" in s or "patricia" in s or "n" in s or "n" in s: name_cnt = "Patrícia"
-                if "aline" in s or "n" in s or "n" in s: name_cnt = "Aline"
-                if "jose" in s or "n" in s or "n" in s: name_cnt = "Jose"
-                if "joao" in s or "n" in s or "n" in s: name_cnt = "Joao"
-                if "antonio" in s or "n" in s or "n" in s: name_cnt = "Antonio"
-                if "francisco" in s or "n" in s or "n" in s: name_cnt = "Francisco"
-                if "carlos" in s or "n" in s or "n" in s: name_cnt = "Carlos"
+                
+                if "maria" in s: name_cnt = "Maria"
+                if "angel" in s: name_cnt = "Ana"
+                if "francisca" in s or "francesca" in s or "fantasies" in s: name_cnt = "Francisca"
+                if "antônia" in s or "antonia" in s:name_cnt = "Antônia"
+                if "adriana" in s: name_cnt = "Adriana"
+                if "juliana" in s or "liliana" in s: name_cnt = "Juliana"
+                if "marcia" in s or "michelle" in s or "maxsea" in s: name_cnt = "Marcia"
+                if "fernanda" in s: name_cnt = "Fernanda"
+                if "patrícia" in s or "patricia" in s: name_cnt = "Patrícia"
+                if "aline" in s or "eileen" in s or "ali" in s: name_cnt = "Aline"
+                if "jose" in s or "show" in s or "joke" in s: name_cnt = "Jose"
+                if "joao" in s or "joel" in s: name_cnt = "Joao"
+                if "antonio" in s: name_cnt = "Antonio"
+                if "francisco" in s: name_cnt = "Francisco"
+                if "carlos" in s: name_cnt = "Carlos"
                 '''
                  if "otto" in s or "adel" in s or "adolf" in s: name_cnt = "adel"
                 if "angel" in s: name_cnt = "angel"
@@ -386,6 +386,7 @@ if __name__ == "__main__":
                 if "paris" in s: name_cnt = "paris"
                 if "robin" in s or "robbie" in s or "ruby" in s or "woman" in s or "robert" in s: name_cnt = "robin"
                 if "seymour" in s or "simone" in s or "simon" in s: name_cnt = "simone"
+                '''
                 if (name_cnt == "none" and s != ""):
                     speak("please repeat")
                 if name_cnt != "none":
@@ -401,7 +402,7 @@ if __name__ == "__main__":
                 if "milk" in s: name_cnt = "milk"
                 if "fanta" in s or "hunter" in s or "centre" in s or "better" in s or "santa" in s: name_cnt = "fanta"
                 #kgldkf
-                if "kuat" in s or "quad" in s or "quiet" in s or "caught" in s or "coolant" in s or "cart" in s or "clutch" in s or "cost" in s: name_cnt = "kuat"
+                if "kuat" in s or "quad" in s or "quiet" in s or "caught" in s or "coolant" in s or "cart" in s or "clutch" in s or "cost" in s or"squash" in s: name_cnt = "kuat"
                 if "coke" in s or "cook" in s or "cock" in s or "good" in s: name_cnt = "coke"
                 if (name_cnt == "none" and s != ""):
                     speak("please repeat")
@@ -420,6 +421,7 @@ if __name__ == "__main__":
                 if "football" in s: interest_name = "football"
                 if "eat" in s: interest_name = "eat"
                 if "robot" in s: interest_name = "robot"
+                if "ai" in s: interest_name = "AI"
                 if (interest_name == "none" and s != ""):
                     speak("please repeat")
                 if interest_name != "none":
