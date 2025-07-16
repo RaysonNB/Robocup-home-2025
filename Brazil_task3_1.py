@@ -304,7 +304,7 @@ if __name__ == "__main__":
                     cx = (x2 - x1) // 2 + x1
                     cy = (y2 - y1) // 2 + y1
                     _, _, d = get_real_xyz(code_depth, cx, cy, 2)
-                    if score > 0.65 and class_id == 0 and d != 0 and d * math.cos(25) <= 1600:
+                    if score > 0.65 and class_id == 0 and d != 0 and d <= 1200:
                         check_cnt += 1
                         mx1, my1, mx2, my2 = x1, y1, x2, y2
                         yn = 1
@@ -328,7 +328,7 @@ if __name__ == "__main__":
                     cx = (x2 - x1) // 2 + x1
                     cy = (y2 - y1) // 2 + y1
                     _, _, d = get_real_xyz(code_depth, cx, cy, 2)
-                    if score > 0.65 and class_id == 0 and d != 0 and d * math.cos(25) <= 1600:
+                    if score > 0.65 and class_id == 0 and d != 0 and d <= 1200:
                         check_cnt += 1
                         mx1, my1, mx2, my2 = x1, y1, x2, y2
                         yn = 1
