@@ -17,6 +17,7 @@ from robotic_arm_control import RoboticController, Dy
 # TABLE_P = (0.284, 3.317, -1.57)
 TABLE_P = (0.525,2.7,1.55)
 GOAL_P = (0.144,2.21,3.14)
+FULL_CABINET = (1.35, 2.174, 3.14)
 # FOOD_POINT = (6.34, 3.07, 1.5)
 # TASK_POINT = (5.13, 2.90, 1.5)
 # UNKNOWN_POINT = (3.97, 2.85, 1.5)
@@ -60,7 +61,7 @@ If no object here, please output a empty json list
 | cheese_snack | snack | Yellow bag of Fandangos cheese snacks. |
 | chocolate_bar | snack | Blue metallic package of Bis chocolate. |
 | gum_balls | snack | Orange bag of Fini sour gum balls. |
-| apple | fruit | Round red apple with a stem. |
+| apple | fruit | Round **red** apple with a stem. |
 | lemon | fruit | Bright yellow lemon with textured skin. |
 | tangerine | fruit | Bright orange tangerine with bumpy skin. |
 | pear | fruit | Light green, bell-shaped pear with stem. |
@@ -449,12 +450,12 @@ def main():
 
     
     clear_costmaps
-    # walk_to(FULL_CABINET)
-    # respeaker.say("Huamn, Please open the cabinet door for me")
-    # time.sleep(10)
-    # img_cpy = cam1.get_frame()
-    # cv2.imwrite("./cabinet.jpg", img_cpy)
-    # respeaker.say("Ok")
+    walk_to(FULL_CABINET)
+    respeaker.say("Huamn, Please open the cabinet door for me")
+    time.sleep(10)
+    img_cpy = cam1.get_frame()
+    cv2.imwrite("./cabinet.jpg", img_cpy)
+    respeaker.say("Ok")
     
     walk_to(TABLE_P)
 
@@ -478,11 +479,12 @@ def main():
         if desc is not None:
             desc = desc.get("appearance")
         bboxes = ask_gemini_for_bbox(f"{name},({desc})", "./image2.jpg")
-        saved_bboxes.append(obj)
-        saved_bboxes[-1]["bbox"] = bboxes
         
         draw_bbox(img_cpy, bboxes, label=f"{name}:{categ}")
         cv2.imwrite("./image3.jpg", img_cpy)
+        if obj["name"].lower() not in ["fanta", "milk"] and obj["category"].lower() != "unknown":
+            saved_bboxes.append(obj)
+            saved_bboxes[-1]["bbox"] = bboxes
     cv2.imwrite("./image_all_box_evidence.jpg", img_cpy)
 
     img_cpy = cv2.imread("./image2.jpg")
@@ -490,6 +492,7 @@ def main():
     Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0)
 
     respeaker.say("I see")
+
     for a_object in saved_bboxes[:5]:
         img_base = img_cpy.copy()
         logger.info(f"Requesting for... {a_object}")
@@ -498,17 +501,21 @@ def main():
         draw_bbox(img_base, a_object["bbox"], label=f"{a_object['name']}:{a_object['category']}", color=(0, 9, 255), thickness=3)
         cv2.imwrite("./image.jpg", img_base)
 
-        respeaker.say(f"Please help me take {a_object['name']} inside the red bounding box")
+        respeaker.say(f"Human, please help me take {a_object['name']} inside the red bounding box")
         time.sleep(5)
         respeaker.say("Help me put it in my robot arm and wait for the gripper close")
-        time.sleep(10)
+        time.sleep(5)
+        position = generate_content(f"Which layer most likely to put {a_object['name']}? your output must be in [1, 2, 3, 4], from top to down ", "./cabinet.jpg")
+        position = str(position.get('generated_text'))
 
         print("**CLOSE_ARM")
         close_grip(id_list[-1])
         respeaker.say("Thank you")
         time.sleep(5)
 
-        respeaker.say(a_object["category"])
+        respeaker.say(f"This is a {a_object['category']} Object")
+        respeaker.say(f"I think this item should be place on layer {position}, from top to down")
+        
         walk_to(GOAL_P)
         
         respeaker.say("Putting Object")
