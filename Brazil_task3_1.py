@@ -179,9 +179,9 @@ def walk_to(name):
 
 def turn(angle):
     if angle == -1:
-        move(0, 0.2)
+        move(0, 0.25)
     elif angle == 1:
-        move(0, -0.2)
+        move(0, -0.25)
     else:
         if angle < 0:
             for i in range(-angle):
@@ -208,12 +208,12 @@ def seat_turn(num12):
         turn(angle3)
     elif "4" in check_num:
         turn(angle4)
-    time.sleep(1)
+    time.sleep(1.2)
 
 
 locations = {
     # Furniture and objects
-    "seats": [0.401, 2.622, -0.81],
+    "seats": [0.401, 2.622, -0.812],
     "guest": [-0.157,0.233, -3.1],
     "drinktable": [5.454, 2.794, 1.55],
 }
@@ -359,16 +359,22 @@ if __name__ == "__main__":
                     speak1("My name is Fambot, please answer my following question in complete sentence")
                     speak1("what is your name")
                     say_cnt += 1
-                if "maria" in s or "Maureen" in s or "adolf" in s: name_cnt = "Maria"
-                if "angel" in s: name_cnt = "angel"
-                if "axel" in s or "hazel" in s or "easel" in s or "crystal" in s: name_cnt = "axel"
-                if "charlie" in s or "holly" in s: name_cnt = "charlie"
-                if "jane" in s or "shane" in s: name_cnt = "jane"
-                if "jow" in s or "joe" in s or "jewel" in s or "jules" in s or "george" in s or "charles" in s: name_cnt = "jules"
-                if "morgan" in s: name_cnt = "morgan"
-                if "paris" in s: name_cnt = "paris"
-                if "robin" in s or "robbie" in s or "ruby" in s or "woman" in s or "robert" in s: name_cnt = "robin"
-                if "seymour" in s or "simone" in s or "simon" in s: name_cnt = "simone"
+                if "maria" in s or "n" in s or "n" in s: name_cnt = "Maria"
+                if "angel" in s or "n" in s or "n" in s: name_cnt = "Ana"
+                if "francisca" in s or "n" in s or "n" in s: name_cnt = "Francisca"
+                if "antônia" in s or "antonia" in s or "n" in s or "n" in s: name_cnt = "Antônia"
+                if "adriana" in s or "n" in s or "n" in s: name_cnt = "Adriana"
+                if "juliana" in s or "n" in s or "n" in s: name_cnt = "Juliana"
+                if "marcia" in s or "n" in s or "n" in s: name_cnt = "Marcia"
+                if "fernanda" in s or "n" in s or "n" in s: name_cnt = "Fernanda"
+                if "patrícia" in s or "patricia" in s or "n" in s or "n" in s: name_cnt = "Patrícia"
+                if "aline" in s or "n" in s or "n" in s: name_cnt = "Aline"
+                if "jose" in s or "n" in s or "n" in s: name_cnt = "Jose"
+                if "joao" in s or "n" in s or "n" in s: name_cnt = "Joao"
+                if "antonio" in s or "n" in s or "n" in s: name_cnt = "Antonio"
+                if "francisco" in s or "n" in s or "n" in s: name_cnt = "Francisco"
+                if "carlos" in s or "n" in s or "n" in s: name_cnt = "Carlos"
+
                 if (name_cnt == "none" and s != ""):
                     speak("please repeat")
                 if name_cnt != "none":
@@ -379,12 +385,13 @@ if __name__ == "__main__":
             if step == "drink":
                 name_cnt = "none"
                 s = s.lower()
-                if "coffee" in s: name_cnt = "Coffee"
-                if "orange" in s: name_cnt = "Orangle Juice"
+                if "coffee" in s or "cafe" in s: name_cnt = "Coffee"
+                if "orange" in s or "juice" in s: name_cnt = "Orangle Juice"
                 if "milk" in s: name_cnt = "milk"
-                if "fanta" in s: name_cnt = "fanta"
-                if "kuat" in s: name_cnt = "kuat"
-                if "coke" in s: name_cnt = "coke"
+                if "fanta" in s or "hunter" in s or "centre" in s or "better" in s or "santa" in s: name_cnt = "fanta"
+                #kgldkf
+                if "kuat" in s or "quad" in s or "quiet" in s or "caught" in s or "coolant" in s or "cart" in s or "clutch" in s or "cost" in s: name_cnt = "kuat"
+                if "coke" in s or "cook" in s or "cock" in s or "good" in s: name_cnt = "coke"
                 if (name_cnt == "none" and s != ""):
                     speak("please repeat")
                 if name_cnt != "none":
@@ -504,8 +511,8 @@ if __name__ == "__main__":
                 # correct the numbers************************************
                 positions = {
                     1: (int(width * 0.08), int(height * 0.5)),
-                    2: (int(width * 0.3), int(height * 0.5)),
-                    3: (int(width * 0.7), int(height * 0.5)),
+                    2: (int(width * 0.33), int(height * 0.5)),
+                    3: (int(width * 0.71), int(height * 0.5)),
                     4: (int(width * 0.88), int(height * 0.5)),
                 }
                 for number, pos in positions.items():
@@ -531,7 +538,7 @@ if __name__ == "__main__":
                 print("sent image")
                 if nigga_i == 1:
                     number = 4
-                    who_help = "here have 4 seats please tell me where have empty seat(sofa), just give me number in [1,2,3,4], there should be " + str(
+                    who_help = "here have 4 seats please tell me where have empty seat(chair), just give me number in [1,2,3,4], there should be " + str(
                         number) + " numbers, answer format: ******[numbers]******, for example ******[1,2,3]******"  # correct the numbers**********************
                     gg = post_message_request("seat1", "", who_help)
                     print(gg)
