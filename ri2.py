@@ -28,7 +28,7 @@ def main():
             respeaker.say("The door is opened")
 
             time.sleep(5)
-            for i in range(80):
+            for _ in range(80):
                 chassis_move.set_linear(0.25)
                 rate.sleep()
             time.sleep(3)
@@ -41,12 +41,12 @@ def main():
 
     cv2.destroyAllWindows()
 
-    navigator.move_to(*[4.130, 3.064, -3.074])
+    navigator.move_to(*[3.500, 3.064, -3.074])
     time.sleep(2)
     respeaker.say("Testing testing")
-    prompt = ""
-    while prompt != "ok":
-        prompt = input(">>")
+    time.sleep(5)
+    respeaker.say("i am going to exit after 3 seconds")
+    time.sleep(3)
 
     navigator.move_to(*[-1.032, 7.978, -3.092])
     time.sleep(2)
