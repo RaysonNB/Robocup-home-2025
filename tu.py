@@ -15,8 +15,8 @@ from robotic_arm_control import RoboticController, Dy
 
 
 # TABLE_P = (0.284, 3.317, -1.57)
-TABLE_P = (2.185, 3.201, -1.358)
-GOAL_P = (4.602, 3.462, 1.548)
+TABLE_P = (0.525,2.7,1.55)
+GOAL_P = (0.144,2.21,3.14)
 # FOOD_POINT = (6.34, 3.07, 1.5)
 # TASK_POINT = (5.13, 2.90, 1.5)
 # UNKNOWN_POINT = (3.97, 2.85, 1.5)
@@ -94,6 +94,141 @@ If no object here, please output a empty json list
 ```
 """
 
+object_list_dict = {
+    "mayo": {
+        "category": "food",
+        "appearance": "Squeeze bottle of green mayonnaise."
+    },
+    "tuna": {
+        "category": "food",
+        "appearance": "Round, blue metal can of tuna."
+    },
+    "ketchup": {
+        "category": "food",
+        "appearance": "Three red plastic squeeze bottles of ketchup."
+    },
+    "oats": {
+        "category": "food",
+        "appearance": "Two cardboard boxes of Nestlé oats."
+    },
+    "broth": {
+        "category": "food",
+        "appearance": "Knorr broth box with two cubes."
+    },
+    "corn_flower": {
+        "category": "food",
+        "appearance": "Yellow and blue bag of corn flour."
+    },
+    "peanuts": {
+        "category": "snack",
+        "appearance": "Golden-brown bag of Japanese-style peanuts."
+    },
+    "cornflakes": {
+        "category": "snack",
+        "appearance": "Red Nescau Duo cereal box."
+    },
+    "crisps": {
+        "category": "snack",
+        "appearance": "Green and blue Ruffles chips bag."
+    },
+    "pringles": {
+        "category": "snack",
+        "appearance": "Three tall cylindrical cans of Pringles."
+    },
+    "cheese_snack": {
+        "category": "snack",
+        "appearance": "Yellow bag of Fandangos cheese snacks."
+    },
+    "chocolate_bar": {
+        "category": "snack",
+        "appearance": "Blue metallic package of Bis chocolate."
+    },
+    "gum_balls": {
+        "category": "snack",
+        "appearance": "Orange bag of Fini sour gum balls."
+    },
+    "apple": {
+        "category": "fruit",
+        "appearance": "Round red apple with a stem."
+    },
+    "lemon": {
+        "category": "fruit",
+        "appearance": "Bright yellow lemon with textured skin."
+    },
+    "tangerine": {
+        "category": "fruit",
+        "appearance": "Bright orange tangerine with bumpy skin."
+    },
+    "pear": {
+        "category": "fruit",
+        "appearance": "Light green, bell-shaped pear with stem."
+    },
+    "spoon": {
+        "category": "dish",
+        "appearance": "Metal spoon with a red handle."
+    },
+    "plate": {
+        "category": "dish",
+        "appearance": "Solid dark red round dinner plate."
+    },
+    "cup": {
+        "category": "dish",
+        "appearance": "Red speckled enamel mug with handle."
+    },
+    "fork": {
+        "category": "dish",
+        "appearance": "Metal fork with a red handle."
+    },
+    "bowl": {
+        "category": "dish",
+        "appearance": "Round red speckled enamel bowl."
+    },
+    "knife": {
+        "category": "dish",
+        "appearance": "Small metal knife with a red handle."
+    },
+    "cloth": {
+        "category": "cleaning_supply",
+        "appearance": "One red and one orange cloth."
+    },
+    "polish": {
+        "category": "cleaning_supply",
+        "appearance": "Yellow bottle of Bravo furniture polish."
+    },
+    "brush": {
+        "category": "cleaning_supply",
+        "appearance": "Blue scrub brush with green bristles."
+    },
+    "sponge": {
+        "category": "cleaning_supply",
+        "appearance": "Yellow sponge with a green scrubber."
+    },
+    "coffee": {
+        "category": "drink",
+        "appearance": "Two cartons of protein coffee drinks."
+    },
+    "kuat": {
+        "category": "drink",
+        "appearance": "Green aluminum can of Kuat soda."
+    },
+    "milk": {
+        "category": "drink",
+        "appearance": "Blue and white carton of milk."
+    },
+    "orange_juice": {
+        "category": "drink",
+        "appearance": "Large plastic bottle of orange soda."
+    },
+    "fanta": {
+        "category": "drink",
+        "appearance": "Orange aluminum can of Fanta soda."
+    },
+    "coke": {
+        "category": "drink",
+        "appearance": "Red can of Coca-Cola Zero Sugar."
+    }
+}
+
 cmd_vel=rospy.Publisher("/cmd_vel",Twist,queue_size=10)
 
 
@@ -160,9 +295,9 @@ def main():
 
     # navigator = Navigator()
     cam1 = Camera("/camera/color/image_raw", "bgr8")
-    # cam2 = Camera("/camera/depth/image_raw", "passthrough")
+    cam2 = Camera("/camera/depth/image_raw", "passthrough")
     width, height = cam1.width, cam1.height
-    # cx, cy = width // 2, height // 2
+    cx, cy = width // 2, height // 2
     rate = rospy.Rate(20)
     
     def walk_to(point):
@@ -281,34 +416,49 @@ def main():
 
         return img
         
+    respeaker.say("I am waiting for the door open")
 
-    ##################################
-    
-    # while not rospy.is_shutdown():
-    #     frame = cam1.get_frame()
-    #     depth_frame = cam2.get_frame()
-    #     depth_frame = cv2.resize(depth_frame, (width, height))
-    #     depth = depth_frame[cy, cx]
+    depth_count = 0
+    while not rospy.is_shutdown():
+        frame = cam1.get_frame()
+        rate.sleep()
+        depth_frame = cam2.get_frame()
+        depth_frame = cv2.resize(depth_frame, (width, height))
+        depth = depth_frame[cy, cx]
 
-    #     frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
-    #     frame = cv2.putText(frame, f"{depth}", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-    #     if depth > 2000:
-    #         respeaker.say("The door is opened")
+        frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
+        frame = cv2.putText(frame, f"{depth}", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        if depth == 0:
+            depth_count += 1
+        else:
+            depth_count = 0
+        if depth > 2000 or depth_count > 150:
+            respeaker.say("The door is opened")
 
-    #         for i in range(10):
-    #             move(0.25, 0)
-    #             time.sleep(0.1)
+            for i in range(10):
+                move(0.25, 0)
+                time.sleep(0.1)
             
-    #         move(0, 0)
-    #         break
+            move(0, 0)
+            break
 
-    #     cv2.imshow("depth", depth_frame)
-    #     cv2.imshow("frame", frame)
-    #     if cv2.waitKey(1) & 0xFF == ord('q'):
-    #         break
+        cv2.imshow("depth", depth_frame)
+        cv2.imshow("frame", frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
+    
     clear_costmaps
+    # walk_to(FULL_CABINET)
+    # respeaker.say("Huamn, Please open the cabinet door for me")
+    # time.sleep(10)
+    # img_cpy = cam1.get_frame()
+    # cv2.imwrite("./cabinet.jpg", img_cpy)
+    # respeaker.say("Ok")
+    
     walk_to(TABLE_P)
+
+
     saved_bboxes = []
 
     respeaker.say("I am recognizing objects")
@@ -316,11 +466,18 @@ def main():
     respeaker.say("I am detecting and categorying objects, it might take some time")
     img_cpy = cam1.get_frame()
     cv2.imwrite("./image2.jpg", img_cpy)
+    img_cpy = cv2.resize(img_cpy, (1920, 1440))
+    # respeaker.say("Dear human, can you please help me open the cabinet door?")
 
     for obj in json_object:
         logger.info(f"Detecting {obj['name']}")
         name, categ = obj["name"].lower(), obj["category"].lower()
-        bboxes = ask_gemini_for_bbox(f"{name}", "./image2.jpg")
+        if name.lower().strip() == "unknown":
+            continue
+        desc = object_list_dict.get(name.lower().strip())
+        if desc is not None:
+            desc = desc.get("appearance")
+        bboxes = ask_gemini_for_bbox(f"{name},({desc})", "./image2.jpg")
         saved_bboxes.append(obj)
         saved_bboxes[-1]["bbox"] = bboxes
         
@@ -329,41 +486,47 @@ def main():
     cv2.imwrite("./image_all_box_evidence.jpg", img_cpy)
 
     img_cpy = cv2.imread("./image2.jpg")
-    while True:
-        if len(json_object) == 0:
-            respeaker.say("It seems the table is empty, task end")
-            break
+
+    Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0)
+
+    respeaker.say("I see")
+    for a_object in saved_bboxes[:5]:
+        img_base = img_cpy.copy()
+        logger.info(f"Requesting for... {a_object}")
+
+
+        draw_bbox(img_base, a_object["bbox"], label=f"{a_object['name']}:{a_object['category']}", color=(0, 9, 255), thickness=3)
+        cv2.imwrite("./image.jpg", img_base)
+
+        respeaker.say(f"Please help me take {a_object['name']} inside the red bounding box")
+        time.sleep(5)
+        respeaker.say("Help me put it in my robot arm and wait for the gripper close")
+        time.sleep(10)
+
+        print("**CLOSE_ARM")
+        close_grip(id_list[-1])
+        respeaker.say("Thank you")
+        time.sleep(5)
+
+        respeaker.say(a_object["category"])
+        walk_to(GOAL_P)
         
-        respeaker.say("I see")
-        for a_object in saved_bboxes:
-            img_base = img_cpy.copy()
-            logger.info(f"Requesting for... {a_object}")
-
-            draw_bbox(img_base, a_object["bbox"], label=f"{a_object['name']}:{a_object['category']}", color=(0, 9, 255), thickness=3)
-            cv2.imwrite("./image.jpg", img_base)
-
-            respeaker.say(f"Please help me take {a_object['name']} on the table")
-            time.sleep(5)
-            respeaker.say("Help me put it on my robot arm and wait for the gripper close")
-            print("**OPEN_ARM")
-            Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0)
-            time.sleep(10)
-
-            print("**CLOSE_ARM")
-            close_grip(id_list[-1])
-            respeaker.say("Thank you")
-            time.sleep(5)
-
-            respeaker.say(a_object["category"])
-            walk_to(GOAL_P)
+        respeaker.say("Putting Object")
+        for i in range(20):
+            move(0.25, 0)
+            rate.sleep()
             
-            respeaker.say("Putting Object")
-            print("**OPEN_ARM")
-            time.sleep(5)
-            Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0)
+        move(0, 0)
+        print("**OPEN_ARM")
+        time.sleep(5)
+        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0)
+        for i in range(20):
+            move(-0.25, 0)
+            rate.sleep()
+            
+        move(0, 0)
 
-            walk_to(TABLE_P)
-        break
+        walk_to(TABLE_P)
     
 
 if __name__ == '__main__':
