@@ -27,6 +27,12 @@ locations = {
     "drinktable task3": [5.454, 2.794, 1.55],
     "seats task3": [0.401, 2.622, -0.78],
 }
+
+locations = {
+    "seats task3": [0.401, 2.622, -0.812],
+    "get":[0.525,2.7,1.55]
+    
+}
 # front 0 back 3.14 left 90 1.5 right 90 -1.5
 cout_location = {
     "bedroom": [3.020, 3.555, 1.109],
