@@ -11,7 +11,7 @@ genai.configure(api_key='AIzaSyBdTRu-rcBKbf86gjiMNtezBu1dEuxrWyE')
 model = genai.GenerativeModel("gemini-2.0-flash")
 cnt_yy = 0
 
-#all big promt
+# all big promt
 while True:
     while True:
         r = requests.get("http://172.20.10.5:8888/Fambot", timeout=2.5)
@@ -28,6 +28,7 @@ while True:
         print("question", s)
         sample_txt = """
         *** please remember Manipulation1, Manipulation2 is only for graping object not for taking/graping person
+        
         (The Sentence)(Task: Sentence Structure)(I given u)
         Manipulation1: Go to the $ROOM1, grasp the $OBJECT on the $PLACE1 and place it on the $PLACE2.
         Manipulation2: Go to the $ROOM1, grasp the $OBJECT on the $PLACE1 and give it to $PERSON on the $ROOM2.(if &PERSON is me than $ROOM2:"instruction point" just edit $ROOM2)
@@ -49,7 +50,7 @@ while True:
         $POSE/GESTURE : waving persons, persons raising their left arm, persons raising their right arm, persons pointing to the left, persons pointing to the right, sitting persons, standing persons, lying persons # or some of the clothes color
         $OBJ_COMP     : biggest, largest, smallest, heaviest, lightest, thinnest
         $TELL_LIST    : something about yourself, the time, what day is today, what day is tomorrow, your teams name, your teams country, your teams affiliation, the day of the week, the day of the month
-        
+
         (Questions)
         Question1: which Task is it(just one) [Manipulation1, Manipulation2, Vision (Enumeration)1, Vision (Enumeration)2, Vision (Description)1, Vision (Description)2, Navigation1, Navigation2, Speech1, Speech2] ?
         Question2: give me the $informations(make it in dictionary), for example {"$ROOM1":"Living room","$PLACE1":"Tray A"} ?
@@ -58,7 +59,7 @@ while True:
         here is the answer_format (in python_dictionary_format)
 
         *** {"1":[],"2":[],"3":[]} ***
-        
+
         """
         response = model.generate_content([s, sample_txt])
         file_data_string = response.text
@@ -247,7 +248,7 @@ while True:
                     | orange_juice | drink | Large plastic bottle of orange soda. |
                     | fanta | drink | Orange aluminum can of Fanta soda. |
                     | coke | drink | Red can of Coca-Cola Zero Sugar. |
-                    
+
                     just one sentence(15 words) is enough
                     '''
             promt = promt1 + promt2
@@ -307,7 +308,7 @@ while True:
         response = model.generate_content([img, sample_txt])
         file_data_string = response.text
         print(file_data_string)
-        file_data_string=file_data_string.replace("**","")
+        file_data_string = file_data_string.replace("**", "")
         questions = {
             "Question1": "None",
             "Question2": "None",
