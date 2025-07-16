@@ -538,7 +538,7 @@ if __name__ == "__main__":
                 print("sent image")
                 if nigga_i == 1:
                     number = 4
-                    who_help = "here have 4 seats please tell me where have empty seat(chair), just give me number in [1,2,3,4], there should be " + str(
+                    who_help = "here have 4 seats(sofa) please tell me where have empty seat(sofa), just give me number in [1,2,3,4], there should be " + str(
                         number) + " numbers, answer format: ******[numbers]******, for example ******[1,2,3]******"  # correct the numbers**********************
                     gg = post_message_request("seat1", "", who_help)
                     print(gg)
@@ -593,20 +593,20 @@ if __name__ == "__main__":
                     speak(
                         "dear " + host_name + " this is the first guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
                     seat_turn_back(host_seat)
-                    turn(-90)  # the chassis left
+                    turn(-80)  # the chassis left
                     time.sleep(1)
                     speak(
                         "dear " + name + " this is the host " + host_name + " favourite drink is " + host_drink_name + " interest is " + host_interest_name)
-                    turn(90)
+                    turn(80)
                 else:
                     speak(
                         "dear " + host_name + " this is the second guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
                     seat_turn_back(host_seat)
-                    turn(-90)  # the chassis left
+                    turn(-80)  # the chassis left
                     time.sleep(1)
                     speak(
                         "dear " + name + " this is the host" + host_name + " favourite drink is " + host_drink_name + " interest is " + host_interest_name)
-                    turn(90)
+                    turn(80)
                 step = "tell1"
             if step == "tell1":
 
@@ -616,11 +616,11 @@ if __name__ == "__main__":
                     speak(
                         "dear " + pre_name + " this is the second guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
                     seat_turn_back(guest1_seat)
-                    turn(-90)  # chassis left
+                    turn(-80)  # chassis left
                     speak(
                         "dear " + name + " this is the first guest " + pre_name + " favourite drink is " + pre_drink + " interest is " + pre_interest)
                     time.sleep(1)
-                    turn(90)
+                    turn(80)
                 step = "tell"
             if step == "tell":
                 if "1" in seat_list:
