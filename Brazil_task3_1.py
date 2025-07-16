@@ -359,6 +359,7 @@ if __name__ == "__main__":
                     speak1("My name is Fambot, please answer my following question in complete sentence")
                     speak1("what is your name")
                     say_cnt += 1
+                '''
                 if "maria" in s or "n" in s or "n" in s: name_cnt = "Maria"
                 if "angel" in s or "n" in s or "n" in s: name_cnt = "Ana"
                 if "francisca" in s or "n" in s or "n" in s: name_cnt = "Francisca"
@@ -374,7 +375,17 @@ if __name__ == "__main__":
                 if "antonio" in s or "n" in s or "n" in s: name_cnt = "Antonio"
                 if "francisco" in s or "n" in s or "n" in s: name_cnt = "Francisco"
                 if "carlos" in s or "n" in s or "n" in s: name_cnt = "Carlos"
-
+                '''
+                 if "otto" in s or "adel" in s or "adolf" in s: name_cnt = "adel"
+                if "angel" in s: name_cnt = "angel"
+                if "axel" in s or "hazel" in s or "easel" in s or "crystal" in s: name_cnt = "axel"
+                if "charlie" in s or "holly" in s: name_cnt = "charlie"
+                if "jane" in s or "shane" in s: name_cnt = "jane"
+                if "jow" in s or "joe" in s or "jewel" in s or "jules" in s or "george" in s or "charles" in s: name_cnt = "jules"
+                if "morgan" in s: name_cnt = "morgan"
+                if "paris" in s: name_cnt = "paris"
+                if "robin" in s or "robbie" in s or "ruby" in s or "woman" in s or "robert" in s: name_cnt = "robin"
+                if "seymour" in s or "simone" in s or "simon" in s: name_cnt = "simone"
                 if (name_cnt == "none" and s != ""):
                     speak("please repeat")
                 if name_cnt != "none":
