@@ -301,7 +301,7 @@ class FollowMe(object):
 
 locations = {
     "bedside table": [5.4, 5.858, 0.42],
-    "side table": [4.377, 6.747, -3.14],
+    "side table": [4.22, 6.67, -3.14],
     "bed": [3.810, 5.442, 0.723],
     "kitchen table": [1.765, 5.802, 1.774],
     "dishwasher": [1.481, 6.239, -1.53],
@@ -651,9 +651,17 @@ if __name__ == "__main__":
                 print(s)
                 pre_s = s
             if _frame2 is None:
-                print("no frame")
+                print("no frame2")
+                continue
             if _depth2 is None:
-                print("no depth")
+                print("no depth2")
+                continue
+            if _frame1 is None:
+                print("no frame1")
+                continue
+            if _depth1 is None:
+                print("no depth1")
+                continue
             code_image = _frame2.copy()
             code_depth = _depth2.copy()
             catch_image = _frame1.copy()
@@ -677,7 +685,7 @@ if __name__ == "__main__":
                     cv2.imshow("man1", code_image)
                     if "look" in user_input:
                         for i in range(500):
-                            move(0, 0 - .6)
+                            move(0, -0.6)
                             time.sleep(0.026)
                         step_action = 100
                         speak("sorry, I can't find it, going back to instruction point")
@@ -720,7 +728,7 @@ if __name__ == "__main__":
                     cv2.imshow("man1", code_image)
                     if "look" in user_input:
                         for i in range(500):
-                            move(0, 0 - .6)
+                            move(0, -0.6)
                             time.sleep(0.026)
                         step_action = 100
                         speak("sorry, I can't find it, going back to instruction point")
