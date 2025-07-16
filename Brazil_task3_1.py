@@ -591,21 +591,21 @@ if __name__ == "__main__":
                 host_name, host_drink_name, host_interest_name = "john", "milk ", "football "
                 if nigga_i == 1:
                     speak(
-                        "dear " + host_name + " this is the first guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
+                        "dear host " + host_name + " this is the first guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
                     seat_turn_back(host_seat)
                     turn(-80)  # the chassis left
                     time.sleep(1)
                     speak(
-                        "dear " + name + " this is the host " + host_name + " favourite drink is " + host_drink_name + " interest is " + host_interest_name)
+                        "dear guest " + name + " this is the host " + host_name + " favourite drink is " + host_drink_name + " interest is " + host_interest_name)
                     turn(80)
                 else:
                     speak(
-                        "dear " + host_name + " this is the second guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
+                        "dear host " + host_name + " this is the second guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
                     seat_turn_back(host_seat)
                     turn(-80)  # the chassis left
                     time.sleep(1)
                     speak(
-                        "dear " + name + " this is the host" + host_name + " favourite drink is " + host_drink_name + " interest is " + host_interest_name)
+                        "dear guest " + name + " this is the host" + host_name + " favourite drink is " + host_drink_name + " interest is " + host_interest_name)
                     turn(80)
                 step = "tell1"
             if step == "tell1":
@@ -614,11 +614,11 @@ if __name__ == "__main__":
                     seat_turn(guest1_seat)
                     time.sleep(1)
                     speak(
-                        "dear " + pre_name + " this is the second guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
+                        "dear guest " + pre_name + " this is the second guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
                     seat_turn_back(guest1_seat)
                     turn(-80)  # chassis left
                     speak(
-                        "dear " + name + " this is the first guest " + pre_name + " favourite drink is " + pre_drink + " interest is " + pre_interest)
+                        "dear guest " + name + " this is the first guest " + pre_name + " favourite drink is " + pre_drink + " interest is " + pre_interest)
                     time.sleep(1)
                     turn(80)
                 step = "tell"
