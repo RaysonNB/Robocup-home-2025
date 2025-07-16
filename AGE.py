@@ -49,7 +49,7 @@ def walk_to(name):
 #sink, waste basket
 locations = {
     "bedside table": [4.64, 5.73,0.44],
-    "side table": [4.294,6.624,-3.102],
+    "side table": [4.1,6.7,-3.1],
     "bed": [3.810, 5.442, 0.723],
     "kitchen table": [1.765, 5.802, 1.774],
     "dishwasher": [1.481, 6.239, -1.53],
