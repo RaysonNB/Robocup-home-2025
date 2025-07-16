@@ -50,14 +50,16 @@ while True:
             sample_txt = ""
             img = PIL.Image.open(path_sample)
             promt = '''
-            question1: how old is the guy, give me a range
-            question2: he is male or female?
-            question3: what color of colthes he is wearing
-            question4: His hair color
+            question1: How old is the guy, give me a range (for example, he is 10 to 15 years old)
+            question2: He is male or female?
+            question3: What color of clothe the gus wearing (just give me one color)
+            question4: His hair color (just give me one color)
 
-            answer the question in complete sentence
+            answer the question in simple complete sentence, no need to many words
             entire_answer = question1 answer, question2 answer, question3 answer, question 4 answer
+            
             just need one sentence
+            
             answer format: ******[entire_answer]******)
 
             you must answer give me the answer
@@ -167,7 +169,7 @@ while True:
         print(result)
         time.sleep(2)
     if dictt["Steps"] == "interest":
-        promt = dictt["Questionasking"] + " (only need 10 words)"
+        promt = dictt["Questionasking"] + " (answer in simple description with only 10 words)"
         print(promt)
         response = model.generate_content(promt)
         file_data_string = response.text
