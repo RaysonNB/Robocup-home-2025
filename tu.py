@@ -452,7 +452,7 @@ def main():
     
     clear_costmaps
     walk_to(FULL_CABINET)
-    respeaker.say("Huamn, Please open the cabinet door for me")
+    respeaker.say("Dear referee, Please open the both both cabinet door for me")
     time.sleep(10)
     img_cpy = cam1.get_frame()
     cv2.imwrite("./cabinet.jpg", img_cpy)
