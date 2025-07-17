@@ -451,7 +451,7 @@ if __name__ == "__main__":
                         print("********************")
                 s = ""
             if step == "drinktable":
-                speak1("please follow me to the drinks table")
+                speak1("dear guest, please follow me to the drinks table")
                 walk_to("drinktable")
                 step = "gemini_drinks"
             if step == "gemini_drinks":
@@ -483,7 +483,7 @@ if __name__ == "__main__":
 
                 tell me where is guest favourite drink with definite position on the table.
 
-                you may answer your favourite drink is in the ... position of the table(the drink must be in the image)
+                you may answer your favourite drink is in the ... position of the table(the drink maybe not in the image, you may answer: ******sorry guest your favourite is not on the table******)
 
                 words limit: 20 words
 
@@ -506,7 +506,7 @@ if __name__ == "__main__":
                     print("answer:", aaa)
                     speak1(aaa)
                     time.sleep(1)
-                    speaking_text = "please follow me to the seat"
+                    speaking_text = "dear guest, please follow me to the seat"
                     speak1(speaking_text)
                     step = "walk"
             if step == "walk":
