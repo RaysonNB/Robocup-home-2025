@@ -315,7 +315,7 @@ locations = {
     "sofa": [1.659, 1.330, -1.542],
     "seats": [0.969, 0.905, 0],
     "entry": [0.049, 0.188, -3.14],
-    "instruction point": [3.765, 3.795, -1.53],
+    "instruction point": [4.415,4.003,-1.53],
     "bedroom": [4.1, 6.51, 2.083],
     "kitchen": [0.689, 6.181, -0.775],
     "living room": [1.069,2.017,-0.015],
@@ -492,7 +492,7 @@ if __name__ == "__main__":
         s = ""
         user_input = data.lower()
 
-        speak("please answer robot yes yes yes or robot no no no, thank you")
+        speak("please answer robot yes or robot no, thank you")
         yes_cnt = 0
         s = ""
         start_time = time.time()
@@ -503,9 +503,7 @@ if __name__ == "__main__":
             if abs(start_time - now_time) >= 5: break
             if "yes" in s or "robot" in s: break
         # time.sleep(6)
-
         speak("ok I got it")
-
         # post questio
         # step
         print("post", gg)
@@ -647,7 +645,6 @@ if __name__ == "__main__":
                 speak("I can't finish the command")
                 action = "none"
                 break
-
             confirm_command = 0
             if s != "" and s != pre_s:
                 print(s)
@@ -667,7 +664,6 @@ if __name__ == "__main__":
             code_image = _frame2.copy()
             code_depth = _depth2.copy()
             catch_image = _frame1.copy()
-
             # DIVIDE
             # Manipulation1 just walk
             if "manipulation1" in command_type or ("mani" in command_type and "1" in command_type):
@@ -919,7 +915,7 @@ if __name__ == "__main__":
                     detections = dnn_yolo1.forward(code_image)[0]["det"]
                     # clothes_yolo
                     # nearest people
-                    nx = 2500
+                    nx = 2400
                     cx_n, cy_n = 0, 0
                     CX_ER = 99999
                     need_position = 0
@@ -974,7 +970,7 @@ if __name__ == "__main__":
                         detections = dnn_yolo1.forward(code_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
-                        nx = 2500
+                        nx = 2400
                         cx_n, cy_n = 0, 0
                         CX_ER = 99999
                         need_position = 0
@@ -1067,19 +1063,24 @@ if __name__ == "__main__":
                             s = s.lower()
                             if skip_cnt_vd >= 250:
                                 step_action = 2
-                                speak("hello hazel, I gonna go now")
-                                final_speak_to_guest = "the guys name is hazel"
+                                speak("hello Juliana, I gonna go now")
+                                final_speak_to_guest = "the guys name is Juliana"
                                 print(skip_cnt_vd)
-                            if "otto" in s or "adel" in s or "adolf" in s: name_cnt = "adel"
-                            if "angel" in s: name_cnt = "angel"
-                            if "axel" in s or "hazel" in s or "easel" in s or "crystal" in s: name_cnt = "axel"
-                            if "charlie" in s or "holly" in s: name_cnt = "charlie"
-                            if "jane" in s or "shane" in s: name_cnt = "jane"
-                            if "jow" in s or "joe" in s or "jewel" in s or "jules" in s or "george" in s or "charles" in s: name_cnt = "jules"
-                            if "morgan" in s: name_cnt = "morgan"
-                            if "paris" in s: name_cnt = "paris"
-                            if "robin" in s or "robbie" in s or "ruby" in s or "woman" in s or "robert" in s: name_cnt = "robin"
-                            if "seymour" in s or "simone" in s or "simon" in s: name_cnt = "simone"
+                            if "maria" in s: name_cnt = "Maria"
+                            if "angel" in s: name_cnt = "Ana"
+                            if "francisca" in s or "francesca" in s or "fantasies" in s: name_cnt = "Francisca"
+                            if "antônia" in s or "antonia" in s: name_cnt = "Antônia"
+                            if "adriana" in s: name_cnt = "Adriana"
+                            if "juliana" in s or "liliana" in s: name_cnt = "Juliana"
+                            if "marcia" in s or "michelle" in s or "maxsea" in s or "marsh" in s or "march" in s: name_cnt = "Marcia"
+                            if "fernanda" in s: name_cnt = "Fernanda"
+                            if "patrícia" in s or "patricia" in s: name_cnt = "Patrícia"
+                            if "aline" in s or "eileen" in s or "ali" in s: name_cnt = "Aline"
+                            if "jose" in s or "show" in s or "joke" in s: name_cnt = "Jose"
+                            if "joao" in s or "joel" in s: name_cnt = "Joao"
+                            if "antonio" in s: name_cnt = "Antonio"
+                            if "francisco" in s: name_cnt = "Francisco"
+                            if "carlos" in s or "carol" in s: name_cnt = "Carlos"
                             if name_cnt == "none" and s != "": speak("please speak it again")
                             s = ""
                             if name_cnt != "none":
@@ -1216,7 +1217,7 @@ if __name__ == "__main__":
                         detections = dnn_yolo1.forward(checking_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
-                        nx = 2500
+                        nx = 2400
                         cx_n, cy_n = 0, 0
                         CX_ER = 99999
                         need_position = 0
@@ -1269,7 +1270,7 @@ if __name__ == "__main__":
                                 cy = i
                         _, _, d = get_real_xyz(_depth2, cx, cy, 2)
                         print("depth", d)
-                        if d != 0 and d <= 1000:
+                        if d != 0 and d <= 1200:
                             action = "speak"
                             move(0, 0)
                         else:
@@ -1277,18 +1278,11 @@ if __name__ == "__main__":
                     if action == "speak":
                         speak("hello")
                         speak(real_name)
-                        # speak("can u stand behind me and I will follow u now")
-                        time.sleep(2)
-                        for i in range(78):
-                            move(0, -0.35)
-                            time.sleep(0.125)
                         if real_name == "guest":
-                            speak("dear guest please stand in front of me")
-                            speak("and remember to say robot you can stop")
+                            speak("please say robot you can stop")
                         else:
                             speak(real_name)
-                            speak("Please stand in front of me")
-                            speak("and remember to say robot you can stop")
+                            speak("please say robot you can stop")
                         # time.sleep(0.5)
                         speak("when you arrived and I will go back")
                         # time.sleep(0.5)
@@ -1487,7 +1481,7 @@ if __name__ == "__main__":
                         detections = dnn_yolo1.forward(checking_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
-                        nx = 2500
+                        nx = 2400
                         cx_n, cy_n = 0, 0
                         CX_ER = 99999
                         need_position = 0
@@ -1541,7 +1535,7 @@ if __name__ == "__main__":
                                 cy = i
                         _, _, d = get_real_xyz(_depth2, cx, cy, 2)
                         print("depth", d)
-                        if d != 0 and d <= 1000:
+                        if d != 0 and d <= 1200:
                             action = "speak"
                             move(0, 0)
                         else:
@@ -1779,7 +1773,7 @@ if __name__ == "__main__":
                         detections = dnn_yolo1.forward(checking_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
-                        nx = 2500
+                        nx = 2400
                         cx_n, cy_n = 0, 0
                         CX_ER = 99999
                         need_position = 0
@@ -1832,7 +1826,7 @@ if __name__ == "__main__":
                                 cy = i
                         _, _, d = get_real_xyz(_depth2, cx, cy, 2)
                         print("depth", d)
-                        if d != 0 and d <= 1000:
+                        if d != 0 and d <= 1200:
                             action = "speak"
                             move(0, 0)
                         else:
@@ -1859,9 +1853,9 @@ if __name__ == "__main__":
                             "yourself" in user_input):
                         speak("We are Fambot from Macau Puiching Middle School, and I was made in 2024")
                     elif "what day today is" in user_input or ("today" in user_input and "day" in user_input):
-                        speak("today is 10 th of july in 2025")
+                        speak("today is 19 th of july in 2025")
                     elif "what day tomorrow is" in user_input or ("tomorrow" in user_input and "day" in user_input):
-                        speak("today is 11 th of july in 2025")
+                        speak("today is 20 th of july in 2025")
                     elif "your team's name" in user_input or ("name" in user_input and "team" in user_input):
                         speak("my team name is Fambot")
                     elif "your teams country" in user_input or (
@@ -1877,7 +1871,7 @@ if __name__ == "__main__":
                         speak("Today is Sunday")
                     elif "the day of the month" in user_input or (
                             "month" in user_input and "day" in user_input):
-                        speak("Today is the ten th of July in 2025")
+                        speak("Today is the 19 th of July in 2025")
                     step_action = 3
                     print("***************")
                 if step_action == 3:
