@@ -244,7 +244,7 @@ def generate_content(prompt_text: str = None, image_path: str = None) -> dict:
     Returns:
         A dictionary containing the API response, or None if an error occurred.
     """
-    url = "http://192.168.50.143:5000/generate"  # Adjust if your server is running on a different host/port
+    url = "http://172.20.10.10:5000/generate"  # Adjust if your server is running on a different host/port
     files = {}
     data = {}
     logger.info(f"Generate Content (\"{prompt_text}\", {image_path})")
@@ -390,7 +390,7 @@ def main():
             if angle_speed <= 20.0 and i > 3:
             # if False:
                 logger.debug(f"Stop at {Dy.present_position(grip_id)}")
-                final_angle = Dy.present_position(grip_id) + 5
+                final_angle = Dy.present_position(grip_id) + 3
                 Dy.goal_absolute_direction(grip_id, final_angle)
                 break
 
@@ -417,36 +417,36 @@ def main():
 
         return img
         
-    respeaker.say("I am waiting for the door open")
+    # respeaker.say("I am waiting for the door open")
 
-    depth_count = 0
-    while not rospy.is_shutdown():
-        frame = cam1.get_frame()
-        rate.sleep()
-        depth_frame = cam2.get_frame()
-        depth_frame = cv2.resize(depth_frame, (width, height))
-        depth = depth_frame[cy, cx]
+    # depth_count = 0
+    # while not rospy.is_shutdown():
+    #     frame = cam1.get_frame()
+    #     rate.sleep()
+    #     depth_frame = cam2.get_frame()
+    #     depth_frame = cv2.resize(depth_frame, (width, height))
+    #     depth = depth_frame[cy, cx]
 
-        frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
-        frame = cv2.putText(frame, f"{depth}", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        if depth == 0:
-            depth_count += 1
-        else:
-            depth_count = 0
-        if depth > 2000 or depth_count > 150:
-            respeaker.say("The door is opened")
+    #     frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
+    #     frame = cv2.putText(frame, f"{depth}", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    #     if depth == 0:
+    #         depth_count += 1
+    #     else:
+    #         depth_count = 0
+    #     if depth > 2000 or depth_count > 150:
+    #         respeaker.say("The door is opened")
 
-            for i in range(10):
-                move(0.25, 0)
-                time.sleep(0.1)
+    #         for i in range(10):
+    #             move(0.25, 0)
+    #             time.sleep(0.1)
             
-            move(0, 0)
-            break
+    #         move(0, 0)
+    #         break
 
-        cv2.imshow("depth", depth_frame)
-        cv2.imshow("frame", frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+    #     cv2.imshow("depth", depth_frame)
+    #     cv2.imshow("frame", frame)
+    #     if cv2.waitKey(1) & 0xFF == ord('q'):
+    #         break
 
     
     clear_costmaps
@@ -501,11 +501,11 @@ def main():
         draw_bbox(img_base, a_object["bbox"], label=f"{a_object['name']}:{a_object['category']}", color=(0, 9, 255), thickness=3)
         cv2.imwrite("./image.jpg", img_base)
 
-        respeaker.say(f"Human, please help me take {a_object['name']} inside the red bounding box")
-        time.sleep(5)
+        respeaker.say(f"Dear Referee, please help me take {a_object['name']} inside the red bounding box")
+        time.sleep(3)
         respeaker.say("Help me put it in my robot arm and wait for the gripper close")
-        time.sleep(5)
-        position = generate_content(f"Which layer most likely to put {a_object['name']}? your output must be in [1, 2, 3, 4], from top to down ", "./cabinet.jpg")
+        time.sleep(2)
+        position = generate_content(f"Which layer most likely to put {a_object['name']}? your output must be in [1, 2, 3], from top (1) to down (3)", "./cabinet.jpg")
         position = str(position.get('generated_text'))
 
         print("**CLOSE_ARM")
@@ -519,7 +519,7 @@ def main():
         walk_to(GOAL_P)
         
         respeaker.say("Putting Object")
-        for i in range(20):
+        for i in range(35):
             move(0.25, 0)
             rate.sleep()
             
