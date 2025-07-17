@@ -382,7 +382,7 @@ if __name__ == "__main__":
                 if say_cnt == 0:
                     speak11("Dear guest, it is better to stand closer to me now, thank you")
                     speak11("Please answer my following question in complete sentence with louder voice")
-                    speak11("for example my interest is playing football")
+                    speak11("for example my name is fambot")
                     time.sleep(1)
                     speak1("what is your name")
                     say_cnt += 1
@@ -432,6 +432,8 @@ if __name__ == "__main__":
                     drink_name = name_cnt
                     step = "interest"
                     speak1("what is your interest")
+                    speak1("Please answer in complete sentence")
+                    speak11("for example my interest is playing football")
                 s = ""
             if step == "interest":
                 interest_name = "none"
