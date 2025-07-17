@@ -392,7 +392,7 @@ if __name__ == "__main__":
                 if "antônia" in s or "antonia" in s: name_cnt = "Antônia"
                 if "adriana" in s: name_cnt = "Adriana"
                 if "juliana" in s or "liliana" in s: name_cnt = "Juliana"
-                if "marcia" in s or "michelle" in s or "maxsea" in s: name_cnt = "Marcia"
+                if "marcia" in s or "michelle" in s or "maxsea" in s or "marsh" in s or "march" in s: name_cnt = "Marcia"
                 if "fernanda" in s: name_cnt = "Fernanda"
                 if "patrícia" in s or "patricia" in s: name_cnt = "Patrícia"
                 if "aline" in s or "eileen" in s or "ali" in s: name_cnt = "Aline"
