@@ -628,15 +628,15 @@ if __name__ == "__main__":
                 elif "2" in seat_list:
                     seat_turn("2")
                     tunring_hh = "2"
-                elif "3" in seat_list:
-                    seat_turn("3")
-                    tunring_hh = "3"
                 elif "4" in seat_list:
                     seat_turn("4")
                     tunring_hh = "4"
                 elif "5" in seat_list:
                     seat_turn("5")
                     tunring_hh = "5"
+                elif "3" in seat_list:
+                    seat_turn("3")
+                    tunring_hh = "3"
                 print("seat_list", seat_list)
                 if nigga_i == 1:
                     gg = post_message_request("feature", "", "")
@@ -644,15 +644,15 @@ if __name__ == "__main__":
                 pre_name, pre_drink, pre_interest = name, drink_name, interest_name
                 step = "fp"
                 if tunring_hh==1:
-                    speak("which is the first sit count from left to right")
+                    speak("which is the first seat count from left to right")
                 elif tunring_hh==2:
-                    speak("which is the second sit count from left to right")
-                elif tunring_hh==3:
-                    speak("which is the middle seat")
+                    speak("which is the second seat count from left to right")
                 elif tunring_hh==4:
                     speak("which is the left seat of the long sofa")
                 elif tunring_hh==5:
                     speak("which is the right seat of the long sofa")
+                elif tunring_hh==3:
+                    speak("which is the middle samll white seat")
                 if nigga_i == 1:
                     while True:
                         r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
