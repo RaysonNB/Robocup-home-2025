@@ -108,26 +108,26 @@ def callback_voice(msg):
 
 def speak1(g):
     print("[robot say]:", end=" ")
-    os.system(f'espeak -s 180 "{g}"')
+    os.system(f'espeak -s 200 "{g}"')
     # rospy.loginfo(g)
     print(g)
-    time.sleep(0.3)
+    time.sleep(0.2)
 
 
 def speak11(g):
     print("[robot say]:", end=" ")
-    os.system(f'espeak -s 140 "{g}"')
+    os.system(f'espeak -s 150 "{g}"')
     # rospy.loginfo(g)
     print(g)
-    time.sleep(0.3)
+    time.sleep(0.2)
 
 
 def speak(g):
     print("[robot say]:", end=" ")
-    os.system(f'espeak -s 180 "{g}"')
+    os.system(f'espeak -s 200 "{g}"')
     # rospy.loginfo(g)
     print(g)
-    time.sleep(0.3)
+    time.sleep(0.2)
 
 
 def move(forward_speed: float = 0, turn_speed: float = 0):
@@ -206,16 +206,19 @@ def seat_turn(num12):
     check_num = str(num12)
     angle1 = -2
     angle2 = -1
-    angle3 = 1
-    angle4 = 2
+    angle3 = 0
+    angle4 = 1
+    angle5 = 2
     if "1" in check_num:
         turn(angle1)
     elif "2" in check_num:
         turn(angle2)
     elif "3" in check_num:
-        turn(angle3)
+        angle3 = 0
     elif "4" in check_num:
         turn(angle4)
+    elif "5" in check_num:
+        turn(angle5)
     time.sleep(1.2)
 
 
@@ -231,16 +234,19 @@ def seat_turn_back(num12):
     check_num = str(num12)
     angle1 = 2
     angle2 = 1
-    angle3 = 1
-    angle4 = -2
+    angle3 = 0
+    angle4 = 1
+    angle5 = -2
     if "1" in check_num:
         turn(angle1)
     elif "2" in check_num:
         turn(angle2)
     elif "3" in check_num:
-        turn(angle3)
+        angle3 = 0
     elif "4" in check_num:
         turn(angle4)
+    elif "5" in check_num:
+        turn(angle5)
     time.sleep(1)
 
 
@@ -276,10 +282,13 @@ if __name__ == "__main__":
     s = ""
     rospy.Subscriber("/voice/text", Voice, callback_voice)
     robot_height = 1000
+    print("server")
     gg = post_message_request("-1", "", "")
+    print("server done")
     step = "fp"
     pre_s = ""
-
+    repeat_cnt=0
+    host_name, host_drink_name, host_interest_name = "Antonio ", "Fanta ", "Rugby "
     confirm_command = 0
     for nigga_i in [1, 2]:
         check_cnt = 0
@@ -328,8 +337,8 @@ if __name__ == "__main__":
                             yn = 1
                 if yn == 1:
                     if nigga_i == 1:
-                        speak1("dear guest, please don't move, I will take u a picture")
-                        time.sleep(1)
+                        speak11("hello dear guest, please look at my camera on top, I will take you a picture")
+                        #time.sleep(1)
                         step = "fp1"
                     if nigga_i == 2:
                         step = "name"
@@ -345,7 +354,7 @@ if __name__ == "__main__":
                     cx = (x2 - x1) // 2 + x1
                     cy = (y2 - y1) // 2 + y1
                     _, _, d = get_real_xyz(code_depth, cx, cy, 2)
-                    if score > 0.65 and class_id == 0 and d != 0 and d <= 3000 and cx >= 270 and cx <= 370:
+                    if score > 0.65 and class_id == 0 and d != 0 and d <= 3000 and cx >= 260 and cx <= 380:
                         check_cnt += 1
                         mx1, my1, mx2, my2 = x1, y1, x2, y2
                         yn = 1
@@ -373,9 +382,9 @@ if __name__ == "__main__":
                 name_cnt = "none"
                 s = s.lower()
                 if say_cnt == 0:
-                    speak11(
-                        "Dear guest, Please answer my following question in complete sentence with louder voice, for example my name is Fambot")
-                    speak11("it is better to stand in front of me now, thank you")
+                    speak11("Dear guest, it is better to stand closer to me now, thank you")
+                    speak11("Please answer my following question in complete sentence with louder voice")
+                    speak11("for example my name is fambot")
                     time.sleep(1)
                     speak1("what is your name")
                     say_cnt += 1
@@ -385,7 +394,7 @@ if __name__ == "__main__":
                 if "antônia" in s or "antonia" in s: name_cnt = "Antônia"
                 if "adriana" in s: name_cnt = "Adriana"
                 if "juliana" in s or "liliana" in s: name_cnt = "Juliana"
-                if "marcia" in s or "michelle" in s or "maxsea" in s: name_cnt = "Marcia"
+                if "marcia" in s or "michelle" in s or "maxsea" in s or "marsh" in s or "march" in s: name_cnt = "Marcia"
                 if "fernanda" in s: name_cnt = "Fernanda"
                 if "patrícia" in s or "patricia" in s: name_cnt = "Patrícia"
                 if "aline" in s or "eileen" in s or "ali" in s: name_cnt = "Aline"
@@ -394,21 +403,14 @@ if __name__ == "__main__":
                 if "antonio" in s: name_cnt = "Antonio"
                 if "francisco" in s: name_cnt = "Francisco"
                 if "carlos" in s or "carol" in s: name_cnt = "Carlos"
-                '''
-                 if "otto" in s or "adel" in s or "adolf" in s: name_cnt = "adel"
-                if "angel" in s: name_cnt = "angel"
-                if "axel" in s or "hazel" in s or "easel" in s or "crystal" in s: name_cnt = "axel"
-                if "charlie" in s or "holly" in s: name_cnt = "charlie"
-                if "jane" in s or "shane" in s: name_cnt = "jane"
-                if "jow" in s or "joe" in s or "jewel" in s or "jules" in s or "george" in s or "charles" in s: name_cnt = "jules"
-                if "morgan" in s: name_cnt = "morgan"
-                if "paris" in s: name_cnt = "paris"
-                if "robin" in s or "robbie" in s or "ruby" in s or "woman" in s or "robert" in s: name_cnt = "robin"
-                if "seymour" in s or "simone" in s or "simon" in s: name_cnt = "simone"
-                '''
-                if (name_cnt == "none" and s != ""):
-                    speak("please repeat")
+
+                if s=="":
+                    repeat_cnt+=1
+                if (name_cnt == "none" and s != "") or repeat_cnt>=80:
+                    speak("please speak louder")
+                    repeat_cnt=0
                 if name_cnt != "none":
+                    repeat_cnt = 0
                     step = "drink"
                     name = name_cnt
                     speak1("what is your favourite drink")
@@ -417,18 +419,22 @@ if __name__ == "__main__":
                 name_cnt = "none"
                 s = s.lower()
                 if "coffee" in s or "cafe" in s: name_cnt = "Coffee"
-                if "orange" in s or "juice" in s: name_cnt = "Orangle Juice"
+                if "orange" in s or "juice" in s: name_cnt = "orange Juice"
                 if "milk" in s: name_cnt = "milk"
                 if "fanta" in s or "hunter" in s or "centre" in s or "better" in s or "santa" in s: name_cnt = "fanta"
-                # kgldkf
-                if "kuat" in s or "quad" in s or "quiet" in s or "caught" in s or "coolant" in s or "cart" in s or "clutch" in s or "cost" in s or "squash" in s: name_cnt = "kuat"
+                if "kuat" in s or "quad" in s or "quiet" in s or "caught" in s or "coolant" in s or "cart" in s or "clutch" in s or "cost" in s or "squash" in s or "quite" in s: name_cnt = "kuat"
                 if "coke" in s or "cook" in s or "cock" in s or "good" in s: name_cnt = "coke"
-                if (name_cnt == "none" and s != ""):
-                    speak("please repeat")
+                if s == "":
+                    repeat_cnt += 1
+                if (name_cnt == "none" and s != "") or repeat_cnt >= 80:
+                    speak("please speak louder")
+                    repeat_cnt = 0
                 if name_cnt != "none":
+                    repeat_cnt = 0
                     drink_name = name_cnt
                     step = "interest"
-                    speak1("what is your interest")
+                    speak1("what is your interest, Please answer in complete sentence")
+                    speak11("for example my interest is playing football")
                 s = ""
             if step == "interest":
                 interest_name = "none"
@@ -436,10 +442,13 @@ if __name__ == "__main__":
                 if s != "":
                     if "is" in s and "interest" in s:
                         interest_name = s.split("interest is")[-1]
-
-                if (interest_name == "none" and s != ""):
-                    speak("please repeat")
+                if s=="":
+                    repeat_cnt+=1
+                if (interest_name == "none" and s != "") or repeat_cnt>=80:
+                    speak("please speak louder")
+                    repeat_cnt=0
                 if interest_name != "none":
+                    repeat_cnt = 0
                     step = "drinktable"
                     speakooo = "your name is " + name + " your favourite drink is " + drink_name + " your interest is " + interest_name
                     print(speakooo)
@@ -483,7 +492,7 @@ if __name__ == "__main__":
 
                 tell me where is guest favourite drink with definite position on the table.
 
-                you may answer your favourite drink is in the ... position of the table(the drink maybe not in the image, you may answer: ******sorry guest your favourite is not on the table******)
+                you may answer your favourite drink is in the ... position of the table(the drink maybe not in the image, you may answer: sorry guest your favourite is not on the table)
 
                 words limit: 20 words
 
@@ -499,7 +508,7 @@ if __name__ == "__main__":
                 r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                 response_data = r.text
                 dictt = json.loads(response_data)
-                time.sleep(2)
+                time.sleep(1)
                 if dictt["Steps"] == 101:
                     gg = post_message_request("-1", "", "")
                     aaa = dictt["Voice"].lower()
@@ -516,15 +525,15 @@ if __name__ == "__main__":
                 font_scale = 1.5
                 font_color = (255, 255, 255)
                 font_thickness = 5
-
                 width = 640
                 height = 320
                 # correct the numbers************************************
                 positions = {
                     1: (int(width * 0.08), int(height * 0.5)),
                     2: (int(width * 0.3), int(height * 0.5)),
-                    3: (int(width * 0.6), int(height * 0.5)),
-                    4: (int(width * 0.77), int(height * 0.5)),
+                    3: (int(width * 0.5), int(height * 0.5)),
+                    4: (int(width * 0.66), int(height * 0.5)),
+                    5: (int(width * 0.82), int(height * 0.5)),
                 }
                 for number, pos in positions.items():
                     text_size = cv2.getTextSize(str(number), font, font_scale, font_thickness)[0]
@@ -549,21 +558,20 @@ if __name__ == "__main__":
                 print("sent image")
                 if nigga_i == 1:
                     number = 4
-                    who_help = "here have 4 seats(sofa) please tell me where have empty seat(sofa), just give me number in [1,2,3,4], there should be " + str(
-                        number) + " numbers, answer format: ******[numbers]******, for example ******[1,2,3]******"  # correct the numbers**********************
+                    who_help = "here have 5 seats(white sofa or a small white chair) please tell me where have empty seat(white sofa or a small white chair), just give me number in [1,2,3,4,5], there should be 4 numbers, answer format: ******[numbers]******, for example ******[1,2,3,4]******"  # correct the numbers**********************
                     gg = post_message_request("seat1", "", who_help)
                     print(gg)
                 elif nigga_i == 2:
                     gg = post_message_request("seat2", "", "")
                     print(gg)
-                speak1("please stand on my left side")
+                speak1("dear guest, please stand on my left side")
                 time.sleep(1)
                 step = "waitempty"
             if step == "waitempty":
                 r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                 response_data = r.text
                 dictt = json.loads(response_data)
-                time.sleep(2)
+                time.sleep(1)
                 if dictt["Steps"] == 101:
                     gg = post_message_request("-1", "", "")
                     aaa = dictt["Voice"].lower()
@@ -578,6 +586,7 @@ if __name__ == "__main__":
                         if "2" not in str(aaa): host_seat = "2"
                         if "3" not in str(aaa): host_seat = "3"
                         if "4" not in str(aaa): host_seat = "4"
+                        if "5" not in str(aaa): host_seat = "5"
                         print("answer:", aaa)
                     else:
                         check = ""
@@ -585,11 +594,13 @@ if __name__ == "__main__":
                         if "2" not in str(aab): check += "2"
                         if "3" not in str(aab): check += "3"
                         if "4" not in str(aab): check += "4"
+                        if "5" not in str(aab): check += "5"
                         check1 = ""
                         if "1" in str(aaa): check1 = "1"
                         if "2" in str(aaa): check1 = "2"
                         if "3" in str(aaa): check1 = "3"
                         if "4" in str(aaa): check1 = "4"
+                        if "5" in str(aaa): check1 = "5"
                         guest1_seat = check1  # get by gemini
                         hosts_seat = check.replace(guest1_seat, "")
                         print("guest", guest1_seat, "host", hosts_seat)
@@ -613,49 +624,66 @@ if __name__ == "__main__":
                     turn(60)
                 step = "tell"
             if step == "tell":
+                tunring_hh=""
                 if "1" in seat_list:
                     seat_turn("1")
+                    tunring_hh="1"
                 elif "2" in seat_list:
                     seat_turn("2")
-                elif "3" in seat_list:
-                    seat_turn("3")
+                    tunring_hh = "2"
                 elif "4" in seat_list:
                     seat_turn("4")
+                    tunring_hh = "4"
+                elif "5" in seat_list:
+                    seat_turn("5")
+                    tunring_hh = "5"
+                elif "3" in seat_list:
+                    seat_turn("3")
+                    tunring_hh = "3"
                 print("seat_list", seat_list)
                 if nigga_i == 1:
                     gg = post_message_request("feature", "", "")
                 speak("dear guest " + name + " the way I am facing is a empty seat, please have a sit")
-                pre_name, pre_drink, pre_interest = name, drink_name, interest_name
                 step = "fp"
+                if nigga_i==2:
+                    question = "give me one similarity between the interest of " + interest_name + ", " + pre_interest + " and " + host_interest_name + "    (just use 15 words to describe)"
+                    gg = post_message_request("interest", question, question)
+                if tunring_hh=="1":
+                    speak("which is the first seat count from my left to right")
+                elif tunring_hh=="2":
+                    speak("which is the second seat count from my left to right")
+                elif tunring_hh=="4":
+                    speak("which is the left side of the long sofa")
+                elif tunring_hh=="5":
+                    speak("which is the right side of the long sofa")
+                elif tunring_hh=="3":
+                    speak("which is the middle small white seat")
                 if nigga_i == 1:
                     while True:
                         r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                         response_data = r.text
                         dictt = json.loads(response_data)
-                        time.sleep(2)
+                        time.sleep(1)
                         if dictt["Steps"] == 200:
                             gg = post_message_request("-1", "", "")
                             aaa = dictt["Voice"].lower()
                             speech_robot_guest2 = aaa
                             break
                 if nigga_i == 2:
-                    question = "give me one similarity between the interest of " + interest_name + ", " + pre_interest + " and " + host_interest_name+"    (just use 15 words to describe)"
-                    gg = post_message_request("interest", question, question)
-
                     while True:
                         r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                         response_data = r.text
                         dictt = json.loads(response_data)
-                        time.sleep(2)
+                        time.sleep(1)
                         if dictt["Steps"] == 100:
                             gg = post_message_request("-1", "", "")
                             aaa = dictt["Voice"].lower()
                             speech_robot_guest2 = aaa
-                            speak(
-                                "here is a similarity between the interest of " + interest_name + " and " + pre_interest + " and " + host_interest_name)
-                            time.sleep(1)
-                            speak(aaa)
+                            speak11("here is a similarity between the interest of " + interest_name + ", " + pre_interest + " and " + host_interest_name)
+                            #time.sleep(1)
+                            speak11(aaa)
                             break
+                pre_name, pre_drink, pre_interest = name, drink_name, interest_name
                 break
             cv2.imshow("frame", code_image)
             key = cv2.waitKey(1)
