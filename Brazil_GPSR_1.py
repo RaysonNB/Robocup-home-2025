@@ -412,33 +412,6 @@ if __name__ == "__main__":
     confirm_command = 0
     speak("I am ready")
     depth_zero = 0
-    while not rospy.is_shutdown():
-        if _frame2 is None: continue
-        if _depth2 is None: continue
-        frame = _frame2.copy()
-        depth_frame = _depth2.copy()
-
-        cx, cy = 640 // 2, 320 // 2
-        depth = depth_frame[cy, cx]
-        frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
-        frame = cv2.putText(frame, f"{depth}", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        if depth_zero >= 400:
-            speak("the door is open")
-            walk_to("instruction point")
-            break
-        if depth == 0:
-            depth_zero += 1
-        else:
-            depth_zero = 0
-        if depth > 1700:
-            speak("the door is open")
-            walk_to("instruction point")
-            break
-        print("depthtt", depth)
-        cv2.imshow("door_check", frame)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
     command_list = [
         "Take the person raising their left arm from the left chair to the bedroom",
         "Take the lying person from the left Kachaka shelf to the bedroom",
@@ -455,6 +428,32 @@ if __name__ == "__main__":
         "Salute the person wearing a black shirt in the bedroom and escort them to the shelf",
         "Tell your teams name to the person raising their left arm in the study room",
         "Look for a lying person in the dining room and say what day is today"]
+    while not rospy.is_shutdown():
+        if _frame2 is None: continue
+        if _depth2 is None: continue
+        frame = _frame2.copy()
+        depth_frame = _depth2.copy()
+
+        cx, cy = 640 // 2, 320 // 2
+        depth = depth_frame[cy, cx]
+        frame = cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
+        frame = cv2.putText(frame, f"{depth}", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        if depth_zero >= 400:
+            speak("the door is open")
+            break
+        if depth == 0:
+            depth_zero += 1
+        else:
+            depth_zero = 0
+        if depth > 1700:
+            speak("the door is open")
+            break
+        print("depthtt", depth)
+        cv2.imshow("door_check", frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    walk_to("instruction point")
     commandcntcnt = 0
     for i in range(3):
         commandcntcnt = commandcntcnt + 1
@@ -462,7 +461,7 @@ if __name__ == "__main__":
         dining_room_action = 0
         qr_code_detector = cv2.QRCodeDetector()
         data = ""
-        speak("dear host please scan your qr code in front of my camera on top")
+        speak("dear referee please scan your qr code in front of my camera on top")
         yn = 0
         while True:
             # print("step1")
@@ -479,31 +478,31 @@ if __name__ == "__main__":
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         cv2.destroyAllWindows()
-        #data = command_list[i]
+        data = command_list[i]
         # continue
 
-        speak("dear host your command is")
+        speak("dear referee your command is")
         time.sleep(0.3)
+        user_input = data.lower()
+        s = ""
+        gg = post_message_request("first", user_input, "")
         print("Your command is **********************")
         print(data)
         speak(str(data))
         print("********************")
         time.sleep(0.3)
         s = ""
-        user_input = data.lower()
-
-        speak("please answer robot yes or robot no, thank you")
-        yes_cnt = 0
-        s = ""
-        start_time = time.time()
-        gg = post_message_request("first", user_input, "")
+        '''
+        speak("please answer robot yes or robot no, thank you")        
         while True:
             now_time = time.time()
             # print(abs(start_time-now_time),s)
             if abs(start_time - now_time) >= 5: break
             if "yes" in s or "robot" in s: break
+        
         # time.sleep(6)
         speak("ok I got it")
+        '''
         # post questio
         # step
         print("post", gg)
@@ -680,34 +679,10 @@ if __name__ == "__main__":
                         name_position = "PLACE1"
                     if name_position in liyt:
                         walk_to(liyt[name_position])
-                    cv2.imshow("man1", code_image)
-                    if "look" in user_input:
-                        for i in range(450):
-                            move(0, -0.6)
-                            time.sleep(0.026)
-                        step_action = 100
-                        speak("sorry, I can't find it, going back to instruction point")
-                    else:
-                        time.sleep(2)
-                        speak("moving robot arm")
-                        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 10, 0, 60, 0)
-                        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 10, 0, 10, 0)
-                        # re.say("I cant get the object")
-                        Ro.go_to_real_xyz_alpha(id_list, [0, 100, 100], 0, 0, 10, 0)
-                        time.sleep(10)
-                        speak("I can't get it, going back to instruction point")
-                        step_action = 100
-                        time.sleep(1)
-                if step_action == 2:
-                    name_position = "$PLACE2"
-                    if "$PLACE2" not in liyt:
-                        name_position = "PLACE2"
-                    if name_position in liyt:
-                        walk_to(liyt[name_position])
+                    time.sleep(5)
                     step_action = 100
-                    # Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, 90, 0, Dy)
-                    speak("storing")
-                    final_speak_to_guest = ""
+                    
+                    speak("sorry, I can't find it and I can't get it, going back to instruction point")
             # Manipulation2 just walk
             elif "manipulation2" in command_type or ("mani" in command_type and "2" in command_type):
                 if step_action == 0:
@@ -724,34 +699,9 @@ if __name__ == "__main__":
                     if name_position in liyt:
                         walk_to(liyt[name_position])
                     cv2.imshow("man1", code_image)
-                    if "look" in user_input:
-                        for i in range(500):
-                            move(0, -0.6)
-                            time.sleep(0.026)
-                        step_action = 100
-                        speak("sorry, I can't find it, going back to instruction point")
-                    else:
-                        time.sleep(2)
-                        speak("getting now")
-                        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 10, 0, 60, 0)
-                        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 10, 0, 10, 0)
-                        # re.say("I cant get the object")
-                        Ro.go_to_real_xyz_alpha(id_list, [0, 100, 100], 0, 0, 10, 0)
-                        speak("I can't get it, going back to instruction point")
-                        step_action = 100
-                        time.sleep(1)
-                if step_action == 2:
-                    if " me " in user_input:
-                        walk_to("instruction point")
-                    else:
-                        name_position = "$ROOM2"
-                        if "$ROOM2" not in liyt:
-                            name_position = "ROOM2"
-                        if name_position in liyt:
-                            walk_to(liyt[name_position])
+                    time.sleep(5)
+                    speak("sorry, I can't find it and I can't get it, going back to instruction point")
                     step_action = 100
-                    # Ro.go_to_real_xyz_alpha(id_list, [0, 100, 200], -15, 0, 90, 0, Dy)
-                    final_speak_to_guest = "here you are"
             # Vision E 1,2
             elif ("vision (enumeration)1" in command_type or (
                     "vision" in command_type and "1" in command_type and "enume" in command_type)) or (
@@ -774,8 +724,6 @@ if __name__ == "__main__":
                             walk_to(liyt[name_position])
                     step_action = 1
                 if step_action == 1:
-                    time.sleep(2)
-                    speak("taking picture")
                     print("take picture")
                     # save frame
                     output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
@@ -839,8 +787,6 @@ if __name__ == "__main__":
                         walk_to(liyt[name_position])
                     step_action = 1
                 if step_action == 1:
-                    time.sleep(2)
-                    speak("taking picture")
                     print("take picture")
                     image_flip = _frame1.copy()
                     output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
@@ -1161,7 +1107,7 @@ if __name__ == "__main__":
                             action = "none"
                             step_action = 3
                             nav1_skip_cnt = 0
-                            speak("I can't find you I gonna go back to the host")
+                            speak("I can't find you I gonna go back to the instruction point")
                     if step == "confirm":
                         print("imwrited")
                         file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/GSPR_people.jpg"
@@ -1852,7 +1798,7 @@ if __name__ == "__main__":
                     if "something about yourself" in user_input or (
                             "yourself" in user_input):
                         speak("We are Fambot from Macau Puiching Middle School, and I was made in 2024")
-                    elif "what day today is" in user_input or ("today" in user_input and "day" in user_input):
+                    elif "what day today is" in user_input or ("today" in user_input):
                         speak("today is 19 th of july in 2025")
                     elif "what day tomorrow is" in user_input or ("tomorrow" in user_input and "day" in user_input):
                         speak("today is 20 th of july in 2025")
