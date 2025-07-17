@@ -404,7 +404,9 @@ if __name__ == "__main__":
     # Step 1 first get
     # Step 9 send image response text
     # step 10 get the image response
+    print("server")
     gg = post_message_request("-1", "", "")
+    print("server test")
     # speak("please say start, then I will go to the instruction point")
     step = "none"
     confirm_command = 0
@@ -638,7 +640,7 @@ if __name__ == "__main__":
             if step_action == 100 or step_action == 101:
                 break
             time_cnounting = 150
-            if "follow" in user_input or ("navi" in command_type and "1" in command_type): time_cnounting = 180
+            if "follow" in user_input or ("navi" in command_type and "1" in command_type): time_cnounting = 200
             if abs(command_stare_time - time.time()) >= time_cnounting:
                 step_action = 100
                 step = "none"
@@ -684,7 +686,7 @@ if __name__ == "__main__":
                         walk_to(liyt[name_position])
                     cv2.imshow("man1", code_image)
                     if "look" in user_input:
-                        for i in range(500):
+                        for i in range(450):
                             move(0, -0.6)
                             time.sleep(0.026)
                         step_action = 100
@@ -785,19 +787,7 @@ if __name__ == "__main__":
                         cv2.imshow("capture_vision_(enumeration)2_img", _frame2)
                         cv2.imwrite(output_dir + "GSPR.jpg", _frame2)
                     else:
-                        yn = 0
-                        for hijj in ["bedside table", "bed ", "waste basket", "tv stand", "sofa", "seats", "trash bin",
-                                     " bed"]:
-                            if hijj in user_input:
-                                yn = 1
-                        name_position = "$PLACE1"
-                        if "$PLACE1" not in liyt:
-                            name_position = "PLACE1"
-                        if yn == 1 or liyt[name_position] in ["bedside table", "bed ", "waste basket", "tv stand", "sofa", "seats", "trash bin",
-                                     " bed"]:
-                            image_flip = _frame1.copy()
-                        else:
-                            image_flip = _frame2.copy()
+                        image_flip = _frame1.copy()
                         cv2.imshow("capture_vision_(enumeration)1_img", image_flip)
                         cv2.imwrite(output_dir + "GSPR.jpg", image_flip)
                     # ask gemini
@@ -856,21 +846,7 @@ if __name__ == "__main__":
                     time.sleep(2)
                     speak("taking picture")
                     print("take picture")
-                    # save frame
-                    yn = 0
-                    for hijj in ["bedside table", "bed ", "waste basket", "tv stand", "sofa", "seats", "trash bin",
-                                 " bed"]:
-                        if hijj in user_input:
-                            yn = 1
-                    name_position = "$PLACE1"
-                    if "$PLACE1" not in liyt:
-                        name_position = "PLACE1"
-                    if yn == 1 or liyt[name_position] in ["bedside table", "bed ", "waste basket", "tv stand", "sofa",
-                                                          "seats", "trash bin",
-                                                          " bed"]:
-                        image_flip = _frame1.copy()
-                    else:
-                        image_flip = _frame2.copy()
+                    image_flip = _frame1.copy()
                     output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
                     cv2.imshow("capture_vision_(descridption)1_img", image_flip)
                     cv2.imwrite(output_dir + "GSPR.jpg", image_flip)
@@ -943,7 +919,7 @@ if __name__ == "__main__":
                     detections = dnn_yolo1.forward(code_image)[0]["det"]
                     # clothes_yolo
                     # nearest people
-                    nx = 1750
+                    nx = 2500
                     cx_n, cy_n = 0, 0
                     CX_ER = 99999
                     need_position = 0
@@ -998,7 +974,7 @@ if __name__ == "__main__":
                         detections = dnn_yolo1.forward(code_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
-                        nx = 1750
+                        nx = 2500
                         cx_n, cy_n = 0, 0
                         CX_ER = 99999
                         need_position = 0
@@ -1240,7 +1216,7 @@ if __name__ == "__main__":
                         detections = dnn_yolo1.forward(checking_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
-                        nx = 1750
+                        nx = 2500
                         cx_n, cy_n = 0, 0
                         CX_ER = 99999
                         need_position = 0
@@ -1511,7 +1487,7 @@ if __name__ == "__main__":
                         detections = dnn_yolo1.forward(checking_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
-                        nx = 1750
+                        nx = 2500
                         cx_n, cy_n = 0, 0
                         CX_ER = 99999
                         need_position = 0
@@ -1803,7 +1779,7 @@ if __name__ == "__main__":
                         detections = dnn_yolo1.forward(checking_image)[0]["det"]
                         # clothes_yolo
                         # nearest people
-                        nx = 1750
+                        nx = 2500
                         cx_n, cy_n = 0, 0
                         CX_ER = 99999
                         need_position = 0
