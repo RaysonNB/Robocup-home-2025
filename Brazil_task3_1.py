@@ -219,7 +219,6 @@ locations = {
 }
 
 
-
 def seat_turn_back(num12):
     check_num = str(num12)
     angle1 = 2
@@ -276,7 +275,8 @@ if __name__ == "__main__":
     confirm_command = 0
     for nigga_i in [1, 2]:
         check_cnt = 0
-        walk_to("guest")
+        if nigga_i==2:
+            walk_to("guest")
         say_cnt = 0
         while not rospy.is_shutdown():
             now1 = datetime.now()
@@ -287,9 +287,13 @@ if __name__ == "__main__":
                 print(s)
                 pre_s = s
             if _frame2 is None:
-                print("no frame")
+                print("no frame2")
             if _depth2 is None:
-                print("no depth")
+                print("no depth2")
+            if _frame1 is None:
+                print("no frame1")
+            if _depth1 is None:
+                print("no depth1")
             code_image = _frame2.copy()
             code_depth = _depth2.copy()
             if step == "fp":
@@ -304,15 +308,20 @@ if __name__ == "__main__":
                     cx = (x2 - x1) // 2 + x1
                     cy = (y2 - y1) // 2 + y1
                     _, _, d = get_real_xyz(code_depth, cx, cy, 2)
-                    if score > 0.65 and class_id == 0 and d != 0 and d <= 1500:
-                        check_cnt += 1
-                        mx1, my1, mx2, my2 = x1, y1, x2, y2
-                        yn = 1
+                    if nigga_i==1 and cx>=270 and cx<=370: #320
+                        if score > 0.65 and class_id == 0 and d != 0 and d <= 3200:
+                            check_cnt += 1
+                            mx1, my1, mx2, my2 = x1, y1, x2, y2
+                            yn = 1
+                    elif nigga==2:
+                        if score > 0.65 and class_id == 0 and d != 0 and d <= 1800:
+                            check_cnt += 1
+                            mx1, my1, mx2, my2 = x1, y1, x2, y2
+                            yn = 1
                 if yn == 1:
-                    speak1("hello dear guest, can you stand in front of me thank you")
                     if nigga_i == 1:
-                        speak1("please look at the camera on top, I will take your a picture")
-                        time.sleep(2)
+                        speak1("please don't move, I will take u a picture")
+                        #time.sleep(1)
                         step = "fp1"
                     if nigga_i == 2:
                         step = "name"
@@ -328,7 +337,7 @@ if __name__ == "__main__":
                     cx = (x2 - x1) // 2 + x1
                     cy = (y2 - y1) // 2 + y1
                     _, _, d = get_real_xyz(code_depth, cx, cy, 2)
-                    if score > 0.65 and class_id == 0 and d != 0 and d <= 1200:
+                    if score > 0.65 and class_id == 0 and d != 0 and d <= 3000 and cx>=270 and cx<=370:
                         check_cnt += 1
                         mx1, my1, mx2, my2 = x1, y1, x2, y2
                         yn = 1
@@ -356,14 +365,15 @@ if __name__ == "__main__":
                 name_cnt = "none"
                 s = s.lower()
                 if say_cnt == 0:
-                    speak1("My name is Fambot, please answer my following question in complete sentence")
+                    speak1("Dear guest, Please answer my following question in complete sentence with louder voice, for example my name is Fambot")
+                    speak1("it is better to stand in front of me now, thank you")
+                    time.sleep(1)
                     speak1("what is your name")
                     say_cnt += 1
-                
                 if "maria" in s: name_cnt = "Maria"
                 if "angel" in s: name_cnt = "Ana"
                 if "francisca" in s or "francesca" in s or "fantasies" in s: name_cnt = "Francisca"
-                if "antônia" in s or "antonia" in s:name_cnt = "Antônia"
+                if "antônia" in s or "antonia" in s: name_cnt = "Antônia"
                 if "adriana" in s: name_cnt = "Adriana"
                 if "juliana" in s or "liliana" in s: name_cnt = "Juliana"
                 if "marcia" in s or "michelle" in s or "maxsea" in s: name_cnt = "Marcia"
@@ -401,8 +411,8 @@ if __name__ == "__main__":
                 if "orange" in s or "juice" in s: name_cnt = "Orangle Juice"
                 if "milk" in s: name_cnt = "milk"
                 if "fanta" in s or "hunter" in s or "centre" in s or "better" in s or "santa" in s: name_cnt = "fanta"
-                #kgldkf
-                if "kuat" in s or "quad" in s or "quiet" in s or "caught" in s or "coolant" in s or "cart" in s or "clutch" in s or "cost" in s or"squash" in s: name_cnt = "kuat"
+                # kgldkf
+                if "kuat" in s or "quad" in s or "quiet" in s or "caught" in s or "coolant" in s or "cart" in s or "clutch" in s or "cost" in s or "squash" in s: name_cnt = "kuat"
                 if "coke" in s or "cook" in s or "cock" in s or "good" in s: name_cnt = "coke"
                 if (name_cnt == "none" and s != ""):
                     speak("please repeat")
@@ -414,14 +424,14 @@ if __name__ == "__main__":
             if step == "interest":
                 interest_name = "none"
                 s = s.lower()
-                if "art" in s: interest_name = "art"
-                if "act" in s: interest_name = "act"
-                if "animal" in s: interest_name = "animals"
-                if "basketball" in s: interest_name = "basketball"
-                if "football" in s: interest_name = "football"
-                if "eat" in s: interest_name = "eat"
-                if "robot" in s: interest_name = "robot"
-                if "ai" in s: interest_name = "AI"
+                if s!="":
+                    if "is " in s:
+                        a=s.split(" ")
+                        for ihhh in a:
+                            if ihhh == "is":
+                                if interest_name=="none":
+                                    interest_name=""
+                                interest_name=interest_name+str(ihhh)+" "
                 if (interest_name == "none" and s != ""):
                     speak("please repeat")
                 if interest_name != "none":
@@ -430,30 +440,13 @@ if __name__ == "__main__":
                     print(speakooo)
                     speak1(speakooo)
                     if nigga_i == 2:
-                        question = "what is the similarity between the interest of " + interest_name + " and " + pre_interest
-                        gg = post_message_request("interest", question, question)
                         print("********************")
                         speak1("dear " + name + " here are the first guest " + pre_name + " features")
                         speak(speech_robot_guest2)
                         print("********************")
-
-                        while True:
-                            r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
-                            response_data = r.text
-                            dictt = json.loads(response_data)
-                            time.sleep(2)
-                            if dictt["Steps"] == 100:
-                                gg = post_message_request("-1", "", "")
-                                aaa = dictt["Voice"].lower()
-                                speech_robot_guest2 = aaa
-                                speak(
-                                    "here are the similarity between the interest of " + interest_name + " and " + pre_interest)
-                                time.sleep(1)
-                                speak(aaa)
-                                break
                 s = ""
             if step == "drinktable":
-                speak1("dear guest i will bring you to the drink table")
+                speak1("please follow me to the drinks table")
                 walk_to("drinktable")
                 step = "gemini_drinks"
             if step == "gemini_drinks":
@@ -508,25 +501,25 @@ if __name__ == "__main__":
                     print("answer:", aaa)
                     speak1(aaa)
                     time.sleep(1)
-                    speaking_text = "dear guest, please follow me to the seat"
+                    speaking_text = "pl     1 ///ease follow me to the seat"
                     speak1(speaking_text)
                     step = "walk"
             if step == "walk":
                 walk_to("seats")
-
                 check_empty_img = _frame1.copy()
                 font = cv2.FONT_HERSHEY_SIMPLEX
                 font_scale = 1.5
                 font_color = (255, 255, 255)
                 font_thickness = 5
+
                 width = 640
                 height = 320
                 # correct the numbers************************************
                 positions = {
                     1: (int(width * 0.08), int(height * 0.5)),
-                    2: (int(width * 0.33), int(height * 0.5)),
-                    3: (int(width * 0.71), int(height * 0.5)),
-                    4: (int(width * 0.88), int(height * 0.5)),
+                    2: (int(width * 0.3), int(height * 0.5)),
+                    3: (int(width * 0.6), int(height * 0.5)),
+                    4: (int(width * 0.77), int(height * 0.5)),
                 }
                 for number, pos in positions.items():
                     text_size = cv2.getTextSize(str(number), font, font_scale, font_thickness)[0]
@@ -558,7 +551,7 @@ if __name__ == "__main__":
                 elif nigga_i == 2:
                     gg = post_message_request("seat2", "", "")
                     print(gg)
-                speak1("dear guest, can u stand on my left left left side, thank you")
+                speak1("please stand on my left side")
                 time.sleep(1)
                 step = "waitempty"
             if step == "waitempty":
@@ -599,41 +592,18 @@ if __name__ == "__main__":
                     confirm_seat = aaa
                     step = "tell_hosts"
             if step == "tell_hosts":
-                seat_turn(host_seat)
-                time.sleep(1)
-                host_name, host_drink_name, host_interest_name = "john", "milk ", "football "
-                if nigga_i == 1:
-                    speak(
-                        "dear host " + host_name + " this is the first guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
-                    seat_turn_back(host_seat)
-                    turn(-80)  # the chassis left
-                    time.sleep(1)
-                    speak(
-                        "dear guest " + name + " this is the host " + host_name + " favourite drink is " + host_drink_name + " interest is " + host_interest_name)
-                    turn(80)
-                else:
-                    speak(
-                        "dear host " + host_name + " this is the second guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
-                    seat_turn_back(host_seat)
-                    turn(-80)  # the chassis left
-                    time.sleep(1)
-                    speak(
-                        "dear guest " + name + " this is the host" + host_name + " favourite drink is " + host_drink_name + " interest is " + host_interest_name)
-                    turn(80)
+                host_name, host_drink_name, host_interest_name = "Antonio ", "Fanta ", "Rugby "
                 step = "tell1"
             if step == "tell1":
-
                 if nigga_i == 2:
                     seat_turn(guest1_seat)
                     time.sleep(1)
-                    speak(
-                        "dear guest " + pre_name + " this is the second guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
+                    speak("dear guest " + pre_name + " this is the second guest " + name + " favourite drink is " + drink_name + " interest is " + interest_name)
                     seat_turn_back(guest1_seat)
-                    turn(-80)  # chassis left
-                    speak(
-                        "dear guest " + name + " this is the first guest " + pre_name + " favourite drink is " + pre_drink + " interest is " + pre_interest)
+                    turn(-60)  # chassis left
+                    speak("dear guest " + name + " this is the first guest " + pre_name + " favourite drink is " + pre_drink + " interest is " + pre_interest)
                     time.sleep(1)
-                    turn(80)
+                    turn(60)
                 step = "tell"
             if step == "tell":
                 if "1" in seat_list:
@@ -645,12 +615,12 @@ if __name__ == "__main__":
                 elif "4" in seat_list:
                     seat_turn("4")
                 print("seat_list", seat_list)
-                speak("dear guest " + name + " the way I am facing is a empty seat, please have a sit")
-                pre_name, pre_drink, pre_interest = name, drink_name, interest_name
-
-                step = "fp"
                 if nigga_i == 1:
                     gg = post_message_request("feature", "", "")
+                speak("dear guest " + name + " the way I am facing is a empty seat, please have a sit")
+                pre_name, pre_drink, pre_interest = name, drink_name, interest_name
+                step = "fp"
+                if nigga_i == 1:
                     while True:
                         r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                         response_data = r.text
@@ -660,6 +630,23 @@ if __name__ == "__main__":
                             gg = post_message_request("-1", "", "")
                             aaa = dictt["Voice"].lower()
                             speech_robot_guest2 = aaa
+                            break
+                if nigga_i == 2:
+                    question = "give me one similarity between the interest of " + interest_name + " and " + pre_interest + "and" + host_interest_name
+                    gg = post_message_request("interest", question, question)
+
+                    while True:
+                        r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
+                        response_data = r.text
+                        dictt = json.loads(response_data)
+                        time.sleep(2)
+                        if dictt["Steps"] == 100:
+                            gg = post_message_request("-1", "", "")
+                            aaa = dictt["Voice"].lower()
+                            speech_robot_guest2 = aaa
+                            speak("here is a similarity between the interest of " + interest_name + " and " + pre_interest + "and" + host_interest_name)
+                            time.sleep(1)
+                            speak(aaa)
                             break
                 break
             cv2.imshow("frame", code_image)
