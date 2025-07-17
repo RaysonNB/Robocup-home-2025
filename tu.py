@@ -61,7 +61,7 @@ If no object here, please output a empty json list
 | cheese_snack | snack | Yellow bag of Fandangos cheese snacks. |
 | chocolate_bar | snack | Blue metallic package of Bis chocolate. |
 | gum_balls | snack | Orange bag of Fini sour gum balls. |
-| apple | fruit | Round **red** apple with a stem. |
+| apple | fruit | Round apple with a stem. |
 | lemon | fruit | Bright yellow lemon with textured skin. |
 | tangerine | fruit | Bright orange tangerine with bumpy skin. |
 | pear | fruit | Light green, bell-shaped pear with stem. |
@@ -150,7 +150,7 @@ object_list_dict = {
     },
     "apple": {
         "category": "fruit",
-        "appearance": "Round red apple with a stem."
+        "appearance": "Round apple with a stem."
     },
     "lemon": {
         "category": "fruit",
@@ -396,6 +396,7 @@ def main():
 
         time.sleep(1)
         Ro.go_to_real_xyz_alpha(id_list, [0, 250, 150], -25, 0, final_angle, 0)
+        return final_angle
 
     def draw_bbox(img, boxes_json: list, label="", color=(255, 0, 0), thickness=2):
         if "bounding_boxes" in boxes_json:
@@ -505,11 +506,11 @@ def main():
         time.sleep(3)
         respeaker.say("Help me put it in my robot arm and wait for the gripper close")
         time.sleep(2)
-        position = generate_content(f"Which layer most likely to put {a_object['name']}? your output must be in [1, 2, 3], from top (1) to down (3)", "./cabinet.jpg")
+        position = generate_content(f"Which layer most likely to put {a_object['name']}? your output must be in [1, 2, 3], from top (1) middle (2) down (3)", "./cabinet.jpg")
         position = str(position.get('generated_text'))
 
         print("**CLOSE_ARM")
-        close_grip(id_list[-1])
+        final_angle = close_grip(id_list[-1])
         respeaker.say("Thank you")
         time.sleep(5)
 
@@ -519,14 +520,19 @@ def main():
         walk_to(GOAL_P)
         
         respeaker.say("Putting Object")
+        pos = None
+        if "3" in position:
+            pos = [0, 200, 150]
+        else:
+            pos = [0, 200, 440]
+        
+        Ro.go_to_real_xyz_alpha(id_list, pos, 0, 0, final_angle, -1)
         for i in range(35):
             move(0.25, 0)
             rate.sleep()
             
         move(0, 0)
-        print("**OPEN_ARM")
-        time.sleep(5)
-        Ro.go_to_real_xyz_alpha(id_list, [0, 300, 150], 0, 0, 90, 0)
+        Ro.go_to_real_xyz_alpha(id_list, pos, 0, 0, 80, -1)
         for i in range(20):
             move(-0.25, 0)
             rate.sleep()
