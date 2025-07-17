@@ -334,8 +334,8 @@ if __name__ == "__main__":
                             yn = 1
                 if yn == 1:
                     if nigga_i == 1:
-                        speak11("hello dear guest, please don't move, I will take u a picture")
-                        time.sleep(1)
+                        speak11("hello dear guest, please look at the camera on top, I will take you a picture")
+                        #time.sleep(1)
                         step = "fp1"
                     if nigga_i == 2:
                         step = "name"
