@@ -108,26 +108,26 @@ def callback_voice(msg):
 
 def speak1(g):
     print("[robot say]:", end=" ")
-    os.system(f'espeak -s 180 "{g}"')
+    os.system(f'espeak -s 200 "{g}"')
     # rospy.loginfo(g)
     print(g)
-    time.sleep(0.3)
+    time.sleep(0.2)
 
 
 def speak11(g):
     print("[robot say]:", end=" ")
-    os.system(f'espeak -s 140 "{g}"')
+    os.system(f'espeak -s 150 "{g}"')
     # rospy.loginfo(g)
     print(g)
-    time.sleep(0.3)
+    time.sleep(0.2)
 
 
 def speak(g):
     print("[robot say]:", end=" ")
-    os.system(f'espeak -s 180 "{g}"')
+    os.system(f'espeak -s 200 "{g}"')
     # rospy.loginfo(g)
     print(g)
-    time.sleep(0.3)
+    time.sleep(0.2)
 
 
 def move(forward_speed: float = 0, turn_speed: float = 0):
@@ -147,7 +147,7 @@ def post_message_request(step, s1, question):
                "Voice": s1,
                "Questionasking": question,
                "answer": "None"}
-    response = requests.post(api_url, json=my_todo, timeout=60)
+    response = requests.post(api_url, json=my_todo, timeout=20)
     result = response.json()
     return result
 
@@ -486,9 +486,9 @@ if __name__ == "__main__":
 
                 now, you are going to find guest favourite drink on this table(the image).
 
-                tell me where is guest favourite drink with definite position on the table, simple discription is enough.
+                tell me where is guest favourite drink with definite position on the table.
 
-                you may answer your favourite drink is in the ... position of the table(the drink maybe not in the image, you may answer: sorry guest your favourite is not on the table)
+                you may answer your favourite drink is in the ... position of the table(the drink maybe not in the image, you may answer: ******sorry guest your favourite is not on the table******)
 
                 words limit: 20 words
 
@@ -641,18 +641,20 @@ if __name__ == "__main__":
                 if nigga_i == 1:
                     gg = post_message_request("feature", "", "")
                 speak("dear guest " + name + " the way I am facing is a empty seat, please have a sit")
-                pre_name, pre_drink, pre_interest = name, drink_name, interest_name
                 step = "fp"
-                if tunring_hh==1:
+                if nigga_i==2:
+                    question = "give me one similarity between the interest of " + interest_name + ", " + pre_interest + " and " + host_interest_name + "    (just use 15 words to describe)"
+                    gg = post_message_request("interest", question, question)
+                if tunring_hh=="1":
                     speak("which is the first seat count from left to right")
-                elif tunring_hh==2:
+                elif tunring_hh=="2":
                     speak("which is the second seat count from left to right")
-                elif tunring_hh==4:
+                elif tunring_hh=="4":
                     speak("which is the left seat of the long sofa")
-                elif tunring_hh==5:
+                elif tunring_hh=="5":
                     speak("which is the right seat of the long sofa")
-                elif tunring_hh==3:
-                    speak("which is the middle samll white seat")
+                elif tunring_hh=="3":
+                    speak("which is the middle small white seat")
                 if nigga_i == 1:
                     while True:
                         r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
@@ -665,9 +667,6 @@ if __name__ == "__main__":
                             speech_robot_guest2 = aaa
                             break
                 if nigga_i == 2:
-                    question = "give me one similarity between the interest of " + interest_name + ", " + pre_interest + " and " + host_interest_name+"    (just use 15 words to describe)"
-                    gg = post_message_request("interest", question, question)
-
                     while True:
                         r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
                         response_data = r.text
@@ -677,11 +676,11 @@ if __name__ == "__main__":
                             gg = post_message_request("-1", "", "")
                             aaa = dictt["Voice"].lower()
                             speech_robot_guest2 = aaa
-                            speak(
-                                "here is a similarity between the interest of " + interest_name + " and " + pre_interest + " and " + host_interest_name)
-                            time.sleep(1)
-                            speak(aaa)
+                            speak("here is a similarity between the interest of " + interest_name + ", " + pre_interest + " and " + host_interest_name)
+                            #time.sleep(1)
+                            speak11(aaa)
                             break
+                pre_name, pre_drink, pre_interest = name, drink_name, interest_name
                 break
             cv2.imshow("frame", code_image)
             key = cv2.waitKey(1)
