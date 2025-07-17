@@ -114,6 +114,13 @@ def speak1(g):
     time.sleep(0.3)
 
 
+def speak11(g):
+    print("[robot say]:", end=" ")
+    os.system(f'espeak -s 140 "{g}"')
+    # rospy.loginfo(g)
+    print(g)
+    time.sleep(0.3)
+
 def speak(g):
     print("[robot say]:", end=" ")
     os.system(f'espeak -s 180 "{g}"')
@@ -308,20 +315,20 @@ if __name__ == "__main__":
                     cx = (x2 - x1) // 2 + x1
                     cy = (y2 - y1) // 2 + y1
                     _, _, d = get_real_xyz(code_depth, cx, cy, 2)
-                    if nigga_i==1 and cx>=270 and cx<=370: #320
-                        if score > 0.65 and class_id == 0 and d != 0 and d <= 3200:
+                    if nigga_i==1 and cx>=260 and cx<=380: #320
+                        if score > 0.65 and class_id == 0 and d != 0 and d <= 3000:
                             check_cnt += 1
                             mx1, my1, mx2, my2 = x1, y1, x2, y2
                             yn = 1
-                    elif nigga==2:
+                    elif nigga_i==2:
                         if score > 0.65 and class_id == 0 and d != 0 and d <= 1800:
                             check_cnt += 1
                             mx1, my1, mx2, my2 = x1, y1, x2, y2
                             yn = 1
                 if yn == 1:
                     if nigga_i == 1:
-                        speak1("please don't move, I will take u a picture")
-                        #time.sleep(1)
+                        speak1("dear guest, please don't move, I will take u a picture")
+                        time.sleep(1)
                         step = "fp1"
                     if nigga_i == 2:
                         step = "name"
@@ -365,8 +372,8 @@ if __name__ == "__main__":
                 name_cnt = "none"
                 s = s.lower()
                 if say_cnt == 0:
-                    speak1("Dear guest, Please answer my following question in complete sentence with louder voice, for example my name is Fambot")
-                    speak1("it is better to stand in front of me now, thank you")
+                    speak11("Dear guest, Please answer my following question in complete sentence with louder voice, for example my name is Fambot")
+                    speak11("it is better to stand in front of me now, thank you")
                     time.sleep(1)
                     speak1("what is your name")
                     say_cnt += 1
@@ -384,7 +391,7 @@ if __name__ == "__main__":
                 if "joao" in s or "joel" in s: name_cnt = "Joao"
                 if "antonio" in s: name_cnt = "Antonio"
                 if "francisco" in s: name_cnt = "Francisco"
-                if "carlos" in s: name_cnt = "Carlos"
+                if "carlos" in s or "carol" in s: name_cnt = "Carlos"
                 '''
                  if "otto" in s or "adel" in s or "adolf" in s: name_cnt = "adel"
                 if "angel" in s: name_cnt = "angel"
@@ -425,13 +432,9 @@ if __name__ == "__main__":
                 interest_name = "none"
                 s = s.lower()
                 if s!="":
-                    if "is " in s:
-                        a=s.split(" ")
-                        for ihhh in a:
-                            if ihhh == "is":
-                                if interest_name=="none":
-                                    interest_name=""
-                                interest_name=interest_name+str(ihhh)+" "
+                    if "is" in s and "interest" in s:
+                        interest_name = s.split("interest is")[-1]
+                        
                 if (interest_name == "none" and s != ""):
                     speak("please repeat")
                 if interest_name != "none":
@@ -501,7 +504,7 @@ if __name__ == "__main__":
                     print("answer:", aaa)
                     speak1(aaa)
                     time.sleep(1)
-                    speaking_text = "pl     1 ///ease follow me to the seat"
+                    speaking_text = "please follow me to the seat"
                     speak1(speaking_text)
                     step = "walk"
             if step == "walk":
@@ -632,7 +635,7 @@ if __name__ == "__main__":
                             speech_robot_guest2 = aaa
                             break
                 if nigga_i == 2:
-                    question = "give me one similarity between the interest of " + interest_name + " and " + pre_interest + "and" + host_interest_name
+                    question = "give me one similarity between the interest of " + interest_name + ", " + pre_interest + " and " + host_interest_name
                     gg = post_message_request("interest", question, question)
 
                     while True:
