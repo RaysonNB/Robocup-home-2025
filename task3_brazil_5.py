@@ -285,7 +285,7 @@ if __name__ == "__main__":
     gg = post_message_request("-1", "", "")
     step = "fp"
     pre_s = ""
-
+    host_name, host_drink_name, host_interest_name = "Antonio ", "Fanta ", "Rugby "
     confirm_command = 0
     for nigga_i in [1, 2]:
         check_cnt = 0
