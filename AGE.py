@@ -4,6 +4,7 @@ from std_srvs.srv import Empty
 import rospy
 import os
 import time
+4.415 4.003 -1.571
 
 
 def speak(g):
