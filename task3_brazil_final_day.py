@@ -282,7 +282,9 @@ if __name__ == "__main__":
     s = ""
     rospy.Subscriber("/voice/text", Voice, callback_voice)
     robot_height = 1000
+    print("server")
     gg = post_message_request("-1", "", "")
+    print("server done")
     step = "fp"
     pre_s = ""
     repeat_cnt=0
@@ -431,8 +433,7 @@ if __name__ == "__main__":
                     repeat_cnt = 0
                     drink_name = name_cnt
                     step = "interest"
-                    speak1("what is your interest")
-                    speak1("Please answer in complete sentence")
+                    speak1("what is your interest, Please answer in complete sentence")
                     speak11("for example my interest is playing football")
                 s = ""
             if step == "interest":
@@ -652,9 +653,9 @@ if __name__ == "__main__":
                 elif tunring_hh=="2":
                     speak("which is the second seat count from my left to right")
                 elif tunring_hh=="4":
-                    speak("which is the second seat count from my right to left")
+                    speak("which is the left side of the long sofa")
                 elif tunring_hh=="5":
-                    speak("which is the first seat count from my right to left")
+                    speak("which is the right side of the long sofa")
                 elif tunring_hh=="3":
                     speak("which is the middle small white seat")
                 if nigga_i == 1:
@@ -678,7 +679,7 @@ if __name__ == "__main__":
                             gg = post_message_request("-1", "", "")
                             aaa = dictt["Voice"].lower()
                             speech_robot_guest2 = aaa
-                            speak("here is a similarity between the interest of " + interest_name + ", " + pre_interest + " and " + host_interest_name)
+                            speak11("here is a similarity between the interest of " + interest_name + ", " + pre_interest + " and " + host_interest_name)
                             #time.sleep(1)
                             speak11(aaa)
                             break
