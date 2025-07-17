@@ -147,7 +147,7 @@ def post_message_request(step, s1, question):
                "Voice": s1,
                "Questionasking": question,
                "answer": "None"}
-    response = requests.post(api_url, json=my_todo, timeout=20)
+    response = requests.post(api_url, json=my_todo, timeout=60)
     result = response.json()
     return result
 
@@ -486,9 +486,9 @@ if __name__ == "__main__":
 
                 now, you are going to find guest favourite drink on this table(the image).
 
-                tell me where is guest favourite drink with definite position on the table.
+                tell me where is guest favourite drink with definite position on the table, simple discription is enough.
 
-                you may answer your favourite drink is in the ... position of the table(the drink maybe not in the image, you may answer: ******sorry guest your favourite is not on the table******)
+                you may answer your favourite drink is in the ... position of the table(the drink maybe not in the image, you may answer: sorry guest your favourite is not on the table)
 
                 words limit: 20 words
 
