@@ -94,7 +94,7 @@ def callback_voice(msg):
 
 def speak(g):
     print("[robot said]: ", end=" ")
-    os.system(f'espeak -s 150 "{g}"')
+    os.system(f'espeak -s 140 "{g}"')
     # rospy.loginfo(g)
     print(g)
     time.sleep(0.5)
@@ -109,7 +109,7 @@ def move(forward_speed: float = 0, turn_speed: float = 0):
 
 
 def post_message_request(step, s1, question):
-    api_url = "http://192.168.50.147:8888/Fambot"
+    api_url = "http://172.20.10.5:8888/Fambot"
     my_todo = {"Question1": "None",
                "Question2": "None",
                "Question3": "None",
@@ -117,7 +117,7 @@ def post_message_request(step, s1, question):
                "Voice": s1,
                "Questionasking": question,
                "answer": "None"}
-    response = requests.post(api_url, json=my_todo, timeout=2.5)
+    response = requests.post(api_url, json=my_todo, timeout=20)
     result = response.json()
     return result
 clear_costmaps = rospy.ServiceProxy("/move_base/clear_costmaps", Empty)
@@ -135,19 +135,24 @@ def walk_to():
                 break
         time.sleep(1)
         clear_costmaps
+def callback_voice(msg):
+    global s
+    s = msg.text
 if __name__ == "__main__":
     rospy.init_node("demo")
     rospy.loginfo("demo node start!")
     # open things
     chassis = RobotChassis()
-
+    print("speak")
+    s = ""
+    rospy.Subscriber("/voice/text", Voice, callback_voice)
     net_pose = HumanPoseEstimation(device_name="GPU")
-    print("gemini2 rgb")
+    print("gemini rgb")
     _frame1 = None
-    _sub_down_cam_image1 = rospy.Subscriber("/cam1/color/image_raw", Image, callback_image1)
-    print("gemini2 depth")
+    _sub_down_cam_image1 = rospy.Subscriber("/camera/color/image_raw", Image, callback_image1)
+    print("gemini depth")
     _depth1 = None
-    _sub_down_cam_depth1 = rospy.Subscriber("/cam1/depth/image_raw", Image, callback_depth1)
+    _sub_down_cam_depth1 = rospy.Subscriber("/camera/depth/image_raw", Image, callback_depth1)
     dnn_yolo = Yolov8("yolov8n", device_name="GPU")
     cv2.namedWindow("frame", cv2.WINDOW_NORMAL)
     follow_cnt = 0
@@ -163,9 +168,16 @@ if __name__ == "__main__":
     step = "none"
     confirm_command = 0
     speak("I am ready")
+    meter=1000
+    for walk in range(round(meter/100)):
+        move(0, -0.2)
+        time.sleep(0.5)
     speak_j=""
-    for i in range(2):
+    time.sleep(60)
+    output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
+    for ifffff in range(2):
         step_action=0
+        depth_ddd = 0
         skip_voice_cnt=0
         while not rospy.is_shutdown():
             # voice check
@@ -186,32 +198,32 @@ if __name__ == "__main__":
             if key in [ord('q'), 27]:
                 break
             if step_action == 0:
-                speak("guys, please raising your hand if u need a order")
+                speak("hello customers, please raise your hand if u need a order")
                 step="turn"
                 action="find"
-                speak("finding person")
+                speak("finding customer")
             if step_action == 1:
                 # walk in front of the guy
                 if step == "turn":
-                    move(0, -0.2)
+                    move(0, -0.3)
                 if step == "confirm":
                     print("imwrited")
                     file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/GSPR_people.jpg"
                     with open(file_path, 'rb') as f:
                         files = {'image': (file_path.split('/')[-1], f)}
-                        url = "http://192.168.50.147:8888/upload_image"
+                        url = "http://172.20.10.5:8888/upload_image"
                         response = requests.post(url, files=files)
                         # remember to add the text question on the computer code
                     print("Upload Status Code:", response.status_code)
                     upload_result = response.json()
                     print("sent image")
                     feature="raising hand"
-                    who_help = "Is the guy " + "raising hand or calling(speaking)"
-                    gg = post_message_request("checkpeople", "raising hand", who_help)
+                    who_help = "Is the guy raising hand or calling(speaking)"
+                    gg = post_message_request("checkpeople", who_help, who_help)
                     print(gg)
                     # get answer from gemini
                     while True:
-                        r = requests.get("http://192.168.50.147:8888/Fambot", timeout=10)
+                        r = requests.get("http://172.20.10.5:8888/Fambot", timeout=20)
                         response_data = r.text
                         dictt = json.loads(response_data)
                         if dictt["Steps"] == 11:
@@ -234,7 +246,7 @@ if __name__ == "__main__":
                     feature = feature.lower()
                     gg = post_message_request("-1", "", "")
                     if "yes" in aaa or "ys" in aaa:
-                        speak("found you the guy " + str(feature))
+                        speak("found you")
                         action = "front"
                         step = "none"
                     else:
@@ -248,7 +260,7 @@ if __name__ == "__main__":
                     detections = dnn_yolo1.forward(code_image)[0]["det"]
                     # clothes_yolo
                     # nearest people
-                    nx = 2500
+                    nx = 2000
                     cx_n, cy_n = 0, 0
                     CX_ER = 99999
                     need_position = 0
@@ -261,7 +273,7 @@ if __name__ == "__main__":
                         # depth=find_depsth
                         _, _, d = get_real_xyz(code_depth, cx, cy, 2)
                         # cv2.rectangle(up_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
-    
+
                         if score > 0.65 and class_id == 0 and d <= nx and d != 0 and (320 - cx) < CX_ER:
                             need_position = [x1, y1, x2, y2, cx, cy]
                             # ask gemini
@@ -281,7 +293,7 @@ if __name__ == "__main__":
                             v = max(v, -0.45)
                         move(0, v)
                         print(e)
-                        output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
+
                         face_box = [x1, y1, x2, y2]
                         box_roi = _frame1[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
                         fh, fw = abs(x1 - x2), abs(y1 - y2)
@@ -293,13 +305,15 @@ if __name__ == "__main__":
                             print("turned")
                             move(0, 0)
                 if action == "front":
-                    speed = 0.2
                     h, w, c = code_image.shape
                     cx, cy = w // 2, h // 2
                     for i in range(cy + 1, h):
                         if _depth1[cy][cx] == 0 or 0 < _depth1[i][cx] < _depth1[cy][cx]:
                             cy = i
                     _, _, d = get_real_xyz(_depth1, cx, cy, 2)
+                    if depth_ddd==0:
+                        meter=d-1200
+                        depth_ddd+=1
                     print("depth", d)
                     if d != 0 and d <= 1200:
                         action = "speak"
@@ -311,23 +325,55 @@ if __name__ == "__main__":
                     action = "none"
                     step_action = 2
             if step_action == 2:
-                speak("please tell me what you want, you can take the keyboard and type")
-                answer=input("*******************please type it here:   ")
-                gg = post_message_request("color", "", answer)
-                while True:
-                    r = requests.get("http://172.20.10.5:8888/Fambot", timeout=10)
-                    response_data = r.text
-                    dictt = json.loads(response_data)
-                    if dictt["Steps"] == 12:
-                        break
-                    time.sleep(2)
-                final_speak_to_guest = dictt["Voice"]
-                gg = post_message_request("-1", "", "")
-                speak(final_speak_to_guest)
-                time.sleep(1)
-                speak("sorry guest, I can't help you")
-                move(0,0.2)
+                speak("dear customer, there is a qrcode in the right of the screen")
+                speak("please use your phone to scan the qrcode")
+                speak("type your order")
+                time.sleep(2)
+                speak("roll down your screen and show me your order qrcode to me thank you")
                 time.sleep(5)
+                speak("dear customer please scan your qr code in front of my camera in the middle")
+                yn = 0
+                qr_code_detector = cv2.QRCodeDetector()
+                while True:
+                    # print("step1")
+                    if _frame1 is None: continue
+                    code_image = _frame1.copy()
+                    data, bbox, _ = qr_code_detector.detectAndDecode(code_image)
+
+                    if data:
+                        print("QR Code detected:", data)
+                        break
+
+                    cv2.imshow("QR Code Scanner", code_image)
+
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        break
+                cv2.destroyAllWindows()
+                # data = command_list[i]
+                # continue
+
+                speak("dear customer your order is")
+                time.sleep(0.3)
+                final_speak_to_guest = data.lower()
+                s = ""
+                print("Your command is **********************")
+                print(data)
+                speak("your order is")
+                speak(final_speak_to_guest)
+                print("********************")
+                speak("plase answer robot yes or robot no thank you")
+                step_action=7
+            if step_action == 7:
+                if "yes" in s:
+                    step_action=9
+                if "no" in s:
+                    step_action = 2
+            if step_action == 9:
+                for walk in range(round(meter/100)):
+                    move(0,-0.2)
+                    time.sleep(0.5)
                 move(0,0)
+                speak("the customer want " + final_speak_to_guest)
+                time.sleep(2)
                 break
             speak("mission end")
