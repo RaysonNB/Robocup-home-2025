@@ -172,6 +172,9 @@ def main():
     cv2.imwrite("evidence", frame_base)
 
     for i, bbox in enumerate(boxes_json):
+
+        label = bbox.get('label') if bbox.get('label') else "Object"
+        
         Ro.go_to_real_xyz_alpha(id_list, [0, 150, 300], 0, 0, 90, 0)
 
         frame_base = frame.copy()
@@ -186,13 +189,16 @@ def main():
         arm_x = point[0]
         arm_y = point[2] - OFFSET_Y
         arm_z = point[1] + OFFSET_Z
-        Ro.go_to_real_xyz_alpha(id_list, [arm_x, arm_y, arm_z], 0, 0, 90, 0)
-        final_angle = close_grip(id_list[-1])
-        Ro.go_to_real_xyz_alpha(id_list, [0, 150, 300], 0, 0, final_angle, 0)
+        success = Ro.go_to_real_xyz_alpha(id_list, [arm_x, arm_y, arm_z], 0, 0, 90, 0)
+        if success:
+            final_angle = close_grip(id_list[-1])
+            Ro.go_to_real_xyz_alpha(id_list, [0, 150, 300], 0, 0, final_angle, 0)
+        else:
+            respeaker.say("Sorry, i cant get it")
         ####
 
         ## Request to take
-        # label = bbox.get('label') if bbox.get('label') else "Object"
+        # 
         # respeaker.say(f"I detected {label} with a bounding box ")
         # respeaker.say(f"Dear Referee Please help me take {label} on the table and place it on my robot arm")
         # time.sleep(3)
