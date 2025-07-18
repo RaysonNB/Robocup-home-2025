@@ -39,7 +39,6 @@ Ro.open_robotic_arm("/dev/arm", id_list)
 
 '''
 
-
 def callback_image2(msg):
     global _frame2
     _frame2 = CvBridge().imgmsg_to_cv2(msg, "bgr8")
@@ -422,13 +421,7 @@ if __name__ == "__main__":
     depth_zero = 0
     command_list = [
         "take me the coke in the bedroom",
-        "take the milk on the cabient and bring it to tom standing in the office",
-        "follow the person rising their left arm in the office",
-        "Take the person raising their left arm from the cabinet to the bedroom",
-        "Tell me how many snacks there are on the seats",
         "Tell me the name of the person at the sofa",
-        "Tell me the pose of the person in the office",
-        "Tell me what is the lightest dish on the desk",
         "Say hello to Charlie in the living room and answer a quiz",
         "Say what day is today to the person raising their left arm in the living room"]
     while not rospy.is_shutdown():
@@ -1503,9 +1496,6 @@ if __name__ == "__main__":
                         name_position = "PLACE1"
                     if name_position in liyt:
                         walk_to(liyt[name_position])
-                    for i in range(250):
-                        move(0, -0.2)
-                        time.sleep(0.125)
                     if action == "speak":
                         action = 1
                         step = "none"
