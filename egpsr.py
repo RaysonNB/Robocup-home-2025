@@ -1,6 +1,67 @@
 from openai import OpenAI
 import numpy as np
 
+def get_bboxes(
+    img: np.ndarray,
+    prompt: str,
+    api_client: OpenAI
+):
+    """
+    Uses Gemini to detect bounding boxes, validating the output with Pydantic.
+
+    Args:
+        img (np.ndarray): The input image in cv2 format (NumPy array).
+        prompt (str): The text prompt describing what to detect (e.g., "the car").
+        api_client (OpenAI): The initialized OpenAI client instance.
+
+    Returns:
+        Optional[BoundingBoxDetections]: A Pydantic object containing a list
+        of validated bounding boxes, or None if an error occurs.
+    """
+
+    # 1. Encode the cv2 image to a base64 string
+    success, encoded_image = cv2.imencode('.jpeg', img)
+    if not success:
+        print("Error: Could not encode image to JPEG format.")
+        return None
+    base64_image = base64.b64encode(encoded_image).decode('utf-8')
+
+    # 2. Define the system prompt, now asking for a specific JSON object structure
+    system_instruction = (
+        "You are an expert in object detection. "
+        "Output a json list where each entry contains the 2D bounding box in \"box_2d\" and a text label in \"label\"."
+        "The 'box_2d' should be an array of [ymin, xmin, ymax, xmax] with coordinates normalized to 0-1000. "
+    )
+    
+    user_prompt = f"Detect {prompt} in the image"
+
+    # 3. Call the API with the new `reasoning_effort` parameter
+    response = api_client.chat.completions.create(
+        model="gemini-2.5-flash",
+        reasoning_effort="none",
+        messages=[
+            {"role": "system", "content": system_instruction},
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": user_prompt},
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}
+                    }
+                ]
+            }
+        ],
+        temperature=0,
+    )
+
+    content = response.choices[0].message.content
+    print(content)
+    if "```" in content:
+        content = content.replace("```json", "")
+        content = content.replace("```", "")
+    return json.loads(content)
+
 def nearest_nonzero(img, x, y):
     ys, xs = np.nonzero(img[y-7:y+8, x-7:x+8])
     if ys.size == 0: 
