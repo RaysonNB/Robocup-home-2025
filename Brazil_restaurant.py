@@ -94,7 +94,7 @@ def callback_voice(msg):
 
 def speak(g):
     print("[robot said]: ", end=" ")
-    os.system(f'espeak -s 140 "{g}"')
+    os.system(f'espeak -s 120 "{g}"')
     # rospy.loginfo(g)
     print(g)
     time.sleep(0.5)
@@ -142,7 +142,8 @@ if __name__ == "__main__":
     rospy.init_node("demo")
     rospy.loginfo("demo node start!")
     # open things
-    chassis = RobotChassis()
+    print("cmd_vel")
+    _cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
     print("speak")
     s = ""
     rospy.Subscriber("/voice/text", Voice, callback_voice)
@@ -169,16 +170,15 @@ if __name__ == "__main__":
     confirm_command = 0
     speak("I am ready")
     meter=1000
-    for walk in range(round(meter/100)):
-        move(0, -0.2)
-        time.sleep(0.5)
+    print("0")
     speak_j=""
-    time.sleep(60)
     output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
     for ifffff in range(2):
         step_action=0
         depth_ddd = 0
         skip_voice_cnt=0
+        repeat_cnt=0
+        repeatnigga=0
         while not rospy.is_shutdown():
             # voice check
             # break
@@ -202,10 +202,11 @@ if __name__ == "__main__":
                 step="turn"
                 action="find"
                 speak("finding customer")
+                step_action=1
             if step_action == 1:
                 # walk in front of the guy
                 if step == "turn":
-                    move(0, -0.3)
+                    move(0, -0.2)
                 if step == "confirm":
                     print("imwrited")
                     file_path = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/GSPR_people.jpg"
@@ -252,7 +253,7 @@ if __name__ == "__main__":
                     else:
                         action = "find"
                         step = "turn"
-                        for i in range(55):
+                        for i in range(35):
                             move(0, -0.2)
                             time.sleep(0.125)
                 if action == "find":
@@ -260,7 +261,7 @@ if __name__ == "__main__":
                     detections = dnn_yolo1.forward(code_image)[0]["det"]
                     # clothes_yolo
                     # nearest people
-                    nx = 2000
+                    nx = 2200
                     cx_n, cy_n = 0, 0
                     CX_ER = 99999
                     need_position = 0
@@ -274,13 +275,14 @@ if __name__ == "__main__":
                         _, _, d = get_real_xyz(code_depth, cx, cy, 2)
                         # cv2.rectangle(up_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-                        if score > 0.65 and class_id == 0 and d <= nx and d != 0 and (320 - cx) < CX_ER:
+                        if score > 0.65 and class_id == 0 and d>=900 and d <= nx and d != 0 and (320 - cx) < CX_ER:
                             need_position = [x1, y1, x2, y2, cx, cy]
                             # ask gemini
                             cv2.rectangle(code_image, (x1, y1), (x2, y2), (255, 0, 0), 2)
                             cv2.circle(code_image, (cx, cy), 5, (0, 255, 0), -1)
                             print("people distance", d)
                             CX_ER = 320 - cx
+                            final_d=d
                     if need_position != 0:
                         step = "none"
                         h, w, c = code_image.shape
@@ -305,21 +307,11 @@ if __name__ == "__main__":
                             print("turned")
                             move(0, 0)
                 if action == "front":
-                    h, w, c = code_image.shape
-                    cx, cy = w // 2, h // 2
-                    for i in range(cy + 1, h):
-                        if _depth1[cy][cx] == 0 or 0 < _depth1[i][cx] < _depth1[cy][cx]:
-                            cy = i
-                    _, _, d = get_real_xyz(_depth1, cx, cy, 2)
-                    if depth_ddd==0:
-                        meter=d-1200
-                        depth_ddd+=1
-                    print("depth", d)
-                    if d != 0 and d <= 1200:
-                        action = "speak"
-                        move(0, 0)
-                    else:
-                        move(0.3, 0)
+                    meter=d-1000
+                    for walk in range(round((meter)/100)):
+                        move(0.2,0)
+                        time.sleep(0.5)
+                    action="speak"
                 if action == "speak":
                     step = "none"
                     action = "none"
@@ -356,9 +348,8 @@ if __name__ == "__main__":
                 time.sleep(0.3)
                 final_speak_to_guest = data.lower()
                 s = ""
-                print("Your command is **********************")
+                print("Your order is **********************")
                 print(data)
-                speak("your order is")
                 speak(final_speak_to_guest)
                 print("********************")
                 speak("plase answer robot yes or robot no thank you")
@@ -368,12 +359,58 @@ if __name__ == "__main__":
                     step_action=9
                 if "no" in s:
                     step_action = 2
+                if s=="":
+                    repeat_cnt+=1
+                if (s != "") or repeat_cnt>=80:
+                    speak("please repeat louder and closer")
+                    repeat_cnt=0
+                    repeatnigga+=1
+                if repeatnigga>=3:
+                    speak("I got it")
+                    step_action=9
             if step_action == 9:
+                time.sleep(3)
                 for walk in range(round(meter/100)):
-                    move(0,-0.2)
+                    move(-0.2,0)
                     time.sleep(0.5)
                 move(0,0)
                 speak("the customer want " + final_speak_to_guest)
                 time.sleep(2)
+                step_action = 10
+            if step_action == 10:
+                speak("dear barman please give me all the stuff in 25 second, thank you")
+                time.sleep(19)
+                speak("5")
+                speak("4")
+                speak("3")
+                speak("2")
+                speak("1")
+                speak("I gonna move")
+                
+                for walk in range(round((meter-300)/100)):
+                    move(0.2,0)
+                    time.sleep(0.5)
+                time.sleep(3)
+                for turn in range(180):
+                    move(0,0.6)
+                    time.sleep(0.026)
+                time.sleep(3)
+                for walk in range(round((300)/100)):
+                    move(-0.2,0)
+                    time.sleep(0.5)
+                time.sleep(3)
+                speak("dear customer, you can take the stuff")
+                speak("you have 25 seconds")
+                time.sleep(19)
+                speak("5")
+                speak("4")
+                speak("3")
+                speak("2")
+                speak("1")
+                speak("I gonna move")
+                for walk in range(round((meter)/100)):
+                    move(0.2,0)
+                    time.sleep(0.5)
+                time.sleep(3)
                 break
-            speak("mission end")
+    speak("mission end")
