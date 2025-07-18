@@ -26,7 +26,7 @@ import speech_recognition as sr
 import json
 import os
 from datetime import datetime
-
+'''
 # from LemonEngine.hardwares.respeaker import Respeaker
 from robotic_arm_control import RoboticController
 
@@ -36,7 +36,7 @@ Ro = RoboticController()
 id_list = [11, 12, 0, 15, 14, 13, 1, 2]
 Ro.open_robotic_arm("/dev/arm", id_list)
 
-
+'''
 def callback_image2(msg):
     global _frame2
     _frame2 = CvBridge().imgmsg_to_cv2(msg, "bgr8")
@@ -137,7 +137,7 @@ def post_message_request(step, s1, question):
                "Voice": s1,
                "Questionasking": question,
                "answer": "None"}
-    response = requests.post(api_url, json=my_todo, timeout=2.5)
+    response = requests.post(api_url, json=my_todo, timeout=20)
     result = response.json()
     return result
 
@@ -315,7 +315,7 @@ locations = {
     "sofa": [1.659, 1.330, -1.542],
     "seats": [0.969, 0.905, 0],
     "entry": [0.049, 0.188, -3.14],
-    "instruction point": [4.415,4.003,-1.53],
+    "instruction point": [4.2,3.8,-1.53],
     "bedroom": [4.1, 6.51, 2.083],
     "kitchen": [0.689, 6.181, -0.775],
     "living room": [1.069,2.017,-0.015],
@@ -337,7 +337,6 @@ dining_room_dif = {
     "din1": [-1.545, -0.303, 1.53],
     "din2": [1.214, 1.960, -1.53]  ##
 }
-
 
 # name
 # qestion list
@@ -413,21 +412,16 @@ if __name__ == "__main__":
     speak("I am ready")
     depth_zero = 0
     command_list = [
-        "Take the person raising their left arm from the left chair to the bedroom",
-        "Take the lying person from the left Kachaka shelf to the bedroom",
-        "Tell me the name of the person at the tall table",
-        "Tell me the pose of the person in the study room",
-        "Tell me how many snacks there are on the container",
-        "Tell me how many people in the bedroom are wearing white jackets",
-        "Tell me what is the smallest drink on the trash bin",
-        "Tell me what is the lightest dish on the shelf",
+        "take me the coke in the bedroom",
+        "take the milk on the cabient and bring it to tom standing in the office", 
+        "follow the person rising their left arm in the office",
+        "Take the person raising their left arm from the cabinet to the bedroom",
+        "Tell me how many snacks there are on the seats",
+        "Tell me the name of the person at the sofa",
+        "Tell me the pose of the person in the office",
+        "Tell me what is the lightest dish on the desk",
         "Say hello to Charlie in the living room and answer a quiz",
-        "Greet Paris in the bathroom and answer a question",
-        "Say what day is today to the person raising their left arm in the living room",
-        "Introduce yourself to Charlie in the bedroom and follow them to the pen holder",
-        "Salute the person wearing a black shirt in the bedroom and escort them to the shelf",
-        "Tell your teams name to the person raising their left arm in the study room",
-        "Look for a lying person in the dining room and say what day is today"]
+        "Say what day is today to the person raising their left arm in the living room"]
     while not rospy.is_shutdown():
         if _frame2 is None: continue
         if _depth2 is None: continue
@@ -455,7 +449,7 @@ if __name__ == "__main__":
             break
     walk_to("instruction point")
     commandcntcnt = 0
-    for i in range(3):
+    for i in [0,1,2,3,4,5,6,7,8,9]:
         commandcntcnt = commandcntcnt + 1
         s = ""
         dining_room_action = 0
@@ -713,7 +707,10 @@ if __name__ == "__main__":
                     if "$ROOM1" not in liyt:
                         name_position = "ROOM1"
                     if name_position in liyt:
-                        walk_to1(liyt[name_position])
+                        if "1" in command_type:
+                            walk_to(liyt[name_position])
+                        else:
+                            walk_to1(liyt[name_position])
                     step_action = 10
                 if step_action == 10:
                     if ("1" in command_type):
@@ -777,7 +774,7 @@ if __name__ == "__main__":
                     if "$ROOM1" not in liyt:
                         name_position = "ROOM1"
                     if name_position in liyt:
-                        walk_to1(liyt[name_position])
+                        walk_to(liyt[name_position])
                     step_action = 10
                 if step_action == 10:
                     name_position = "$PLACE1"
@@ -834,7 +831,7 @@ if __name__ == "__main__":
                     if "$ROOM1" not in liyt:
                         name_position = "ROOM1"
                     if name_position in liyt:
-                        walk_to1(liyt[name_position])
+                        walk_to(liyt[name_position])
                     step_action = 10
                 if step_action == 10:
                     name_position = "$PLACE1"
@@ -1041,26 +1038,18 @@ if __name__ == "__main__":
             elif "navigation1" in command_type or ("navi" in command_type and "1" in command_type):
                 # follow
                 if step_action == 0:
-                    if dining_room_action == 0:
-                        name_position = "$ROOM1"
-                        if "$ROOM1" not in liyt:
-                            name_position = "ROOM1"
-                        if name_position in liyt:
-                            walk_to(liyt[name_position])
-                    else:
-                        speak("going to first dining room")
-                        num1, num2, num3 = dining_room_dif["din1"]
-                        chassis.move_to(num1, num2, num3)
-                        while not rospy.is_shutdown():
-                            # 4. Get the chassis status.
-                            code = chassis.status_code
-                            text = chassis.status_text
-                            if code == 3:
-                                break
-                            if code == 4:
-                                break
-                        time.sleep(1)
-                        clear_costmaps
+                    name_position = "$ROOM1"
+                    if "$ROOM1" not in liyt:
+                        name_position = "ROOM1"
+                    if name_position in liyt:
+                        walk_to(liyt[name_position])
+                    step_action = 10
+                if step_action == 10:
+                    name_position = "$PLACE1"
+                    if "$PLACE1" not in liyt:
+                        name_position = "PLACE1"
+                    if name_position in liyt:
+                        walk_to(liyt[name_position])
                     step_action = 1
                     step = "turn"
                     action = "find"
@@ -1304,26 +1293,18 @@ if __name__ == "__main__":
             # Navigation2
             elif "navigation2" in command_type or ("navi" in command_type and "2" in command_type):
                 if step_action == 0:
-                    if dining_room_action == 0:
-                        name_position = "$ROOM1"
-                        if "$ROOM1" not in liyt:
-                            name_position = "ROOM1"
-                        if name_position in liyt:
-                            walk_to(liyt[name_position])
-                    else:
-                        speak("going to first dining room")
-                        num1, num2, num3 = dining_room_dif["din1"]
-                        chassis.move_to(num1, num2, num3)
-                        while not rospy.is_shutdown():
-                            # 4. Get the chassis status.
-                            code = chassis.status_code
-                            text = chassis.status_text
-                            if code == 3:
-                                break
-                            if code == 4:
-                                break
-                        time.sleep(1)
-                        clear_costmaps
+                    name_position = "$ROOM1"
+                    if "$ROOM1" not in liyt:
+                        name_position = "ROOM1"
+                    if name_position in liyt:
+                        walk_to(liyt[name_position])
+                    step_action = 10
+                if step_action == 10:
+                    name_position = "$PLACE1"
+                    if "$PLACE1" not in liyt:
+                        name_position = "PLACE1"
+                    if name_position in liyt:
+                        walk_to(liyt[name_position])
                     step_action = 1
                     step = "turn"
                     action = "find"
