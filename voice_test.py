@@ -26,9 +26,9 @@ if __name__ == "__main__":
         if "lake" in s or "tourist" in s or "spot" in s: name_cnt = "	Belo Horizonte"
         if "small" in s or "extension" in s: name_cnt = "Sergipe"
         if "locate" in s or "palace" in s: name_cnt = "Brasília"
-        if "new" in s: name_cnt = "Tocantins"
+        if "new" in s or "nearest" in s: name_cnt = "Tocantins"
         if "capital" in s or "bahia" in s: name_cnt = "Salvador"
-        if "typical" in s or "food" in s: name_cnt = "Bahia"
+        if "typical" in s or "food" in s or "foot" in s: name_cnt = "Bahia"
         if "color" in s or "flag" in s: name_cnt = "White, red and blue"
         if name_cnt != pre_name_cnt:
             print("answer", name_cnt)
