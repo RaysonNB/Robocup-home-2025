@@ -20,16 +20,16 @@ if __name__ == "__main__":
             print(s)
             pre_s = s
         s = s.lower()
-        if "otto" in s or "adel" in s or "adolf" in s: name_cnt = "adel"
-        if "angel" in s: name_cnt = "angel"
-        if "axel" in s or "hazel" in s or "easel" in s or "crystal" in s: name_cnt = "axel"
-        if "charlie" in s or "holly" in s: name_cnt = "charlie"
-        if "jane" in s or "shane" in s: name_cnt = "jane"
-        if "jow" in s or "joe" in s or "jewel" in s or "jules" in s or "george" in s or "charles" in s: name_cnt = "jules"
-        if "morgan" in s: name_cnt = "morgan"
-        if "paris" in s: name_cnt = "paris"
-        if "robin" in s or "robbie" in s or "ruby" in s or "woman" in s or "robert" in s: name_cnt = "robin"
-        if "seymour" in s or "simone" in s or "simon" in s: name_cnt = "simone"
+        if "populous" in s or "most" in s: name_cnt = "São Paulo is the most populous city in Brazil with 12.03 million residents."
+        if "month" in s or "independ" in s: name_cnt = "On September 7, 1822, Brazil’s independence was declared."
+        if "space" in s or "first" in s: name_cnt = "In March 2006, Pontes became the first Brazilian to go to space."
+        if "lake" in s or "tourist" in s or "spot" in s: name_cnt = "	Belo Horizonte"
+        if "small" in s or "extension" in s: name_cnt = "Sergipe"
+        if "locate" in s or "palace" in s: name_cnt = "Brasília"
+        if "newest" in s: name_cnt = "Tocantins"
+        if "capital" in s or "bahia" in s: name_cnt = "Salvador"
+        if "typical" in s or "food" in s: name_cnt = "Bahia"
+        if "color" in s or "flag" in s: name_cnt = "White, red and blue"
         if name_cnt != pre_name_cnt:
-            print("name", name_cnt)
+            print("answer", name_cnt)
         pre_name_cnt=name_cnt
