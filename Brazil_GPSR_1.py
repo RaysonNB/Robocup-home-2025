@@ -121,7 +121,12 @@ def speak(g):
     # rospy.loginfo(g)
     print(g)
     time.sleep(0.5)
-
+def speak11(g):
+    print("[robot say]:", end=" ")
+    os.system(f'espeak -s 150 "{g}"')
+    # rospy.loginfo(g)
+    print(g)
+    time.sleep(0.2)
 
 def move(forward_speed: float = 0, turn_speed: float = 0):
     global _cmd_vel
@@ -451,9 +456,10 @@ if __name__ == "__main__":
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+    time.sleep(2)
     walk_to("instruction point")
     commandcntcnt = 0
-    for i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]:
+    for i in [1,2,3]:
         commandcntcnt = commandcntcnt + 1
         s = ""
         dining_room_action = 0
@@ -476,7 +482,7 @@ if __name__ == "__main__":
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         cv2.destroyAllWindows()
-        data = command_list[i]
+        #data = command_list[i]
         # continue
 
         speak("dear referee your command is")
@@ -627,6 +633,7 @@ if __name__ == "__main__":
         followmecnt = 0
         final_speak_to_guest = ""
         command_stare_time = time.time()
+        repeat_cnt=0
         while not rospy.is_shutdown():
             # voice check
             # break
@@ -989,37 +996,22 @@ if __name__ == "__main__":
                                 print("File renamed failed")
                             action1 = 1
                             step_action = 2
-                    elif "name" in user_input:
-                        # jack, check, track
-                        # aaron, ellen, evan
-                        # angel
-                        # adam, ada, aiden
-                        # Vanessa, lisa, Felicia
-                        # chris
-                        # william
-                        # max, mix
-                        # hunter
-                        # olivia
+                    elif " name" in user_input:
                         if step_speak == 0:
                             # speak("hello")
                             speak("hello guest what is your name")
                             speak("please speak it in complete sentence, for example, my name is fambot")
+                            playsound("nigga2.mp3")
                             step_speak = 1
                         if step_speak == 1:
-                            time.sleep(0.1)
-                            skip_cnt_vd += 1
                             s = s.lower()
-                            if skip_cnt_vd >= 250:
-                                step_action = 2
-                                speak("hello Juliana, I gonna go now")
-                                final_speak_to_guest = "the guys name is Juliana"
-                                print(skip_cnt_vd)
+                            name_cnt="none"
                             if "maria" in s: name_cnt = "Maria"
                             if "angel" in s: name_cnt = "Ana"
                             if "francisca" in s or "francesca" in s or "fantasies" in s: name_cnt = "Francisca"
                             if "antônia" in s or "antonia" in s: name_cnt = "Antônia"
                             if "adriana" in s: name_cnt = "Adriana"
-                            if "juliana" in s or "liliana" in s: name_cnt = "Juliana"
+                            if "juliana" in s or "liliana" in s or "rihana" in s: name_cnt = "Juliana"
                             if "marcia" in s or "michelle" in s or "maxsea" in s or "marsh" in s or "march" in s: name_cnt = "Marcia"
                             if "fernanda" in s: name_cnt = "Fernanda"
                             if "patrícia" in s or "patricia" in s: name_cnt = "Patrícia"
@@ -1029,7 +1021,12 @@ if __name__ == "__main__":
                             if "antonio" in s: name_cnt = "Antonio"
                             if "francisco" in s: name_cnt = "Francisco"
                             if "carlos" in s or "carol" in s: name_cnt = "Carlos"
-                            if name_cnt == "none" and s != "": speak("please speak it again")
+                            if s == "":
+                                repeat_cnt += 1
+                            if (name_cnt == "none" and s != "") or repeat_cnt >= 120:
+                                speak("please speak louder and closer")
+                                playsound("nigga2.mp3")
+                                repeat_cnt = 0
                             s = ""
                             if name_cnt != "none":
                                 print("***************")
@@ -1527,53 +1524,36 @@ if __name__ == "__main__":
                 if step_action == 3:
                     now1 = datetime.now()
                     s = s.lower()
+                    name_cnt="none"
                     current_time = now1.strftime("%H:%M:%S")
                     current_month = now1.strftime("%B")  # Full month name
                     current_day_name = now1.strftime("%A")  # Full weekday name
                     day_of_month = now1.strftime("%d")
-                    answer = "none"
-                    if "move" in s or "way" in s:
-                        answer = "Because you're holding my joystick."
-                    elif "correct" in s:
-                        print("***************")
-                        speak("It's spelled")
-                        speak("r")
-                        speak("o")
-                        speak("b")
-                        speak("o")
-                        speak("t")
-                        answer = "no need"
-                        print("***************")
-                    elif "star" in s or "system" in s:
-                        answer = "It is the Sun."
-                    elif "color" in s:
-                        answer = "I like black."
-                    elif "get" in s or "total" in s or "dice" in s:
-                        answer = "It's about one sixth."
-                        print("It is about 16.7%. || It's about one sixth.")
-                    else:
-                        answer = "none"
+                    if "populous" in s or "most" in s: name_cnt = "São Paulo is the most populous city in Brazil with 12.03 million residents."
+                    if "month" in s or "independ" in s: name_cnt = "On September 7, 1822, Brazil’s independence was declared."
+                    if "space" in s or "first" in s: name_cnt = "In March 2006, Pontes became the first Brazilian to go to space."
+                    if "lake" in s or "tourist" in s or "spot" in s: name_cnt = "Belo Horizonte"
+                    if "small" in s or "extension" in s: name_cnt = "Sergipe"
+                    if "locate" in s or "palace" in s: name_cnt = "Brasília"
+                    if "new" in s or "nearest" in s: name_cnt = "Tocantins"
+                    if "capital" in s or "bahia" in s: name_cnt = "Salvador"
+                    if "typical" in s or "food" in s or "foot" in s: name_cnt = "Bahia"
+                    if "color" in s or "flag" in s: name_cnt = "White, red and blue"
                     time.sleep(0.1)
                     none_cnt += 1
                     if failed_cnt > 4:
                         print("***************")
-                        speak("It's spelled")
-                        speak("r")
-                        speak("o")
-                        speak("b")
-                        speak("o")
-                        speak("t")
-                        print("It's spelled r-o-b-o-t")
+                        speak("In March 2006, Pontes became the first Brazilian to go to space.")
                         print("***************")
                         step_action = 4
-                    if answer == "none" and none_cnt >= 250:
-                        speak("can u please speak it louder")
+                    if name_cnt == "none" and none_cnt >= 250:
+                        speak("speak it louder and closer")
+                        playsound("nigga2.mp3")
                         none_cnt = 0
                         failed_cnt += 1
-                    elif answer != "none":
+                    elif name_cnt != "none":
                         print("***************")
-                        if answer != "no need":
-                            speak(answer)
+                        speak(name_cnt)
                         print("***************")
                         step_action = 4
                 if step_action == 4:
