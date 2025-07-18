@@ -26,6 +26,7 @@ import speech_recognition as sr
 import json
 import os
 from datetime import datetime
+
 '''
 # from LemonEngine.hardwares.respeaker import Respeaker
 from robotic_arm_control import RoboticController
@@ -37,6 +38,8 @@ id_list = [11, 12, 0, 15, 14, 13, 1, 2]
 Ro.open_robotic_arm("/dev/arm", id_list)
 
 '''
+
+
 def callback_image2(msg):
     global _frame2
     _frame2 = CvBridge().imgmsg_to_cv2(msg, "bgr8")
@@ -315,10 +318,10 @@ locations = {
     "sofa": [1.659, 1.330, -1.542],
     "seats": [0.969, 0.905, 0],
     "entry": [0.049, 0.188, -3.14],
-    "instruction point": [4.2,3.8,-1.53],
+    "instruction point": [4.2, 3.8, -1.53],
     "bedroom": [4.1, 6.51, 2.083],
     "kitchen": [0.689, 6.181, -0.775],
-    "living room": [1.069,2.017,-0.015],
+    "living room": [1.069, 2.017, -0.015],
     "exit": [0.097, 7.848, -3.0],
     "sink": [0.396, 6.064, -1.611],
     "waste basket": [0.47, 5.11, -3.0],
@@ -337,6 +340,7 @@ dining_room_dif = {
     "din1": [-1.545, -0.303, 1.53],
     "din2": [1.214, 1.960, -1.53]  ##
 }
+
 
 # name
 # qestion list
@@ -413,7 +417,7 @@ if __name__ == "__main__":
     depth_zero = 0
     command_list = [
         "take me the coke in the bedroom",
-        "take the milk on the cabient and bring it to tom standing in the office", 
+        "take the milk on the cabient and bring it to tom standing in the office",
         "follow the person rising their left arm in the office",
         "Take the person raising their left arm from the cabinet to the bedroom",
         "Tell me how many snacks there are on the seats",
@@ -449,7 +453,7 @@ if __name__ == "__main__":
             break
     walk_to("instruction point")
     commandcntcnt = 0
-    for i in [0,1,2,3,4,5,6,7,8,9]:
+    for i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]:
         commandcntcnt = commandcntcnt + 1
         s = ""
         dining_room_action = 0
@@ -493,7 +497,7 @@ if __name__ == "__main__":
             # print(abs(start_time-now_time),s)
             if abs(start_time - now_time) >= 5: break
             if "yes" in s or "robot" in s: break
-        
+
         # time.sleep(6)
         speak("ok I got it")
         '''
@@ -566,18 +570,19 @@ if __name__ == "__main__":
 
         # Questions, Names, Position
         if "ROOM1" not in liyt and "$ROOM1" not in liyt and ("PLACE1" in liyt or "$PLACE1" in liyt):
-            #"bedroom": 1,2,3,4
-            #"kitchen": 5,6,7,8,9,10,11,exit
-            #"office": 12,13,14
-            #"living room": 15,16,17,18,entry
+            # "bedroom": 1,2,3,4
+            # "kitchen": 5,6,7,8,9,10,11,exit
+            # "office": 12,13,14
+            # "living room": 15,16,17,18,entry
             name_position = "$PLACE1"
             if "$PLACE1" not in liyt:
                 name_position = "PLACE1"
             if name_position in liyt:
                 ggg = liyt[name_position].lower()
-                if ggg in ["bedside table","side table","bed"]:
+                if ggg in ["bedside table", "side table", "bed"]:
                     liyt["$ROOM1"] = "bedroom"
-                elif ggg in ["kitchen table", "dishwasher", "sink","exit","microwave","waste basket","shelf","refrigerator"]:
+                elif ggg in ["kitchen table", "dishwasher", "sink", "exit", "microwave", "waste basket", "shelf",
+                             "refrigerator"]:
                     liyt["$ROOM1"] = "kitchen"
                 elif ggg in ["trash bin", "desk", "bar"]:
                     liyt["$ROOM1"] = "office"
@@ -675,7 +680,7 @@ if __name__ == "__main__":
                         walk_to(liyt[name_position])
                     time.sleep(5)
                     step_action = 100
-                    
+
                     speak("sorry, I can't find it and I can't get it, going back to instruction point")
             # Manipulation2 just walk
             elif "manipulation2" in command_type or ("mani" in command_type and "2" in command_type):
@@ -887,9 +892,9 @@ if __name__ == "__main__":
                         e = w // 2 - cx2
                         v = 0.001 * e
                         if v > 0:
-                            v = min(v, 0.3)
+                            v = min(v, 0.4)
                         if v < 0:
-                            v = max(v, -0.3)
+                            v = max(v, -0.4)
                         move(0, v)
                         print(e)
                         output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
@@ -897,7 +902,7 @@ if __name__ == "__main__":
                         box_roi = _frame2[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
                         fh, fw = abs(x1 - x2), abs(y1 - y2)
                         cv2.imwrite(output_dir + "GSPR_people.jpg", box_roi)
-                        if abs(e) <= 5:
+                        if abs(e) <= 10:
                             # speak("walk")
                             action = "none"
                             step = "none"
@@ -1180,9 +1185,9 @@ if __name__ == "__main__":
                             e = w // 2 - cx2
                             v = 0.001 * e
                             if v > 0:
-                                v = min(v, 0.3)
+                                v = min(v, 0.4)
                             if v < 0:
-                                v = max(v, -0.3)
+                                v = max(v, -0.4)
                             move(0, v)
                             print(e)
                             output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
@@ -1190,7 +1195,7 @@ if __name__ == "__main__":
                             box_roi = checking_image[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
                             fh, fw = abs(x1 - x2), abs(y1 - y2)
                             cv2.imwrite(output_dir + "GSPR_people.jpg", box_roi)
-                            if abs(e) <= 5:
+                            if abs(e) <= 10:
                                 # speak("walk")
                                 action = "none"
                                 step = "confirm"
@@ -1728,9 +1733,9 @@ if __name__ == "__main__":
                             e = w // 2 - cx2
                             v = 0.001 * e
                             if v > 0:
-                                v = min(v, 0.3)
+                                v = min(v, 0.4)
                             if v < 0:
-                                v = max(v, -0.3)
+                                v = max(v, -0.4)
                             move(0, v)
                             print(e)
                             output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
@@ -1738,7 +1743,7 @@ if __name__ == "__main__":
                             box_roi = checking_image[face_box[1]:face_box[3] - 1, face_box[0]:face_box[2] - 1, :]
                             fh, fw = abs(x1 - x2), abs(y1 - y2)
                             cv2.imwrite(output_dir + "GSPR_people.jpg", box_roi)
-                            if abs(e) <= 5:
+                            if abs(e) <= 10:
                                 # speak("walk")
                                 action = "none"
                                 step = "confirm"
