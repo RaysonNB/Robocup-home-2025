@@ -1,5 +1,10 @@
 from openai import OpenAI
+Here is a brief description of each room's features based on the provided floor plan:
 
+Bedroom: This room contains a large bed positioned against the top wall, with a bedside table to its right. A plant is in the top-left corner, and a side table is against the bottom wall.
+Office: The office is set up with a desk and three chairs in the upper right corner, next to a trash bin and a plant. A bar is located against the wall separating the office from the bedroom.
+Kitchen: On the left, there is a round kitchen table with four chairs. The area to the right includes a sink placed between a dishwasher and a microwave. Along the bottom wall, next to the exit, are a refrigerator, a shelf, and a waste basket.
+Living Room: This room features a sofa against the right wall, facing two seats. A cabinet is placed near the main entry, and a TV stand is against the wall shared with the kitchen.
 client = OpenAI(
     api_key="AIzaSyCYSxtdvQnullmuGnJqI49kwGlqT1ZAmpo",
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
