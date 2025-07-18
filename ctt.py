@@ -26,12 +26,16 @@ def get_real_xyz(dp, x, y):
     a = 55.0 * np.pi / 180
     b = 86.0 * np.pi / 180
     h, w = dp.shape[:2]
+    y_min = np.clip(y-8, 0, h-1)
+    y_max = np.clip(y+8, 0, h-1)
+    x_min = np.clip(x-8, 0, w-1)
+    x_max = np.clip(x+8, 0, w-1)
 
-    ys, xs = np.nonzero(dp[y-7:y+8, x-7:x+8])
+    ys, xs = np.nonzero(dp[y_min:y_max, x_min:x_max])
     if ys.size == 0: 
         d = 0
     else:
-        xs += x - 7; ys += y - 7
+        xs += x_min; ys += y_min
         i = ((xs - x)**2 + (ys - y)**2).argmin()
         d = dp[ys[i], xs[i]]
 
