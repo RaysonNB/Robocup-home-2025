@@ -1,4 +1,15 @@
 from openai import OpenAI
+import numpy as np
+
+def nearest_nonzero(img, x, y):
+    ys, xs = np.nonzero(img[y-7:y+8, x-7:x+8])
+    if ys.size == 0: 
+        return None
+    xs += x - 7; ys += y - 7
+    i = ((xs - x)**2 + (ys - y)**2).argmin()
+    return xs[i], ys[i]
+
+
 Here is a brief description of each room's features based on the provided floor plan:
 
 Bedroom: This room contains a large bed positioned against the top wall, with a bedside table to its right. A plant is in the top-left corner, and a side table is against the bottom wall.
