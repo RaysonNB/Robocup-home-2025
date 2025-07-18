@@ -296,7 +296,11 @@ while True:
         time.sleep(2)
     elif dictt["Steps"] == "color":
         sample_txt = dictt["Questionasking"].lower()
-        sample_txt+=" just give me 20 words"
+        sample_txt+=" (just give me 20 words)"
+        sample_txt+='''
+        
+        *** the right side of the photo is the left side in reality'''
+
         image_url = f"http://172.20.10.5:8888{'/uploads/GSPR_color.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
