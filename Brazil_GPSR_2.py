@@ -27,11 +27,16 @@ while True:
         s = "***The Sentence:" + s1
         print("question", s)
         sample_txt = """
+        *** room name will not be place name
+        *** bedroom: bedside table, side table, bed
+        *** kitchen: kitchen table, dishwasher, sink, microwave, waste basket, shelf, refrigerator
+        *** office: trash bin, desk, bar
+        *** living room: cabinet, sofa, seats
+        I am in the instruction point
         *** please remember Manipulation1, Manipulation2 is only for graping object not for taking/graping person
-        
         (The Sentence)(Task: Sentence Structure)(I given u)
-        Manipulation1: Go to the $ROOM1, grasp the $OBJECT on the $PLACE1 and place it on the $PLACE2.
-        Manipulation2: Go to the $ROOM1, grasp the $OBJECT on the $PLACE1 and give it to $PERSON on the $ROOM2.(if &PERSON is me than $ROOM2:"instruction point" just edit $ROOM2)
+        Manipulation1(only for object): Go to the $ROOM1, grasp the $OBJECT on the $PLACE1 and place it on the $PLACE2.
+        Manipulation2(only for object): Go to the $ROOM1, grasp the $OBJECT on the $PLACE1 and give it to $PERSON on the $ROOM2.(if &PERSON is me than $ROOM2:"instruction point" just edit $ROOM2)
         Vision (Enumeration)1: Tell me how many $CATEGORY_OBJ here are on the $PLACE1.
         Vision (Enumeration)2: Tell me how many people in the $ROOM1 are $POSE/GESTURE.
         Vision (Description)1: Tell me what is the $OBJ_COMP object on the $PLACE1.
@@ -40,7 +45,7 @@ while True:
         Navigation2: Go to the $ROOM1, find $POSE/GESTURE person and guide (him|her) to the $ROOM2.
         Speech1: Go to the $ROOM1, find $PERSON at the $PLACE1 and answer (his | her) question.
         Speech2: Go to the $ROOM1, find the person who is $POSE/GESTURE and tell (him | her) $TELL_LIST.
-
+        
         %possible information options
         %ROOM         : bedroom, kitchen, office, living room
         %PLACE        : bedside table, side table, bed, kitchen table, dishwasher, sink, microwave, waste basket, shelf, refrigerator, trash bin, desk, bar, tv stand, cabinet, sofa, seats
@@ -93,7 +98,7 @@ while True:
         print("sent")
         time.sleep(2)
     elif dictt["Steps"] == "checkpeople":
-        promt = dictt["Questionasking"] + " answer my question ys or no only"
+        promt = dictt["Questionasking"] + " answer my question yes or no only"
         image_url = f"http://172.20.10.5:8888{'/uploads/GSPR_people.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
@@ -250,6 +255,7 @@ while True:
                     | coke | drink | Red can of Coca-Cola Zero Sugar. |
 
                     just one sentence(15 words) is enough
+                    
                     '''
             promt = promt1 + promt2
         else:
@@ -290,6 +296,7 @@ while True:
         time.sleep(2)
     elif dictt["Steps"] == "color":
         sample_txt = dictt["Questionasking"].lower()
+        sample_txt+=" just give me 20 words"
         image_url = f"http://172.20.10.5:8888{'/uploads/GSPR_color.jpg'}"
         print("Fetching image from:", image_url)
         image_response = requests.get(image_url)
