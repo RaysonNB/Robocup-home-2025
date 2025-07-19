@@ -1,0 +1,397 @@
+#!/usr/bin/env python3
+import rospy
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+import cv2, os
+from pcms.pytorch_models import *
+from pcms.openvino_models import Yolov8, HumanPoseEstimation
+import numpy as np
+from geometry_msgs.msg import Twist
+import math
+import time
+import re
+from mr_voice.msg import Voice
+from std_msgs.msg import String
+from rospkg import RosPack
+from tf.transformations import euler_from_quaternion
+from sensor_msgs.msg import Imu
+from typing import Tuple, List
+from RobotChassis import RobotChassis
+import datetime
+from std_srvs.srv import Empty
+from gtts import gTTS
+from playsound import playsound
+import requests
+import speech_recognition as sr
+import json
+import os
+from datetime import datetime
+
+def callback_image1(msg):
+    global _frame1
+    _frame1 = CvBridge().imgmsg_to_cv2(msg, "bgr8")
+
+
+def callback_depth1(msg):
+    global _depth1
+    _depth1 = CvBridge().imgmsg_to_cv2(msg, "passthrough")
+
+
+def get_real_xyz(dp, x, y, num):
+    a1 = 49.5
+    b1 = 60.0
+    if num == 2:
+        a1 = 55.0
+        b1 = 86.0
+    a = a1 * np.pi / 180
+    b = b1 * np.pi / 180
+    d = dp[y][x]
+    h, w = dp.shape[:2]
+    if d == 0:
+        for k in range(1, 15, 1):
+            if d == 0 and y - k >= 0:
+                for j in range(x - k, x + k, 1):
+                    if not (0 <= j < w):
+                        continue
+                    d = dp[y - k][j]
+                    if d > 0:
+                        break
+            if d == 0 and x + k < w:
+                for i in range(y - k, y + k, 1):
+                    if not (0 <= i < h):
+                        continue
+                    d = dp[i][x + k]
+                    if d > 0:
+                        break
+            if d == 0 and y + k < h:
+                for j in range(x + k, x - k, -1):
+                    if not (0 <= j < w):
+                        continue
+                    d = dp[y + k][j]
+                    if d > 0:
+                        break
+            if d == 0 and x - k >= 0:
+                for i in range(y + k, y - k, -1):
+                    if not (0 <= i < h):
+                        continue
+                    d = dp[i][x - k]
+                    if d > 0:
+                        break
+            if d > 0:
+                break
+
+    x = int(x) - int(w // 2)
+    y = int(y) - int(h // 2)
+    real_y = round(y * 2 * d * np.tan(a / 2) / h)
+    real_x = round(x * 2 * d * np.tan(b / 2) / w)
+    return real_x, real_y, d
+
+'''
+def callback_voice(msg):
+    global s
+    s = msg.text
+'''
+
+def speak(g):
+    print("[robot said]: ", end=" ")
+    os.system(f'espeak -s 140 "{g}"')
+    # rospy.loginfo(g)
+    print(g)
+    time.sleep(0.5)
+
+
+def move(forward_speed: float = 0, turn_speed: float = 0):
+    global _cmd_vel
+    msg = Twist()
+    msg.linear.x = forward_speed
+    msg.angular.z = turn_speed
+    _cmd_vel.publish(msg)
+
+
+def post_message_request(step, s1, question):
+    api_url = "http://172.20.10.5:8888/Fambot"
+    my_todo = {"Question1": "None",
+               "Question2": "None",
+               "Question3": "None",
+               "Steps": step,
+               "Voice": s1,
+               "Questionasking": question,
+               "answer": "None"}
+    response = requests.post(api_url, json=my_todo, timeout=20)
+    result = response.json()
+    return result
+clear_costmaps = rospy.ServiceProxy("/move_base/clear_costmaps", Empty)
+
+def walk_to():
+        num1, num2, num3 = 1.069, 2.017, -0.015
+        chassis.move_to(num1, num2, num3)
+        while not rospy.is_shutdown():
+            # 4. Get the chassis status.
+            code = chassis.status_code
+            text = chassis.status_text
+            if code == 3:
+                break
+            if code == 4:
+                break
+        time.sleep(1)
+        clear_costmaps
+def callback_voice(msg):
+    global s
+    s = msg.text
+if __name__ == "__main__":
+    rospy.init_node("demo")
+    rospy.loginfo("demo node start!")
+    # open things
+    print("cmd_vel")
+    _cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+    print("speak")
+    s = ""
+    rospy.Subscriber("/voice/text", Voice, callback_voice)
+    net_pose = HumanPoseEstimation(device_name="GPU")
+    print("gemini rgb")
+    _frame1 = None
+    _sub_down_cam_image1 = rospy.Subscriber("/camera/color/image_raw", Image, callback_image1)
+    print("gemini depth")
+    _depth1 = None
+    _sub_down_cam_depth1 = rospy.Subscriber("/camera/depth/image_raw", Image, callback_depth1)
+    dnn_yolo = Yolov8("yolov8n", device_name="GPU")
+    cv2.namedWindow("frame", cv2.WINDOW_NORMAL)
+    follow_cnt = 0
+    action = 0
+    step_action = 0
+    print("yolov8")
+    Kinda = np.loadtxt(RosPack().get_path("mr_dnn") + "/Kinda.csv")
+    dnn_yolo1 = Yolov8("yolov8n", device_name="GPU")
+    #s = ""
+    print("sever1")
+    #gg = post_message_request("-1", "", "")
+    net_pose = HumanPoseEstimation(device_name="GPU")
+    print("sever2")
+    step = "none"
+    confirm_command = 0
+    speak("I am ready")
+    meter=1000
+    print("0")
+    speak_j=""
+    output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
+    for ifffff in [1,2,3,4,5]:
+        step_action=0
+        depth_ddd = 0
+        skip_voice_cnt=0
+        repeat_cnt=0
+        repeatnigga=0
+        while not rospy.is_shutdown():
+            # voice check
+            # break
+            now1 = datetime.now()
+            current_time = now1.strftime("%H:%M:%S")
+            rospy.Rate(10).sleep()
+            confirm_command = 0
+            if _frame1 is None:
+                print("no frame")
+            if _depth1 is None:
+                print("no depth")
+            code_image = _frame1.copy()
+            code_depth = _depth1.copy()
+            catch_image = _frame1.copy()
+            
+            if step_action == 0:
+                speak("hello customers, please raise your hand if u need a order")
+                speak("please prepare your phone thank you")
+                step="turn"
+                action="find"
+                speak("finding customer")
+                step_action=1
+            if step_action == 1:
+                # walk in front of the guy
+                if step == "turn":
+                    move(0, -0.2)
+                if action == "find":
+                    code_image = _frame1.copy()
+                    poses = net_pose.forward(code_image)
+                    min_d = 9999
+                    t_idx = -1
+                    for i, pose in enumerate(poses):
+                        if (pose[5][2] == 0 and pose[9][2] == 0) or (pose[6][2] == 0 and pose[10][2] == 0):
+                            continue
+                        p5 = list(map(int, pose[5][:2]))
+                        p6 = list(map(int, pose[6][:2]))
+                        p9 = list(map(int, pose[9][:2]))
+                        p10 = list(map(int, pose[10][:2]))
+                        print(p5,p9,"p5,p9")
+                        print(p6,p10,"p6,p10")
+                        cx = (p5[0] + p6[0]) // 2
+                        cy = (p5[1] + p6[1]) // 2
+                        _, _, d = get_real_xyz(code_depth, cx, cy, 2)
+                        if d >= 3300 or d == 0: continue
+                        cv2.circle(code_image, p5, 5, (0, 0, 255), -1)
+                        cv2.circle(code_image, p6, 5, (0, 0, 255), -1)
+                        cv2.circle(code_image, p9, 5, (0, 0, 255), -1)
+                        cv2.circle(code_image, p10, 5, (0, 0, 255), -1)
+                        cv2.circle(code_image, (cx, cy), 5, (0, 255, 0), -1)
+                        _, _, d = get_real_xyz(code_depth, cx, cy, 2)
+                        
+                        if (((pose[5][2] != 0 and pose[9][2] != 0) and (p5[1]>p9[1])) or ((p6[1]>p10[1]) and (pose[6][2] != 0 and pose[10][2] != 0))):
+                            t_idx = i
+                            final_d = d
+
+                    x, z = 0, 0
+                    if t_idx != -1:
+                        print("nigga")
+                        p5 = list(map(int, poses[t_idx][5][:2]))
+                        p6 = list(map(int, poses[t_idx][6][:2]))
+                        cx = (p5[0] + p6[0]) // 2
+                        cy = (p5[1] + p6[1]) // 2
+                        _, _, d = get_real_xyz(code_depth, cx, cy, 2)
+                        cv2.circle(code_image, (cx, cy), 5, (0, 255, 255), -1)
+
+                        print("people_d", d)
+                        if d >= 3300 or d == 0: continue
+
+                        step = "none"
+                        h, w, c = code_image.shape
+                        e = w // 2 - cx
+                        v = 0.001 * e
+                        if v > 0:
+                            v = min(v, 0.45)
+                        if v < 0:
+                            v = max(v, -0.45)
+                        move(0, v)
+                        print(e)
+                        if abs(e) <= 25:
+                            # speak("walk")
+                            action = "front"
+                            speak("found you the customer who need order")
+                            if ifffff == 1:
+                                speak("there is no path for me to move")
+                                break
+
+                            print("turned")
+                            move(0, 0)
+                    else:
+                        step="turn"
+                if action == "front":
+                    meter=final_d-1500
+                    print("walkinmg",meter)
+                    for walk in range(round(meter/100)):
+                        move(0.2,0)
+                        time.sleep(0.5)
+                    action="speak"
+                if action == "speak":
+                    step = "none"
+                    action = "none"
+                    step_action = 2
+            if step_action == 2:
+                speak("dear customer, there is a qrcode in the right of the screen")
+                speak("please use your phone to scan the qrcode")
+                speak("type your order")
+                time.sleep(2)
+                speak("roll down your screen and show me your order qrcode to me thank you")
+                #time.sleep(5)
+                speak("dear customer please scan your qr code in front of my camera in the middle")
+                yn = 0
+                start_time=time.time()
+                qr_code_detector = cv2.QRCodeDetector()
+                while True:
+                    # print("step1")
+                    if _frame1 is None: continue
+                    code_image = _frame1.copy()
+                    data, bbox, _ = qr_code_detector.detectAndDecode(code_image)
+
+                    if data:
+                        print("QR Code detected:", data)
+                        step_action=99
+                        break
+
+                    cv2.imshow("QR Code Scanner", code_image)
+
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        break
+                    if abs((start_time-time.time()))>=30:
+                        speak("I can't get it, I gonna go back now")
+                        for walk in range(round(meter/100)):
+                            move(-0.2,0)
+                            time.sleep(0.5)
+                        step_action=100
+                        break
+                
+                cv2.destroyAllWindows()
+                if step_action==100:
+                    break
+                # data = command_list[i]
+                # continue
+            if step_action == 99:
+                speak("dear customer your order is")
+                time.sleep(0.3)
+                final_speak_to_guest = data.lower()
+                s = ""
+                print("Your order is **********************")
+                print(data)
+                speak(final_speak_to_guest)
+                print("********************")
+                speak("plase answer robot yes or robot no thank you")
+                step_action=7
+            if step_action == 7:
+                if "yes" in s:
+                    step_action=9
+                if "no" in s:
+                    step_action = 2
+                if s=="":
+                    repeat_cnt+=1
+                if (s != "") or repeat_cnt>=80:
+                    speak("please repeat louder and closer")
+                    repeat_cnt=0
+                    repeatnigga+=1
+                if repeatnigga>=4:
+                    speak("I got it")
+                    step_action=9
+            if step_action == 9:
+                time.sleep(3)
+                for walk in range(round(meter/100)):
+                    move(-0.2,0)
+                    time.sleep(0.5)
+                move(0,0)
+                speak("the customer want " + final_speak_to_guest)
+                time.sleep(2)
+                step_action = 10
+            if step_action == 10:
+                speak("dear barman please put all the stuff on my head in 25 seconds, thank you")
+                time.sleep(19)
+                speak("5")
+                speak("4")
+                speak("3")
+                speak("2")
+                speak("1")
+                speak("I gonna move")
+                
+                for walk in range(round((meter-300)/100)):
+                    move(0.2,0)
+                    time.sleep(0.5)
+                time.sleep(3)
+                for turn in range(180):
+                    move(0,0.6)
+                    time.sleep(0.026)
+                time.sleep(3)
+                for walk in range(round((300)/100)):
+                    move(-0.2,0)
+                    time.sleep(0.5)
+                time.sleep(3)
+                speak("dear customer, you can take the stuff")
+                speak("you have 25 seconds")
+                time.sleep(19)
+                speak("5")
+                speak("4")
+                speak("3")
+                speak("2")
+                speak("1")
+                speak("I gonna move")
+                for walk in range(round((meter)/100)):
+                    move(0.2,0)
+                    time.sleep(0.5)
+                time.sleep(3)
+                break
+            cv2.imshow("frame", code_image)
+            key = cv2.waitKey(1)
+            if key in [ord('q'), 27]:
+                break
+    speak("mission end")
