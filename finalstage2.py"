@@ -174,7 +174,7 @@ if __name__ == "__main__":
     print("0")
     speak_j=""
     output_dir = "/home/pcms/catkin_ws/src/beginner_tutorials/src/m1_evidence/"
-    for ifffff in [1,2,3,4,5]:
+    for ifffff in [1,2,3,4,5,6,7,8,9,10,11,12,3,4,5,6]:
         step_action=0
         depth_ddd = 0
         skip_voice_cnt=0
@@ -197,6 +197,7 @@ if __name__ == "__main__":
             
             if step_action == 0:
                 speak("hello customers, please raise your hand if u need a order")
+                speak("don't put down your hands, until the robot come through")
                 speak("please prepare your phone thank you")
                 step="turn"
                 action="find"
@@ -261,7 +262,9 @@ if __name__ == "__main__":
                         if abs(e) <= 25:
                             # speak("walk")
                             action = "front"
+                            time.sleep(1)
                             speak("found you the customer who need order")
+                            time.sleep(3)
                             if ifffff == 1:
                                 speak("there is no path for me to move")
                                 break
