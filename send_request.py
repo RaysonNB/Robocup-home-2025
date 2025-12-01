@@ -6,7 +6,7 @@ import json
 import time
 
 
-genai.configure(api_key='AIzaSyAHGCTBQvnNMTIXhcAFt0gEkQvAeG9mQ5A')
+genai.configure(api_key='GOOGLE_API')
 model = genai.GenerativeModel("gemini-2.0-flash")
 s1 = input("The Sentence: ")
 input()
@@ -73,4 +73,5 @@ import requests
 r = requests.get("http://127.0.0.1:5000/Fambot",timeout=2.5)
 response_data = r.text
 print(response_data)
+
 '''
