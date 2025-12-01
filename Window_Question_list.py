@@ -11,7 +11,7 @@ current_time = now.strftime("%H:%M:%S")
 current_month = now.strftime("%B")  # Full month name
 current_day_name = now.strftime("%A")  # Full weekday name
 day_of_month = now.strftime("%d")  # Day of the month as zero-padded decimal
-genai.configure(api_key='AIzaSyAHGCTBQvnNMTIXhcAFt0gEkQvAeG9mQ5A')
+genai.configure(api_key='GOOGLE_API')
 model = genai.GenerativeModel("gemini-2.0-flash")
 sample_txt=f'''
 Today is 3rd April in 2025
