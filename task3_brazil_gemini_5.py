@@ -9,7 +9,7 @@ from Generate_command import kitchen_items
 import re
 
 pathnum = r"C:/Users/rayso/Desktop/python/"
-genai.configure(api_key='AIzaSyBdTRu-rcBKbf86gjiMNtezBu1dEuxrWyE')
+genai.configure(api_key='GOOGLE_API')
 model = genai.GenerativeModel("gemini-2.0-flash")
 cnt_yy = 0
 answernigga = ""
@@ -230,4 +230,5 @@ while True:
         response = requests.post(api_url, json=questions)
         result = response.json()
         print(result)
+
         time.sleep(2)
