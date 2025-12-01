@@ -8,7 +8,7 @@ import numpy as np
 from Generate_command import kitchen_items
 
 pathnum = r"C:/Users/rayso/Desktop/python/"
-genai.configure(api_key='AIzaSyBdTRu-rcBKbf86gjiMNtezBu1dEuxrWyE')
+genai.configure(api_key='API')
 model = genai.GenerativeModel("gemini-2.0-flash")
 cnt_yy = 0
 while True:
