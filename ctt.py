@@ -13,7 +13,7 @@ from LemonEngine.hardwares.respeaker import Respeaker
 from LemonEngine.hardwares.chassis import Chassis, Navigator
 
 client = OpenAI(
-    api_key="AIzaSyCYSxtdvQnullmuGnJqI49kwGlqT1ZAmpo",
+    api_key="GOOGLE_API",
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 
