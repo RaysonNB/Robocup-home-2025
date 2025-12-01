@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 
 pathnum = r"C:/Users/rayso/Desktop/python/"
-genai.configure(api_key='AIzaSyBdTRu-rcBKbf86gjiMNtezBu1dEuxrWyE')
+genai.configure(api_key='GOOGLE_API')
 model = genai.GenerativeModel("gemini-2.0-flash")
 cnt_yy = 0
 
