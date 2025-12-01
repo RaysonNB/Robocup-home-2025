@@ -11,7 +11,7 @@ from datetime import datetime
 
 from Generate_command import kitchen_items
 
-genai.configure(api_key='AIzaSyBj9nF9Lq9TanhVMyue4qn_xbKLxyCnn2k')
+genai.configure(api_key='GOOGLE_API')
 model = genai.GenerativeModel("gemini-2.0-flash")
 cnt_yy=0
 while True:
