@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 # Configuration
-GOOGLE_API_KEY = "AIzaSyAHGCTBQvnNMTIXhcAFt0gEkQvAeG9mQ5A"  # Replace with your API key
+GOOGLE_API_KEY = "GOOGLE_API_KEY"  # Replace with your API key
 
 # Initialize the client
 genai.configure(api_key=GOOGLE_API_KEY)
