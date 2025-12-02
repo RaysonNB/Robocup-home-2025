@@ -5,7 +5,7 @@ import google.generativeai as genai
 import PIL.Image
 import cv2
 import numpy as np
- 
+
 pathnum = r"C:/Users/rayso/Desktop/python/"
 genai.configure(api_key='GOOGLE_API')
 model = genai.GenerativeModel("gemini-2.0-flash")
