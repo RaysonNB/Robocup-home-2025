@@ -52,7 +52,34 @@ def walk_to(name):
             # Explicitly CALL the service using ()
             if clear_costmaps:
                 clear_costmaps()
-
+other_mission = {
+    "tv table 1": [1.282, 1.508, 1.569],
+    "tv table 2": [1.881,1.260,1.703],
+    "dish washer": [7.417, -1.169, -1.512],
+    "cabinet 1": [6.164,1.755,-3.003],
+    "cabinet 2": [1.065,3.790,-1.481],
+    "taking clothes": [3.006,3.916,1.652],
+    "ri": [6.11,-0.46,0]
+}
+def walk_to1(name):
+    if "none" not in name or "unknow" in name:
+        name = name.lower()
+        real_name = check_item(name)
+        if real_name in other_mission:
+            speak("going to " + str(name))
+            num1, num2, num3 = other_mission[real_name]
+            chassis.move_to(num1, num2, num3)
+            while not rospy.is_shutdown():
+                # 4. Get the chassis status.
+                code = chassis.status_code
+                text = chassis.status_text
+                if code == 3:
+                    break
+                if code == 4:
+                    break
+            speak("arrived")
+            time.sleep(1)
+            clear_costmaps
 
 # --- Load and Process locations.json ---
 locations = {}
@@ -71,15 +98,7 @@ except Exception as e:
     rospy.logerr(f"Failed to load locations.json: {e}")
 
 # ----------------------------------------
-other_mission = {
-    "tv table 1": [1.282, 1.508, 1.569],
-    "tv table 2": [1.881,1.260,1.703],
-    "dish washer": [7.417, -1.169, -1.512],
-    "cabinet 1": [6.164,1.755,-3.003],
-    "cabinet 2": [1.065,3.790,-1.481],
-    "taking clothes": [3.006,3.916,1.652],
-    "ri": [6.11,-0.46,0]
-}
+
 if __name__ == "__main__":
     rospy.init_node("demo")
     rospy.loginfo("demo node start!")
