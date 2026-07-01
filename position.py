@@ -12,103 +12,95 @@ def speak(g):
     print(g)
 
 
-def check_item(name):
-    corrected = "starting point"
-    if name in locations:
-        corrected = name
-    else:
-        corrected = corrected.replace("_", " ")
-    return corrected
-
-
-# Initialize ROS Service Proxy
+# 初始化 ROS Service
+clear_costmaps = None
 try:
     rospy.wait_for_service("/move_base/clear_costmaps", timeout=2.0)
     clear_costmaps = rospy.ServiceProxy("/move_base/clear_costmaps", Empty)
 except rospy.ROSException:
     rospy.logwarn("Costmap clearing service not available.")
-    clear_costmaps = None
 
 
-def walk_to(name):
-    if "none" not in name or "unknow" in name:
-        name = name.lower()
-        real_name = check_item(name)
-        speak("going to " + str(name))
+def walk_to(name, target_locations):
+    """
+    導航至指定地點
+    :param name: 地點名稱
+    :param target_locations: 存放座標的字典
+    """
+    name = name.lower()
 
-        if real_name in locations:
-            num1, num2, num3 = locations[real_name]
-            chassis.move_to(num1, num2, num3)
+    # 檢查是否為無效地點
+    if "none" in name or "unknown" in name:
+        rospy.logwarn(f"Invalid location: {name}")
+        return
 
-            while not rospy.is_shutdown():
-                # Get the chassis status
-                code = chassis.status_code
-                if code in [3, 4]:  # 3: Success, 4: Aborted/Failed
-                    break
+    if name in target_locations:
+        speak(f"going to {name}")
+        coords = target_locations[name]
+        chassis.move_to(coords[0], coords[1], coords[2])
 
-            speak("arrived")
-            time.sleep(1)
+        # 等待移動完成
+        while not rospy.is_shutdown():
+            code = chassis.status_code
+            # 3: 成功, 4: 失敗/取消
+            if code == 3:
+                speak("arrived")
+                break
+            elif code == 4:
+                speak("failed to reach destination")
+                break
+            time.sleep(0.2)  # 避免佔用過多 CPU
 
-            # Explicitly CALL the service using ()
-            if clear_costmaps:
-                clear_costmaps()
+        time.sleep(1)
+        # 執行清理 Costmap
+        if clear_costmaps:
+            try:
+                clear_costmaps
+            except rospy.ServiceException as e:
+                rospy.logerr(f"Service call failed: {e}")
+    else:
+        rospy.logerr(f"Location '{name}' not found in database.")
+
+
+# 額外任務地點
 other_mission = {
     "tv table 1": [1.282, 1.508, 1.569],
-    "tv table 2": [1.881,1.260,1.703],
+    "tv table 2": [1.881, 1.260, 1.703],
     "dish washer": [7.417, -1.169, -1.512],
-    "cabinet 1": [6.164,1.755,-3.003],
-    "cabinet 2": [1.065,3.790,-1.481],
-    "taking clothes": [3.006,3.916,1.652],
-    "ri": [6.11,-0.46,0]
+    "cabinet 1": [6.164, 1.755, -3.003],
+    "cabinet 2": [1.065, 3.790, -1.481],
+    "taking clothes": [3.006, 3.916, 1.652],
+    "ri": [6.11, -0.46, 0]
 }
-def walk_to1(name):
-    if "none" not in name or "unknow" in name:
-        name = name.lower()
-        real_name = check_item(name)
-        if real_name in other_mission:
-            speak("going to " + str(name))
-            num1, num2, num3 = other_mission[real_name]
-            chassis.move_to(num1, num2, num3)
-            while not rospy.is_shutdown():
-                # 4. Get the chassis status.
-                code = chassis.status_code
-                text = chassis.status_text
-                if code == 3:
-                    break
-                if code == 4:
-                    break
-            speak("arrived")
-            time.sleep(1)
-            clear_costmaps
 
-# --- Load and Process locations.json ---
+# 載入 locations.json
 locations = {}
-# Assuming locations.json is in the same directory as your script
 json_path = os.path.join(os.path.dirname(__file__), "locations.json")
-
 try:
-    with open(json_path, "r") as f:
-        raw_data = json.load(f)
-
-    # Flatten the JSON structure so "sofa", "washing machine", etc. are directly accessible
-    for room, items in raw_data.items():
-        for item_name, coordinates in items.items():
-            locations[item_name.lower()] = coordinates
+    if os.path.exists(json_path):
+        with open(json_path, "r") as f:
+            raw_data = json.load(f)
+        for room, items in raw_data.items():
+            for item_name, coordinates in items.items():
+                locations[item_name.lower()] = coordinates
+    else:
+        rospy.logwarn("locations.json not found.")
 except Exception as e:
     rospy.logerr(f"Failed to load locations.json: {e}")
 
-# ----------------------------------------
-
 if __name__ == "__main__":
-    rospy.init_node("demo")
-    rospy.loginfo("demo node start!")
-
+    rospy.init_node("demo_node")
     chassis = RobotChassis()
-    speak("GPSR locations")
-    # Iterates through all items flattened out of your JSON dictionary
-    for x in locations.keys():
-        walk_to(x)
-    speak("other locations")
+
+    # 1. 執行 JSON 中的地點
+    if locations:
+        speak("Starting GPSR locations")
+        for x in locations.keys():
+            walk_to(x, locations)
+
+    # 2. 執行 字典 中的地點
+    speak("Starting other locations")
     for x in other_mission.keys():
-        walk_to(x)
-    speak("all position end")
+        walk_to(x, other_mission)
+
+    speak("all positions completed")
